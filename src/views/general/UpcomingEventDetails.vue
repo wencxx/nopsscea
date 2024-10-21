@@ -19,9 +19,9 @@
                     <div v-else-if="role == 'admin' && eventDetails.id" class="w-full flex flex-col">
                         <button class="bg-red-800 text-white py-1 rounded">Delete event</button>
                     </div>
-                    <div v-else class="w-full flex flex-col">
+                    <!-- <div v-else class="w-full flex flex-col">
                         <button class="bg-gray-200 animate-pulse text-gray-200 py-1 rounded">Join event</button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
