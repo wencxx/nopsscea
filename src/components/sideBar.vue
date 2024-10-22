@@ -145,6 +145,62 @@
               </li>
           </ul>
         </nav>
+        <!-- nav for coach -->
+        <nav class="p-5" v-if="role === 'coach'">
+            <ul class="space-y-2">
+              <li>
+                <router-link :to="{ name: 'coachDashboard' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'coachDashboard' }">
+                  <Icon icon="mdi:view-dashboard-outline" class="text-xl"/>
+                  <p>Dashboard</p>
+                </router-link>
+              </li>
+              <li>
+                <div @click="toggleDropdown('athletes')" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'pendingAthletes' || $route.name == 'athletesList' }">
+                  <Icon icon="ic:round-sports-gymnastics" class="text-xl"/>
+                  <p>Athletes</p>
+                   <Icon icon="iconamoon:arrow-down-2-duotone" class="text-2xl ml-auto transition-all duration-100" :class="{ 'rotate-180': openDropdown.includes('athletes') }" />
+                </div>
+                <div v-if="openDropdown.includes('athletes')" class="border-l dark:border-gray-100/10 ml-3 mt-1">
+                    <router-link :to="{ name: 'pendingAthletes' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'pendingAthletes' }">
+                      <p>Pending Athletes</p>
+                    </router-link>
+                    <router-link :to="{ name: 'athletesListCoach' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'athletesListCoach' }">
+                      <p>Athlete Lists</p>
+                    </router-link>
+                </div>
+              </li>
+              <li>
+                <div @click="toggleDropdown('coaches')" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'pendingCoaches' || $route.name == 'coachesList' }">
+                  <Icon icon="material-symbols:sports-kabaddi-rounded" class="text-xl"/>
+                  <p>Caoches</p>
+                   <Icon icon="iconamoon:arrow-down-2-duotone" class="text-2xl ml-auto transition-all duration-100" :class="{ 'rotate-180': openDropdown.includes('coaches') }" />
+                </div>
+                <div v-if="openDropdown.includes('coaches')" class="border-l dark:border-gray-100/10 ml-3 mt-1">
+                    <router-link :to="{ name: 'pendingCoaches' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'pendingCoaches' }">
+                      <p>Pending Coaches</p>
+                    </router-link>
+                    <router-link :to="{ name: 'coachesList' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'coachesList' }">
+                      <p>Coach Lists</p>
+                    </router-link>
+                </div>
+              </li>
+              <li>
+                <div @click="toggleDropdown('events')" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded cursor-pointer hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'upcomingEvents' || $route.name == 'FinishedEvents' || $route.name == 'upcomingEventDetails' }">
+                  <Icon icon="mdi:event-outline" class="text-xl"/>
+                  <p>Events</p>
+                  <Icon icon="iconamoon:arrow-down-2-duotone" class="text-2xl ml-auto transition-all duration-100" :class="{ 'rotate-180': openDropdown.includes('events') }" />
+                </div>
+                <div v-if="openDropdown.includes('events')" class="border-l dark:border-gray-100/10 ml-3 mt-1">
+                    <router-link :to="{ name: 'upcomingEvents' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'upcomingEvents' || $route.name == 'upcomingEventDetails' }">
+                      <p>Upcoming Events</p>
+                    </router-link>
+                    <router-link :to="{ name: 'FinishedEvents' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'FinishedEvents' }">
+                      <p>Finished Events</p>
+                    </router-link>
+                </div>
+              </li>
+            </ul>
+        </nav>
     </aside>
   </div>
 </template>

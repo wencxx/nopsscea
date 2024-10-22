@@ -96,7 +96,7 @@ const routes =  [
         }
     },
     {
-        path: '/school/pending-athletes',
+        path: `/school/pending-athletes`,
         name: 'pendingAthletes',
         component: () => import('../views/school/PendingAthletesView.vue'),
         meta: {
@@ -143,6 +143,14 @@ const routes =  [
         meta: {
             requiresAuth: true,
             requiresRole: 'coach'
+        }
+    },
+    {
+        path: '/coach/athletes-list',
+        name: 'athletesListCoach',
+        component: () => import('../views/coach/AthletesList.vue'),
+        meta: {
+            requiresAuth: true
         }
     },
     {
