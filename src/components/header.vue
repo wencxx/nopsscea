@@ -23,7 +23,7 @@
                   </div>
               </div>
               <div class="h-[4dvh] aspect-square rounded-full relative">
-                  <img @click="toggleDropdownMenu = !toggleDropdownMenu" v-if="currentUser?.photoURL" :src="currentUser?.photoURL" class="h-full aspect-square rounded-full" />
+                  <img @click="toggleDropdownMenu = !toggleDropdownMenu" v-if="currentUser?.photoURL" :src="currentUser?.photoURL" class="h-full aspect-square rounded-full object-cover" />
                   <div @click="toggleDropdownMenu = !toggleDropdownMenu" v-else class="h-full aspect-square rounded-full bg-gray-300/35 dark:bg-gray-100/10 flex items-center justify-center">
                       <p>{{ currentUser?.displayName.split('')[0] }}</p>
                   </div>

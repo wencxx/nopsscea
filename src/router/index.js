@@ -23,6 +23,11 @@ const routes =  [
         component: () => import('../views/RegisterAthleteView.vue')
     },
     {
+        path: '/register/coach',
+        name: 'registerCoach',
+        component: () => import('../views/RegisterCoachView.vue')
+    },
+    {
         path: '/admin',
         name: 'adminDashboard',
         component: () => import('../views/admin/AdminDashboardView.vue'),
@@ -116,6 +121,31 @@ const routes =  [
         }
     },
     {
+        path: '/school/pending-coaches',
+        name: 'pendingCoaches',
+        component: () => import('../views/school/PendingCoachesView.vue'),
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/school/coaches-list',
+        name: 'coachesList',
+        component: () => import('../views/school/CoachesList.vue'),
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/coach',
+        name: 'coachDashboard',
+        component: () => import('../views/coach/CoachDashboardView.vue'),
+        meta: {
+            requiresAuth: true,
+            requiresRole: 'coach'
+        }
+    },
+    {
         path: '/athlete',
         name: 'athleteDashboard',
         component: () => import('../views/athlete/dashboard.vue'),
@@ -166,6 +196,8 @@ router.beforeEach((to, from, next) => {
         }else if(to.meta.requiresRole === 'admin' && localStorage.getItem('role') === 'admin'){
             next()
         }else if(to.meta.requiresRole === 'athlete' && localStorage.getItem('role') === 'athlete'){
+            next()
+        }else if(to.meta.requiresRole === 'coach' && localStorage.getItem('role') === 'coach'){
             next()
         }else{
             next(from.fullPath)
