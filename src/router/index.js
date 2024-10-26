@@ -146,6 +146,24 @@ const routes =  [
         }
     },
     {
+        path: '/coach/training',
+        name: 'training',
+        component: () => import('../views/coach/Training.vue'),
+        meta: {
+            requiresAuth: true,
+            requiresRole: 'coach'
+        }
+    },
+    {
+        path: '/coach/training/:id',
+        name: 'trainingDetails',
+        component: () => import('../views/coach/TrainingDetails.vue'),
+        meta: {
+            requiresAuth: true,
+            requiresRole: 'coach'
+        }
+    },
+    {
         path: '/coach/athletes-list',
         name: 'athletesListCoach',
         component: () => import('../views/coach/AthletesList.vue'),

@@ -1,6 +1,6 @@
 <template>
     <div class="flex items-center justify-center dark:text-white">
-        <form @submit.prevent="login" class="w-2/5 xl:w-1/5 h-fit rounded p-5 space-y-5">
+        <form @submit.prevent="login" class="w-4/5  md:w-2/5 xl:w-1/5 h-fit rounded p-5 space-y-5">
             <h1 class="text-center text-xl font-semibold font uppercase">Welcome</h1>
             <!-- message indicator -->
             <div v-if="errorMessage" class="bg-red-500 pl-3 py-1 rounded space-x-2 text-white !-mb-3">

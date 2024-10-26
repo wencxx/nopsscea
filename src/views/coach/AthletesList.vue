@@ -225,6 +225,7 @@ const getAthletePersonalDetails = async (athleteId) => {
 }
 
 onMounted(() => {
+    getAthlete()
     watch(() => currentUser.value?.uid, () => {
         getAthlete()
     })
