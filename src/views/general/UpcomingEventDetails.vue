@@ -3,7 +3,7 @@
         <!-- header -->
         <div class="flex gap-x-20">
             <div class="w-full flex gap-x-5">
-                <img v-if="eventDetails.coverPhoto" :src="eventDetails.coverPhoto" alt="event cover photo" class="w-3/4 h-96 rounded">
+                <img v-if="eventDetails.coverPhoto" :src="eventDetails.coverPhoto" alt="event cover photo" class="w-3/4 h-96 rounded-xl">
                 <div v-else class="w-3/4 h-96 rounded bg-gray-100 dark:bg-gray-100/10 animate-pulse"></div>
                 <div class="flex flex-col justify-between w-1/4">
                     <h1 class="text-lg font-semibold">Event: <span class="font-medium">{{ eventDetails.title }}</span></h1>
@@ -34,25 +34,25 @@
                     </div>
                     <div class="flex flex-col items-end">
                         <Icon icon="lucide:school-2" class="text-4xl text-red-700" />
-                        <h3 class="capitalize text-lg">Registered Participants</h3>
+                        <h3 class="capitalize text-end">Registered Participants</h3>
                     </div>
                 </div>
                 <div class="border rounded-xl bg-gray-200 dark:bg-neutral-800 dark:border-gray-100/10 p-5 flex items-center justify-between h-36">
                     <div>
-                        <h1 class="text-4xl font-bold">100</h1>
+                        <h1 class="text-4xl font-bold">{{ athletes.length }}</h1>
                     </div>
                     <div class="flex flex-col items-end">
                         <Icon icon="material-symbols:sports-martial-arts-rounded" class="text-4xl text-blue-900" />
-                        <h3 class="capitalize text-lg">Registered Athletes</h3>
+                        <h3 class="capitalize text-end">Registered Athletes</h3>
                     </div>
                 </div>
                 <div class="border rounded-xl bg-gray-200 dark:bg-neutral-800 dark:border-gray-100/10 p-5 flex items-center justify-between h-36">
                     <div>
-                        <h1 class="text-4xl font-bold">15</h1>
+                        <h1 class="text-4xl font-bold">{{ coaches.length }}</h1>
                     </div>
                     <div class="flex flex-col items-end">
                         <Icon icon="material-symbols:sports-kabaddi-rounded" class="text-4xl text-red-700" />
-                        <h3 class="capitalize text-lg">Registered Coaches</h3>
+                        <h3 class="capitalize text-end">Registered Coaches</h3>
                     </div>
                 </div>
                 <div class="border rounded-xl bg-gray-200 dark:bg-neutral-800 dark:border-gray-100/10 p-5 flex items-center justify-between h-36">
@@ -61,7 +61,7 @@
                     </div>
                     <div class="flex flex-col items-end">
                         <Icon icon="mdi:account-pending-outline" class="text-4xl text-blue-900" />
-                        <h3 class="capitalize text-lg">Waiting Approval</h3>
+                        <h3 class="capitalize text-end">Waiting Approval</h3>
                     </div>
                 </div>
             </div>
@@ -99,7 +99,7 @@
                             </td>
                             <td class="p-2 border dark:border-gray-100/10 text-center">{{ participant.schoolAddress }}</td>
                             <td class="p-2 border dark:border-gray-100/10 text-center">{{ participant.schoolEmail }}</td>
-                            <td class="p-2 border dark:border-gray-100/10 text-center">10</td>
+                            <td class="p-2 border dark:border-gray-100/10 text-center">{{ countSchoolAthletes(participant.schoolId) }}</td>
                         </tr>
                     </tbody>
                     <tbody v-if="loadingDetails || loadingParticipants">
@@ -213,6 +213,8 @@ const getParticipants = async (eventId) => {
 
             if(participantsDetails.isAccepted){
                 getParticipantsPersonalDetails(participantsDetails.schoolId)
+                getSchoolAthletes(participantsDetails.schoolId)
+                getSchoolCoaches(participantsDetails.schoolId)
             }else{
                 pendingParticipants.value.push(participantsDetails.schoolId)
             }
@@ -252,7 +254,66 @@ const getParticipantsPersonalDetails = async (participantsId) => {
     }
 }
 
-// join to event fro school users only
+// athletes reference
+const athleteRef = collection(db, 'athletes')
+
+// get school athletes
+const athletes = ref([])
+
+const getSchoolAthletes = async (schoolId) => {    
+    try {
+        const q = query(
+            athleteRef,
+            where('school', '==', schoolId)
+        )
+        
+        const snapshots = await getDocs(q)
+
+        snapshots.docs.forEach(doc => {
+            athletes.value.push({
+                id: doc.id,
+                ...doc.data()
+            })
+        })
+    } catch (error) {
+        $toast.error(error.message)
+    }
+}
+
+// count school athletes
+const countSchoolAthletes = (schoolId) => {
+    const count = athletes.value.filter(athlete => athlete.school === schoolId)
+
+    return count.length
+}
+
+// athletes reference
+const coachRef = collection(db, 'coaches')
+
+// get school athletes
+const coaches = ref([])
+
+const getSchoolCoaches = async (schoolId) => {    
+    try {
+        const q = query(
+            coachRef,
+            where('school', '==', schoolId)
+        )
+        
+        const snapshots = await getDocs(q)
+
+        snapshots.docs.forEach(doc => {
+            coaches.value.push({
+                id: doc.id,
+                ...doc.data()
+            })
+        })
+    } catch (error) {
+        $toast.error(error.message)
+    }
+}
+
+// join to event for school users only
 const joinEvent = async () => {
     try {
 
