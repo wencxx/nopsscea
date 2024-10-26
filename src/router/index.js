@@ -164,6 +164,14 @@ const routes =  [
         }
     },
     {
+        path: '/coach/pending-athletes',
+        name: 'pendingAthletesCoach',
+        component: () => import('../views/coach/PendingAthletesView.vue'),
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
         path: '/coach/athletes-list',
         name: 'athletesListCoach',
         component: () => import('../views/coach/AthletesList.vue'),

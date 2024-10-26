@@ -18,7 +18,7 @@
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">{{ athlete.firstName }} {{ athlete.middleName }} {{ athlete.lastName }}</td>
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">
                             <div class="flex justify-center gap-x-3">
-                                <input type="checkbox" class="w-5 aspect-square" @change="attendedSession(athlete.athleteId)" :checked="trainingDets.attendance.includes(athlete.athleteId)" />
+                                <input type="checkbox" class="w-5 aspect-square" @change="attendedSession(athlete.athleteId)" :checked="trainingDets.attendance?.includes(athlete.athleteId)" />
                             </div>
                         </td>
                     </tr>
@@ -140,7 +140,7 @@ const trainingRef = doc(db, 'trainings', route.params.id)
 
 // checkAthlete
 const attendedSession = async (athleteId) => {
-    const index = trainingDets.value.attendance.indexOf(athleteId)
+    const index = trainingDets.value.attendance?.indexOf(athleteId)
     try {
         if(index > -1){
             await updateDoc(trainingRef, {

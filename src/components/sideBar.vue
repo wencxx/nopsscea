@@ -155,19 +155,19 @@
                 </router-link>
               </li>
               <li>
-                <router-link :to="{ name: 'training' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'training' }">
+                <router-link :to="{ name: 'training' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded cursor-pointer hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'training' }">
                   <Icon icon="mdi:view-dashboard-outline" class="text-xl"/>
                   <p>Training</p>
                 </router-link>
               </li>
               <li>
-                <div @click="toggleDropdown('athletes')" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'pendingAthletes' || $route.name == 'athletesList' }">
+                <div @click="toggleDropdown('athletes')" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded cursor-pointer hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'pendingAthletesCoach' || $route.name == 'athletesListCoach' }">
                   <Icon icon="ic:round-sports-gymnastics" class="text-xl"/>
                   <p>Athletes</p>
                    <Icon icon="iconamoon:arrow-down-2-duotone" class="text-2xl ml-auto transition-all duration-100" :class="{ 'rotate-180': openDropdown.includes('athletes') }" />
                 </div>
                 <div v-if="openDropdown.includes('athletes')" class="border-l dark:border-gray-100/10 ml-3 mt-1">
-                    <router-link :to="{ name: 'pendingAthletes' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'pendingAthletes' }">
+                    <router-link :to="{ name: 'pendingAthletesCoach' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'pendingAthletesCoach' }">
                       <p>Pending Athletes</p>
                     </router-link>
                     <router-link :to="{ name: 'athletesListCoach' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'athletesListCoach' }">

@@ -1,12 +1,12 @@
 <template>
     <div class="space-y-10">
         <div>
-            <button class="float-end bg-blue-900 text-white px-4 py-1 rounded" @click="addSession = true">Add Session</button>
+            <button class="float-end bg-blue-900 text-white text-sm px-4 py-1 rounded" @click="addSession = true">Add Session</button>
         </div>
         <div v-if="sessions.length" class="grid md:grid-cols-3 xl:grid-cols-5 gap-3">
             <div v-for="(session, index) in sessions" :key="index" class="flex flex-col gap-y-2 border rounded p-2">
                 <h1 class="text-xs mb-1">Training</h1>
-                <div>
+                <div class="flex flex-col gap-y-1">
                     <p class="text-sm flex items-center gap-x-1"><Icon icon="mdi:location" class="text-lg" />{{ session.location }}</p>
                     <p class="text-sm flex items-center gap-x-1"><Icon icon="mdi:event-outline" class="text-lg" /> {{ formatDate(session.date) }}</p>
                 </div>

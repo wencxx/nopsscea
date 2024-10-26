@@ -2,7 +2,7 @@
     <div class="space-y-10">
         <div class="flex items-center gap-x-2 text-xl">
             <Icon icon="material-symbols:sports-martial-arts-rounded" class="text-2xl" />
-            <h1>Athlete Lists</h1>
+            <h1>Pending Athletes</h1>
         </div>
         <!-- table -->
         <div class="bg-gray-100 dark:bg-gray-100/10 p-5 rounded-md">
@@ -17,7 +17,7 @@
                     </tr>
                 </thead>
                 <tbody v-if="athletes.length > 0">
-                    <tr class="text-md" v-for="(athlete, index) in athletes" :key="index">
+                    <tr class="text-md" v-for="(athlete, index) in athletes" :key="athlete.id">
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10">
                             <div class="flex gap-x-3">
                                 <img :src="athlete?.photoUrl" alt="school logo" class="w-20 aspect-square bg-gray-200 dark:bg-gray-100/10 p-2 rounded">
@@ -32,9 +32,9 @@
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">{{ convertBirthday(athlete.birthday) }}</td>
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">
                             <div class="flex justify-center gap-x-3">
-                                <router-link :to="{ name: 'athleteDetails', params: { id: athlete.id } }" class="bg-custom-primary w-fit text-green-500 hover:scale-110">
-                                    <Icon icon="mdi-light:eye" class="text-2xl" />
-                                </router-link>
+                                <button class="bg-custom-primary w-fit text-green-500 hover:scale-110" @click="acceptAthlete(index, athlete.userRoleId)">
+                                    <Icon icon="iconamoon:check-fill" class="text-2xl" />
+                                </button>
                                 <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" @click="removeSchool(school.id)">
                                     <Icon icon="mdi:trash" class="text-xl" />
                                 </button>
@@ -141,6 +141,10 @@ import { useAuthStore, useDataStore } from '../../store'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
 import moment from 'moment'
+import { db } from '@config/firebaseConfig'
+import { doc, updateDoc } from 'firebase/firestore'
+
+const $toast = useToast()
 
 const convertBirthday = (bday) => {
     return moment(bday).format('ll')
@@ -151,10 +155,26 @@ const dataStore = useDataStore()
 
 const currentUser = computed(() => authStore.user)
 
-const athletes = computed(() => dataStore.athletesData)
+const athletes = computed(() => dataStore.pendingAthletesData)
 
 // get athlete
 const loading = ref(false)
+
+const acceptAthlete = async (index, userId) => {
+    const userRoleRef = doc(db, 'userRole', userId)
+    try {
+         await updateDoc(userRoleRef, {
+            isAccepted: true
+        })
+
+        athletes.value.splice(index, 1)
+
+        $toast.success('Athlete accepted successfully')
+    } catch (error) {
+        $toast.error(error.message)
+        console.log(error)
+    }
+}
 
 onMounted(() => {
     if(currentUser.value?.uid){
