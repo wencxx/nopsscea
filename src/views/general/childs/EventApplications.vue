@@ -189,7 +189,7 @@ const generateDoc = async (schoolId) => {
 
 const downloadForm = async (data) => {
     try {
-        const response = await fetch('/PRISAA-ENTRY-FORM-1.docx')
+        const response = await fetch('PRISAA-ENTRY-FORM-1.docx')
 
         if (!response.ok) throw new Error('Failed to fetch DOCX template')
 
