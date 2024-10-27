@@ -119,7 +119,7 @@
 </template>
 
 <script setup>
-import { db } from '@config/firebaseconfig'
+import { db } from '@config/firebaseConfig'
 import { getDoc, doc, addDoc, collection, Timestamp, getDocs, where, query } from 'firebase/firestore'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
