@@ -161,7 +161,7 @@ const downloadForm = async (index) => {
     const formData = forms.value[index]
 
     try {
-        const response = await fetch('/public/docx/PRISAA-FORM-2019-02-Parental-Consent-1.docx')
+        const response = await fetch('/PRISAA-FORM-2019-02-Parental-Consent-1.docx')
 
         if (!response.ok) throw new Error('Failed to fetch DOCX template')
 

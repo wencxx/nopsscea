@@ -1,9 +1,24 @@
 <template>
     <div class="flex flex-col gap-y-10">
-        <button v-if="userRole === 'admin'" class="self-end w-fit px-3 py-1 border border-transparent bg-blue-900 dark:bg-transparent dark:border-gray-100/10 dark:bg-neutral-900 text-white hover:bg-blue-950 hover:dark:bg-neutral-800 rounded" @click="isAddEvent = true">Add event</button>
-
-        <!-- skeleton -->
-        <eventsSkeleton v-if="fetchingEvents" />
+        <div v-if="fetchingEvents" class="w-full grid lg:grid-cols-2 xl:grid-cols-3 gap-5">
+            <div v-for="i in 3" :key="i" class="border h-fit rounded shadow dark:border-gray-100/10 overflow-hidden">
+                <div class="w-full aspect-video bg-gray-300 animate-pulse">
+                    
+                </div>
+                <div class="p-4 space-y-1">
+                    <div class="space-y-1">
+                        <div class="h-6 w-28 rounded bg-gray-300 animate-pulse"></div>
+                        <div class="h-3 w-20 rounded bg-gray-300 animate-pulse"></div>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="h-4 w-full bg-gray-300 rounded animate-pulse"></div>
+                        <div class="h-4 w-full bg-gray-300 rounded animate-pulse"></div>
+                        <div class="h-4 w-3/4 bg-gray-300 rounded animate-pulse"></div>
+                    </div>
+                    <div class="w-1/4 bg-gray-300 animate-pulse h-8 rounded !mt-2"></div>
+                </div>
+            </div>
+        </div>
 
         <div v-else>
             <div v-if="events.length > 0" class="w-full grid lg:grid-cols-2 xl:grid-cols-3 gap-5">
@@ -21,39 +36,28 @@
                         <p class="capitalize text-sm text-white-secondary-text dark:text-dark-secondary-text line-clamp-3">{{ event.description }}</p>
                     </div>
                     <div class="p-4 !pt-0">
-                        <router-link :to="{ name: 'upcomingEventDetails', params: { id: event.id } }" class="border border-blue-900 dark:border-gray-100/10 bg-blue-100/45 dark:bg-transparent text-blue-900 dark:text-dark-secondary-text hover:shadow-md rounded py-1 px-3">Details</router-link>
+                        <router-link :to="{ name: 'eventDashboard', params: { id: event.id } }" class="border border-blue-900 dark:border-gray-100/10 bg-blue-100/45 dark:bg-transparent text-blue-900 dark:text-dark-secondary-text hover:shadow-md rounded py-1 px-3">Details</router-link>
                     </div>
                 </div>
             </div>
             <div v-else>
-                <p class="text-center">No upcoming events to show</p>
+                <p class="text-center">No finished events to show</p>
             </div>
         </div>
-        <addEvent @click.self="isAddEvent = false" v-if="isAddEvent" @closeModal="isAddEvent = false" @addedEventDetails="getAddedEvent" />
     </div>
 </template>
 
 <script setup>
-import addEvent from '@components/addEvent.vue';
-import eventsSkeleton from '@components/skeletons/eventsSkeleton.vue';
 import { onMounted, ref } from 'vue'
 import { db } from '@config/firebaseConfig'
 import { collection, where, getDocs, query, and } from 'firebase/firestore'
 
-const isAddEvent = ref(false)
-
-const userRole = localStorage.getItem('role')
-
 const events = ref([])
-
-// get added event from child component
-const getAddedEvent = (data) => {
-    events.value.unshift(data)
-}
 
 // get all events
 const fetchingEvents = ref(false)
-const eventsRef = collection(db, 'events')
+
+const  eventsRef = collection(db, 'events')
 
 const getAllEvents = async () => {
     const dateNow = new Date()
@@ -61,7 +65,10 @@ const getAllEvents = async () => {
 
     const q = query(
         eventsRef,
-        where("startDate", ">", dateStringNow),
+        and(
+            where("startDate", "<=", dateStringNow),
+            where("endDate", ">=", dateStringNow)
+        )
     )
 
     try {
@@ -74,6 +81,7 @@ const getAllEvents = async () => {
                 ...doc.data()
             })
         })
+
         fetchingEvents.value = false
     } catch (error) {
         console.log(error)

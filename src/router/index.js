@@ -79,6 +79,33 @@ const routes =  [
         ]
     },
     {
+        path: '/ongoing-events',
+        name: 'ongoingEvents',
+        component: () => import('../views/general/OngoingEvents.vue'),
+        meta: {
+            requiresAuth: true
+        },
+    },
+    {
+        path: '/event-details/:id',
+        component: () => import('../views/general/OngoingEventDetails.vue'),
+        children: [
+            {
+                path: '',
+                name: 'eventDashboard',
+                component: () => import('../views/general/childs/EventDashboard.vue')
+            },
+            {
+                path: 'schedules',
+                name: 'eventSchedules',
+                component: () => import('../views/general/childs/EventSchedules.vue')
+            },
+        ],
+        meta: {
+            requiresAuth: true
+        },
+    },
+    {
         path: '/finished-events',
         name: 'FinishedEvents',
         component: () => import('../views/general/FinishedEvents.vue'),

@@ -14,7 +14,7 @@
                     <div v-if="role == 'school' && eventDetails.id" class="w-full flex flex-col">
                         <button v-if="isWaitingApproval" class="border border-blue-900 py-1 rounded text-blue-900 dark:border-red-900 dark:text-red-900">Pending approval</button>
                         <button v-else-if="isParticipant" class="border border-blue-900 py-1 rounded text-blue-900 dark:border-red-900 dark:text-red-900">Joined</button>
-                        <button v-else-if="!isParticipant && !isWaitingApproval" class="bg-blue-900 hover:bg-blue-950 py-1 rounded text-white dark:border border-gray-100/25" @click="joinEvent()" :class="{ '!bg-gray-200 animate-pulse text-gray-200': !eventDetails.id }">Join event</button>
+                        <button v-else-if="!isParticipant && !isWaitingApproval" class="bg-blue-900 hover:bg-blue-950 py-1 rounded text-white dark:border border-gray-100/25" @click="showEntryForm = true" :class="{ '!bg-gray-200 animate-pulse text-gray-200': !eventDetails.id }">Join event</button>
                     </div>
                     <div v-else-if="role == 'admin' && eventDetails.id" class="w-full flex flex-col">
                         <button class="bg-red-800 text-white py-1 rounded">Delete event</button>
@@ -133,10 +133,14 @@
                 </table>
             </div>
         </div>
+
+        <!-- eventEntry Form -->
+        <eventEntryForm  v-if="showEntryForm" @joinedEvent="joinEvent()" />
     </div>
 </template>
 
 <script setup>
+import eventEntryForm from '@components/forms/eventEntryForm.vue'
 import { db } from '@config/firebaseconfig'
 import { getDoc, doc, addDoc, collection, Timestamp, getDocs, where, query } from 'firebase/firestore'
 import { useToast } from 'vue-toast-notification'
@@ -313,10 +317,12 @@ const getSchoolCoaches = async (schoolId) => {
     }
 }
 
+const showEntryForm = ref(false)
+
 // join to event for school users only
 const joinEvent = async () => {
+    showEntryForm.value = false
     try {
-
         const snapshot = await addDoc(participantsRef, {
             eventId: eventDetails.value?.id,
             schoolId: currentUser.value?.uid,

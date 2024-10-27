@@ -32,10 +32,10 @@
                     <td class="p-2 border dark:border-gray-100/10 text-center">Wency Baterna</td>
                     <td class="p-2 border dark:border-gray-100/10">
                         <div class="flex justify-center gap-x-3">
-                            <button class="bg-custom-primary w-fit text-green-500 text-xl hover:shadow">
-                                <Icon icon="mdi:file-pdf-box" class="text-2xl" @click="generateDocx(school.schoolId)" />
+                            <button class="bg-custom-primary w-fit text-gray-500 text-xl">
+                                <Icon icon="bxs:file-doc" class="text-2xl" @click="generateDocx(school.schoolId)" />
                             </button>
-                            <button class="bg-custom-secondary text-red-500 w-fit text-xl hover:shadow" @click="undoSchool(school.schoolId, index)">
+                            <button class="bg-custom-secondary text-red-500 w-fit text-xl" @click="undoSchool(school.schoolId, index)">
                                 <Icon icon="mdi:trash" class="text-2xl" />
                             </button>
                         </div>
@@ -247,7 +247,7 @@ const loadImageAsArrayBuffer = async (imageUrl) => {
 const generateDocx = async (schoolId) => {
   const schoolDetails = schools.value.find(school => school.schoolId == schoolId)
   try {
-    const response = await fetch('/public/docx/PRISAA-FORM-01-APPLICATION-FOR-MEMBERSHIP-FORM-1-1.docx'); 
+    const response = await fetch('/PRISAA-FORM-01-APPLICATION-FOR-MEMBERSHIP-FORM-1-1.docx'); 
     if (!response.ok) throw new Error('Failed to fetch DOCX template');
     
     const docxArrayBuffer = await response.arrayBuffer();
@@ -271,7 +271,7 @@ const generateDocx = async (schoolId) => {
     });
 
     doc.setData({
-      school: schoolDetails.schoolAddress,
+      school: schoolDetails.schoolName,
       address: schoolDetails.schoolAddress,
     });
 

@@ -24,7 +24,8 @@
                 <td class="p-2 border dark:border-gray-100/10 text-center">{{ participant.schoolEmail }}</td>
                 <td class="p-2 border dark:border-gray-100/10 text-center">10</td>
                 <td class="p-2 border dark:border-gray-100/10 text-center">
-                    <div class="flex justify-center">
+                    <div class="flex justify-center gap-x-2">
+                        <Icon icon="bxs:file-doc" class="cursor-pointer text-gray-500 text-2xl" @click="generateDoc(participant.schoolId)"/>
                         <Icon icon="tabler:check" class="cursor-pointer text-green-500 text-2xl" @click="acceptApplicant(participant.participantsId, participant.schoolId, index)"/>
                     </div>
                 </td>
@@ -66,11 +67,15 @@
 
 <script setup>
 import { db } from '@config/firebaseconfig'
-import { getDoc, doc, addDoc, collection, getDocs, where, query, updateDoc, Timestamp } from 'firebase/firestore'
+import { getDoc, doc, addDoc, collection, getDocs, where, query, updateDoc, Timestamp, and, limit } from 'firebase/firestore'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
 import { onMounted, ref, defineEmits } from 'vue'
 import { useRoute } from 'vue-router'
+import PizZip from 'pizzip'
+import Docxtemplater from 'docxtemplater'
+import { saveAs } from 'file-saver'
+import ImageModule from 'docxtemplater-image-module-free'
 
 const route = useRoute()
 const emit = defineEmits(['acceptedApplicant'])
@@ -158,6 +163,146 @@ const acceptApplicant = async (participantsId, schoolId, index) => {
         $toast.success('Accepted participants successfully')
     } catch (error) {
         $toast.error(error.message)
+    }
+}
+// generate docx
+const formRef = collection(db, 'forms')
+
+const generateDoc = async (schoolId) => {
+    try {
+        const q = query(
+            formRef,
+            and(
+                where('eventId', '==', eventId),
+                where('schoolId', '==', schoolId)
+            ),
+            limit(1)
+        )
+
+        const snapshot = await getDocs(q)
+
+        downloadForm(snapshot.docs[0].data())
+    } catch (error) {
+        
+    }
+}
+
+const downloadForm = async (data) => {
+    try {
+        const response = await fetch('/PRISAA-ENTRY-FORM-1.docx')
+
+        if (!response.ok) throw new Error('Failed to fetch DOCX template')
+
+        const docxArrayBuffer = await response.arrayBuffer()
+
+
+        const zip = new PizZip(docxArrayBuffer)
+
+        const doc = new Docxtemplater(zip)
+
+        doc.setData({
+            b5v5m: data.b5x5m,
+            b5v5w: data.b5x5w,
+            b5v5c: data.b5x5c,
+            b5v5b: data.b5x5b,
+            b5v5g: data.b5x5g,
+            yb5v5c: data.b5x5yc,
+            b3v3m: data.b3x3m,
+            b3v3w: data.b3x3w,
+            b3v3c: data.b3x3c,
+            b3v3b: data.b3x3b,
+            b3v3g: data.b3x3g,
+            yb3v3c: data.b3x3yc,
+            bvm: data.bvm,
+            bvw: data.bvw,
+            bvc: data.bvc,
+            bvb: data.bvb,
+            bvg: data.bvg,
+            ybvc: data.ybvc,
+            fm: data.fm,
+            fw: data.fw,
+            fc: data.fc,
+            fb: data.fb,
+            fg: data.fg,
+            yfc: data.yfc,
+            fm: data.fm,
+            fw: data.fw,
+            fc: data.fc,
+            fb: data.fb,
+            fg: data.fg,
+            yfc: data.yfc,
+            stm: data.stm,
+            stw: data.stw,
+            stc: data.stc,
+            stb: data.stb,
+            stg: data.stg,
+            ystc: data.ystc,
+            vm: data.vm,
+            vw: data.vw,
+            vc: data.vc,
+            vb: data.vb,
+            vg: data.vg,
+            yvc: data.yvc,
+            am: data.am,
+            aw: data.aw,
+            ac: data.ac,
+            ab: data.ab,
+            ag: data.ag,
+            yac: data.yac,
+            bm: data.bm,
+            bw: data.bw,
+            bc: data.bc,
+            bb: data.bb,
+            bg: data.bg,
+            ybc: data.ybc,
+            cm: data.cm,
+            cw: data.cw,
+            cc: data.cc,
+            cb: data.cb,
+            cg: data.cg,
+            ycc: data.ycc,
+            dm: data.dm,
+            dw: data.dw,
+            dc: data.dc,
+            db: data.db,
+            dg: data.dg,
+            ydc: data.ydc,
+            km: data.km,
+            kw: data.kw,
+            kc: data.kc,
+            kb: data.kb,
+            kg: data.kg,
+            ykc: data.ykc,
+            sm: data.sm,
+            sw: data.sw,
+            sc: data.sc,
+            sb: data.sb,
+            sg: data.sg,
+            ysc: data.ysc,
+            tnm: data.tnm,
+            tnw: data.tnw,
+            tnc: data.tnc,
+            tnb: data.tnb,
+            tng: data.tng,
+            ytnc: data.ytnc,
+            tm: data.tm,
+            tw: data.tw,
+            tc: data.tc,
+            tb: data.tb,
+            tg: data.tg,
+            ytc: data.ytc,
+        })
+
+        doc.render()
+
+        const output = doc.getZip().generate({
+            type: 'blob',
+            mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        })
+
+        saveAs(output, 'entry-form.docx')
+    } catch (error) {
+        console.error('Error generating document:', error)
     }
 }
 

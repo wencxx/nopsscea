@@ -18,7 +18,7 @@
                     <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Action</th>
                 </tr>
             </thead>
-            <tbody v-if="schools.length > 0">
+            <tbody v-if="!loading && schools.length">
                 <tr class="text-md" v-for="(school, index) in schools" :key="index">
                     <td class="p-2 border dark:border-gray-100/10">
                         <div class="flex gap-x-3">
@@ -34,20 +34,20 @@
                     <td class="p-2 border dark:border-gray-100/10 text-center">Wency Baterna</td>
                     <td class="p-2 border dark:border-gray-100/10">
                         <div class="flex justify-center gap-x-3">
-                            <button class="bg-custom-primary w-fit text-orange-500 text-xl hover:shadow">
-                                <Icon icon="mdi:file-pdf-box" class="text-2xl" />
+                            <button class="bg-custom-primary w-fit text-green-500 text-xl">
+                                <Icon icon="bxs:file-doc" class="text-2xl" @click="generateDocx(school.schoolId)" />
                             </button>
-                            <button class="bg-custom-primary w-fit text-green-500 text-xl hover:shadow" @click="acceptSchool(school.schoolId, index)">
+                            <button class="bg-custom-primary w-fit text-green-500 text-xl" @click="acceptSchool(school.schoolId, index)">
                                 <Icon icon="mdi:check" class="text-2xl" />
                             </button>
-                            <button class="bg-custom-secondary text-red-500 w-fit text-xl hover:shadow">
+                            <button class="bg-custom-secondary text-red-500 w-fit text-xl">
                                 <Icon icon="mdi:trash" class="text-2xl" />
                             </button>
                         </div>
                     </td>
                 </tr>
             </tbody>
-            <tbody v-if="!loading && schools.length === 0">
+            <tbody v-if="!loading && !schools.length">
                 <tr class="text-md">
                     <td class="p-2 border dark:border-gray-100/10 text-center font-medium" colspan="5">No applications</td>
                 </tr>
@@ -146,6 +146,10 @@ import { computed, onMounted, ref } from 'vue'
 import { useAuthStore } from '@store'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css';
+import PizZip from 'pizzip';
+import Docxtemplater from 'docxtemplater';
+import { saveAs } from 'file-saver';
+import ImageModule from 'docxtemplater-image-module-free';
 
 const $toast = useToast();
 
@@ -169,7 +173,8 @@ const getIsAccepted = async () => {
         const snapshots = await getDocs(q)
 
         if(snapshots.empty){
-            return console.log('no applications')
+            loading.value = false
+            return
         }
 
         const promises = snapshots.docs.map(doc => {
@@ -252,6 +257,59 @@ const acceptSchool = async (schoolId, index) => {
         $toast.error(error.message)
     }
 }
+
+// generate docx
+const loadImageAsArrayBuffer = async (imageUrl) => {
+  const response = await fetch(imageUrl);
+  if (!response.ok) throw new Error('Network response was not ok');
+  return await response.arrayBuffer(); 
+};
+
+const generateDocx = async (schoolId) => {
+  const schoolDetails = schools.value.find(school => school.schoolId == schoolId)
+  try {
+    const response = await fetch('/PRISAA-FORM-01-APPLICATION-FOR-MEMBERSHIP-FORM-1-1.docx'); 
+    if (!response.ok) throw new Error('Failed to fetch DOCX template');
+    
+    const docxArrayBuffer = await response.arrayBuffer();
+
+    const imageArrayBuffer = await loadImageAsArrayBuffer(schoolDetails.schoolLogo); 
+
+    const zip = new PizZip(docxArrayBuffer);
+
+    const imageModule = new ImageModule({
+      centered: false,
+      getImage: function (tagValue) {
+        return imageArrayBuffer;
+      },
+      getSize: function (img, tagValue) {
+        return [200, 150];
+      },
+    });
+
+    const doc = new Docxtemplater(zip, {
+      modules: [imageModule],
+    });
+
+    doc.setData({
+      school: schoolDetails.schoolName,
+      address: schoolDetails.schoolAddress,
+    });
+
+    doc.render();
+
+    const output = doc.getZip().generate({
+      type: 'blob',
+      mimeType:
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    });
+
+    saveAs(output, 'PRISAA-FORM-01-APPLICATION-FOR-MEMBERSHIP-FORM-1-1.docx');
+  } catch (error) {
+    console.error('Error generating document:', error);
+  }
+};
+
 
 onMounted(() => {
     getIsAccepted()
