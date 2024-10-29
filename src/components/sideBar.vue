@@ -34,7 +34,7 @@
               <li>
                 <div @click="toggleDropdown('coaches')" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'pendingCoaches' || $route.name == 'coachesList' }">
                   <Icon icon="material-symbols:sports-kabaddi-rounded" class="text-xl"/>
-                  <p>Caoches</p>
+                  <p>Coaches</p>
                    <Icon icon="iconamoon:arrow-down-2-duotone" class="text-2xl ml-auto transition-all duration-100" :class="{ 'rotate-180': openDropdown.includes('coaches') }" />
                 </div>
                 <div v-if="openDropdown.includes('coaches')" class="border-l dark:border-gray-100/10 ml-3 mt-1">
@@ -135,13 +135,16 @@
                 </div>
               </li>
               <li>
-                <div @click="toggleDropdown('events')" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded cursor-pointer hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'upcomingEvents' || $route.name == 'FinishedEvents' || $route.name == 'upcomingEventDetails' }">
+                <div @click="toggleDropdown('events')" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded cursor-pointer hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'upcomingEvents' || $route.name == 'ongoingEvents' || $route.name == 'FinishedEvents' || $route.name == 'upcomingEventDetails' || $route.name == 'eventApplicants' || $route.name == 'eventDashboard' }">
                   <Icon icon="mdi:event-outline" class="text-xl"/>
                   <p>Events</p>
                   <Icon icon="iconamoon:arrow-down-2-duotone" class="text-2xl ml-auto transition-all duration-100" :class="{ 'rotate-180': openDropdown.includes('events') }" />
                 </div>
                 <div v-if="openDropdown.includes('events')" class="border-l dark:border-gray-100/10 ml-3 mt-1">
-                    <router-link :to="{ name: 'upcomingEvents' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'upcomingEvents' || $route.name == 'upcomingEventDetails' }">
+                    <router-link :to="{ name: 'ongoingEvents' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'ongoingEvents' || $route.name == 'eventDashboard'}">
+                      <p>Ongoing Events</p>
+                    </router-link>
+                    <router-link :to="{ name: 'upcomingEvents' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'upcomingEvents' || $route.name == 'upcomingEventDetails' || $route.name == 'eventApplicants' }">
                       <p>Upcoming Events</p>
                     </router-link>
                     <router-link :to="{ name: 'FinishedEvents' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'FinishedEvents' }">
@@ -157,7 +160,7 @@
               <li>
                 <router-link :to="{ name: 'coachDashboard' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'coachDashboard' }">
                   <Icon icon="mdi:view-dashboard-outline" class="text-xl"/>
-                  <p>Dashboard</p>
+                  <p>Newsfeed</p>
                 </router-link>
               </li>
               <li>
@@ -182,13 +185,16 @@
                 </div>
               </li>
               <li>
-                <div @click="toggleDropdown('events')" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded cursor-pointer hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'upcomingEvents' || $route.name == 'FinishedEvents' || $route.name == 'upcomingEventDetails' }">
+                <div @click="toggleDropdown('events')" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded cursor-pointer hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'upcomingEvents' || $route.name == 'ongoingEvents' || $route.name == 'FinishedEvents' || $route.name == 'upcomingEventDetails' || $route.name == 'eventApplicants' || $route.name == 'eventDashboard' }">
                   <Icon icon="mdi:event-outline" class="text-xl"/>
                   <p>Events</p>
                   <Icon icon="iconamoon:arrow-down-2-duotone" class="text-2xl ml-auto transition-all duration-100" :class="{ 'rotate-180': openDropdown.includes('events') }" />
                 </div>
                 <div v-if="openDropdown.includes('events')" class="border-l dark:border-gray-100/10 ml-3 mt-1">
-                    <router-link :to="{ name: 'upcomingEvents' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'upcomingEvents' || $route.name == 'upcomingEventDetails' }">
+                    <router-link :to="{ name: 'ongoingEvents' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'ongoingEvents' || $route.name == 'eventDashboard'}">
+                      <p>Ongoing Events</p>
+                    </router-link>
+                    <router-link :to="{ name: 'upcomingEvents' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'upcomingEvents' || $route.name == 'upcomingEventDetails' || $route.name == 'eventApplicants' }">
                       <p>Upcoming Events</p>
                     </router-link>
                     <router-link :to="{ name: 'FinishedEvents' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'FinishedEvents' }">

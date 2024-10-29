@@ -34,7 +34,9 @@
                             </div>
                         </div>
                         <p class="capitalize text-sm text-white-secondary-text dark:text-dark-secondary-text line-clamp-3">{{ event.description }}</p>
-                        <button class="border border-blue-900 dark:border-gray-100/10 bg-blue-100/45 dark:bg-transparent text-blue-900 dark:text-dark-secondary-text hover:shadow-md w-1/4 py-1 rounded !mt-2">View</button>
+                    </div>
+                    <div class="p-4 !pt-0">
+                        <router-link :to="{ name: 'eventDashboard', params: { id: event.id }, query: { status: 'finished' } }" class="border border-blue-900 dark:border-gray-100/10 bg-blue-100/45 dark:bg-transparent text-blue-900 dark:text-dark-secondary-text hover:shadow-md rounded py-1 px-3">Details</router-link>
                     </div>
                 </div>
             </div>
@@ -48,7 +50,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { db } from '@config/firebaseConfig'
-import { collection, where, getDocs, query } from 'firebase/firestore'
+import { collection, where, getDocs, query, and } from 'firebase/firestore'
 
 const events = ref([])
 

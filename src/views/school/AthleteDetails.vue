@@ -40,9 +40,9 @@
                             <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">{{ form.sy }}</td>
                             <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">
                                 <div class="flex justify-center gap-x-2">
-                                    <button @click="downloadForm(index)">
+                                    <a :href="form.storagePath">
                                         <Icon icon="mdi:eye" class="text-2xl text-green-500 hover:scale-110" />
-                                    </button>
+                                    </a>
                                     <button @click="deleteForm(form.id, index)">
                                         <Icon icon="mdi:trash" class="text-2xl text-red-500 hover:scale-110" />
                                     </button>
@@ -71,10 +71,6 @@ import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
 import { onMounted, ref } from 'vue'
 import moment from 'moment'
-import PizZip from 'pizzip'
-import Docxtemplater from 'docxtemplater'
-import { saveAs } from 'file-saver'
-import ImageModule from 'docxtemplater-image-module-free'
 
 const route = useRoute()
 const $toast = useToast()
@@ -147,83 +143,6 @@ const getForms = async () => {
         
     } catch (error) {
         $toast.error('Error fetching forms')
-    }
-}
-
-// generate form docx
-const loadImageAsArrayBuffer = async (imageUrl) => {
-  const response = await fetch(imageUrl)
-  if (!response.ok) throw new Error('Network response was not ok')
-  return await response.arrayBuffer()
-}
-
-const downloadForm = async (index) => {
-    const formData = forms.value[index]
-
-    try {
-        const response = await fetch('PRISAA-FORM-2019-02-Parental-Consent-1.docx')
-
-        if (!response.ok) throw new Error('Failed to fetch DOCX template')
-
-        const docxArrayBuffer = await response.arrayBuffer()
-
-        const imageArrayBuffer = await loadImageAsArrayBuffer(formData.picture2x2)
-
-        const zip = new PizZip(docxArrayBuffer)
-
-        const imageModule = new ImageModule({
-            centered: false,
-            getImage: function () {
-                return imageArrayBuffer
-            },
-            getSize: function () {
-                return [200, 200]
-            },
-        })
-
-        const doc = new Docxtemplater(zip, {
-            modules: [imageModule],
-        })
-
-        doc.setData({
-            image: formData.picture2x2,
-            name: formData.name,
-            schoolname: formData.schoolName,
-            cluster: 'NOPSSCEA',
-            provDate: moment(formData.provDate).format('LL'),
-            provVenue: formData.provVenue,
-            regDate: moment(formData.regDate).format('LL'),
-            regVenue: formData.regVenue,
-            natDate: moment(formData.natDate).format('LL'),
-            natVenue: formData.natVenue,
-            fathersName: formData.fathersName,
-            mothersName: formData.mothersName,
-            guardiansName: formData.guardianName,
-        })
-
-        doc.render()
-
-        const output = doc.getZip().generate({
-            type: 'blob',
-            mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        })
-
-        saveAs(output, 'parents-consent.docx')
-    } catch (error) {
-        console.error('Error generating document:', error)
-    }
-}
-
-// delete form
-const deleteForm = async (formId, index) => {
-    const docRef = doc(db, 'forms', formId)
-    try {
-        await deleteDoc(docRef)
-        forms.value.splice(index, 1)
-
-        $toast.success('Form deleted successfully')
-    } catch (error) {
-        $toast.error('Failed to deleted docs')
     }
 }
 

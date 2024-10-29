@@ -146,7 +146,7 @@ const isParticipant = computed(() => participants.value.some(participant => part
 
 const $toast = useToast()
 
-// gete event details
+// get event details
 const eventDetails = ref({})
 const loadingDetails = ref(false)
 

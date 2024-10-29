@@ -4,22 +4,25 @@
             <div class="top-1 right-1 sticky col-span-2" @click="closeModal">
                 <Icon icon="mdi:close" class="text-xl cursor-pointer ml-auto" />
             </div>
-            <h1 class="text-center col-span-2 mb-2 text-lg">Parents Consent</h1>
+            <h1 class="text-center col-span-2 mb-2 text-lg">Medical Certificate</h1>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Name</label>
                 <input type="text" class="border rounded h-8 pl-2" v-model="formData.name">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
-                <label>School Name</label>
-                <input type="text" class="border rounded h-8 pl-2" v-model="formData.schoolName">
+                <label>Age</label>
+                <input type="text" class="border rounded h-8 pl-2" v-model="formData.age">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>2x2 Picture</label>
                 <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload('2x2Picture')">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
-                <label>Sports Event</label>
-                <input type="text" class="border rounded h-8 pl-2" v-model="formData.sport">
+                <label>Remarks</label>
+                <select class="border rounded h-8 pl-2" v-model="formData.remarks">
+                    <option value="fit">Physically fit</option>
+                    <option value="unfit">Unfit</option>
+                </select>
             </div>
             <h1 class="col-span-2">Provincial/Cluster Meet</h1>
             <div class="flex flex-col h-fit gap-y-1">
@@ -47,30 +50,6 @@
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Venue</label>
                 <input type="text" class="border rounded h-8 pl-2" v-model="formData.natVenue">
-            </div>
-            <div class="flex flex-col h-fit gap-y-1">
-                <label>Fathers Name</label>
-                <input type="text" class="border rounded h-8 pl-2" v-model="formData.fathersName">
-            </div>
-            <div class="flex flex-col h-fit gap-y-1">
-                <label>E-Signature</label>
-                <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload('fEsign')">
-            </div>
-            <div class="flex flex-col h-fit gap-y-1">
-                <label>Mothers Name</label>
-                <input type="text" class="border rounded h-8 pl-2" v-model="formData.mothersName">
-            </div>
-            <div class="flex flex-col h-fit gap-y-1">
-                <label>E-Signature</label>
-                <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload('mEsign')">
-            </div>
-            <div class="flex flex-col h-fit gap-y-1">
-                <label>Guardians Name</label>
-                <input type="text" class="border rounded h-8 pl-2" v-model="formData.guardianName">
-            </div>
-            <div class="flex flex-col h-fit gap-y-1">
-                <label>E-Signature</label>
-                <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload('gEsign')">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Semester</label>
@@ -193,17 +172,14 @@ const getSchool = async (schoolId) => {
 // data to submit
 const formData = ref({
     name: '',
-    schoolName: '',
-    sport: '',
+    age: '',
+    remarks: '',
     provDate: '',
     provVenue: '',
     regDate: '',
     regVenue: '',
     natDate: '',
     natVenue: '',
-    fathersName: '',
-    mothersName: '',
-    guardianName: '',
     semester: '',
     sy: '',
     formName: 'Parents Consent',
@@ -217,12 +193,6 @@ const gESign = ref(null)
 const handleImageUpload = (imageType) => {
     if(imageType === '2x2Picture'){
         picture2x2.value = event.target.files[0] 
-    }else if(imageType === 'fEsign'){
-        fESign.value = event.target.files[0] 
-    }else if(imageType === 'mEsign'){
-        mESign.value = event.target.files[0] 
-    }else if(imageType === 'gEsign'){
-        gESign.value = event.target.files[0] 
     }
 }
 
@@ -240,7 +210,7 @@ const loadImageAsArrayBuffer = async (imageUrl) => {
 
 const submitForm = async (index) => {
     try {
-        const response = await fetch('/PRISAA-FORM-2019-02-Parental-Consent-1.docx')
+        const response = await fetch('/PRISAA-FORM-2016-03-MEDICAL-CERTIFICATE-3.docx')
 
         if (!response.ok) throw new Error('Failed to fetch DOCX template')
 
@@ -267,18 +237,15 @@ const submitForm = async (index) => {
         doc.setData({
             // image: picture2x2.value,
             name: formData.value.name,
-            schoolname: formData.value.schoolName,
-            cluster: 'NOPSSCEA',
+            age: formData.value.age,
+            fit: formData.value.remarks === 'fit' ? '✔' : '',
+            un: formData.value.remarks === 'unfit' ? '✔' : '',
             provDate: moment(formData.value.provDate).format('LL'),
             provVenue: formData.value.provVenue,
             regDate: moment(formData.value.regDate).format('LL'),
             regVenue: formData.value.regVenue,
             natDate: moment(formData.value.natDate).format('LL'),
             natVenue: formData.value.natVenue,
-            fathersName: formData.value.fathersName,
-            mothersName: formData.value.mothersName,
-            guardiansName: formData.value.guardianName,
-            sports: formData.value.sport
         })
 
         doc.render()
@@ -290,17 +257,17 @@ const submitForm = async (index) => {
             mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         })
 
-        const storagePath = `forms/${formData.value.name}-parents-consent.docx`;
+        const storagePath = `forms/${formData.value.name}-medical-certificate.docx`
         const storageReference = storageRef(storage, storagePath);
         
         await uploadBytes(storageReference, output);
 
-        const downloadURL = await getDownloadURL(storageReference);
+        const downloadURL = await getDownloadURL(storageReference)
 
         await addDoc(formRef, {
             sy: formData.value.sy,
             semester: formData.value.semester,
-            formName: 'Parents Consent',
+            formName: 'Medical Certificate',
             storagePath: downloadURL,
             userId: currentUser.value?.uid,
             createdAt: new Date(),

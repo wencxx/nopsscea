@@ -1,6 +1,6 @@
 <template>
     <div class="space-y-10">
-        <div v-if="role === 'admin'" class="flex justify-end">
+        <div v-if="role === 'admin' && !$route.query.status" class="flex justify-end">
             <button class="border border-blue-900 px-3 py-1 text-blue-900 rounded" @click="addScheduleModal = true">Add Schedule</button>
         </div>
 

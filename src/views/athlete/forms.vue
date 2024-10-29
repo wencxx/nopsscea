@@ -14,10 +14,18 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">Parents-consent</td>
+                        <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">Parents Consent</td>
                         <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">
                             <div>
                                 <button class="bg-green-500 text-white px-4 py-1 rounded" @click="showParentConsentModal = true">Fill out</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">Medical Certificate</td>
+                        <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">
+                            <div>
+                                <button class="bg-green-500 text-white px-4 py-1 rounded" @click="showMedicalConsentModal = true">Fill out</button>
                             </div>
                         </td>
                     </tr>
@@ -26,12 +34,15 @@
         </div>
 
         <parentsConsent v-if="showParentConsentModal" @click.self="showParentConsentModal = false" @closeModal="showParentConsentModal = false" />
+        <medicalCertificate v-if="showMedicalConsentModal" @click.self="showMedicalConsentModal = false" @closeModal="showMedicalConsentModal = false" />
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import parentsConsent from '@components/forms/parentsConsent.vue'
+import medicalCertificate from '@components/forms/medicalCertificate.vue'
 
 const showParentConsentModal = ref(false)
+const showMedicalConsentModal = ref(false)
 </script>
