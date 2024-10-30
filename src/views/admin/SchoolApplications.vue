@@ -268,7 +268,7 @@ const loadImageAsArrayBuffer = async (imageUrl) => {
 const generateDocx = async (schoolId) => {
   const schoolDetails = schools.value.find(school => school.schoolId == schoolId)
   try {
-    const response = await fetch('PRISAA-FORM-01-APPLICATION-FOR-MEMBERSHIP-FORM-1-1.docx'); 
+    const response = await fetch('/PRISAA-FORM-01-APPLICATION-FOR-MEMBERSHIP-FORM-1-1.docx'); 
     if (!response.ok) throw new Error('Failed to fetch DOCX template');
     
     const docxArrayBuffer = await response.arrayBuffer();
