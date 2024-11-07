@@ -108,15 +108,21 @@
                     </router-link>
                 </div>
               </li>
+              <li>
+                <router-link :to="{ name: 'announcements' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'announcements' }">
+                  <Icon icon="mdi:announcement-outline" class="text-xl"/>
+                  <p>Announcemens</p>
+                </router-link>
+              </li>
             </ul>
         </nav>
         <!-- nav for athlete -->
         <nav class="p-5" v-if="role === 'athlete'">
           <ul class="space-y-2">
               <li>
-                <router-link :to="{ name: 'athleteDashboard' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'athleteDashboard' }">
+                <router-link :to="{ name: 'athleteNewsfeed' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'athleteNewsfeed' }">
                   <Icon icon="mdi:view-dashboard-outline" class="text-xl"/>
-                  <p>Dashboard</p>
+                  <p>Newsfeed</p>
                 </router-link>
               </li>
               <li>

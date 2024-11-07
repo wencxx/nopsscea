@@ -119,6 +119,14 @@ const routes =  [
         }
     },
     {
+        path: '/announcements',
+        name: 'announcements',
+        component: () => import('../views/admin/Announcements.vue'),
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
         path: '/school',
         name: 'schoolDashboard',
         component: () => import('../views/school/SchoolDashboardView.vue'),
@@ -212,9 +220,9 @@ const routes =  [
         }
     },
     {
-        path: '/athlete',
-        name: 'athleteDashboard',
-        component: () => import('../views/athlete/dashboard.vue'),
+        path: '/athlete/newsfeed',
+        name: 'athleteNewsfeed',
+        component: () => import('../views/athlete/newsfeed.vue'),
         meta: {
             requiresAuth: true
         }
