@@ -3,7 +3,7 @@ import { useAuthStore } from '../store'
 import adminDashboard from '../views/admin/AdminDashboardView.vue'
 import schoolDashboard from '../views/school/SchoolDashboardView.vue'
 import coachDashboard from '../views/coach/CoachDashboardView.vue'
-import athleteNewsfeed from '../views/athlete/Newsfeed.vue'
+import athleteNewsfeed from '../views/athlete/newsfeed.vue'
 
 const routes =  [
     {
