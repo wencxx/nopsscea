@@ -224,7 +224,7 @@ const routes =  [
         }
     },
     {
-        path: '/athlete/newsfeed',
+        path: '/athlete',
         name: 'athleteNewsfeed',
         component: athleteNewsfeed,
         meta: {

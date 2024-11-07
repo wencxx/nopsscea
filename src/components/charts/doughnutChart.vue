@@ -37,7 +37,7 @@ const chartOptions = {
         legend: {
             labels: {
                 font: {
-                    size: 18
+                    size: 17
                 },
             }
         },
