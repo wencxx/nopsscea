@@ -153,7 +153,7 @@ const login = async () => {
     } catch (error) {
         console.log(error.message)
 
-        errorMessage.value = error.message.split('/')[1].slice(0, -2).replaceAll('-', ' ')
+        errorMessage.value = error.code
     }finally{
         signingIn.value = false
     }

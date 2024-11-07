@@ -1,5 +1,5 @@
 <template>
-    <Doughnut
+    <Pie
         id="my-chart-id"
         :options="chartOptions"
         :data="chartData"
@@ -10,7 +10,7 @@
 <script setup>
 import { defineProps } from 'vue'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from 'chart.js'
-import { Doughnut } from 'vue-chartjs'
+import { Pie } from 'vue-chartjs'
 
 const props = defineProps({
     labels: Array, 
@@ -43,7 +43,7 @@ const chartOptions = {
         },
         title: {
             display: true,
-            text: props.label || 'Total #',
+            text: props.label || 'Total No.',
             font: {
                 size: 20, 
                 weight: 'light'

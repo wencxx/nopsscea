@@ -100,6 +100,11 @@ const routes =  [
                 name: 'eventSchedules',
                 component: () => import('../views/general/childs/EventSchedules.vue')
             },
+            {
+                path: 'medals',
+                name: 'eventMedals',
+                component: () => import('../views/general/childs/EventMedals.vue')
+            }
         ],
         meta: {
             requiresAuth: true

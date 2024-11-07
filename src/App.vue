@@ -4,7 +4,7 @@
       <div class="w-full h-screen relative dark:bg-dark-bg">
         <headerComponent v-if="isAuth" />
         <!-- router views -->
-        <router-view :class="{ 'py-[15dvh] !w-9/12 mx-auto': isAuth }" class="w-full duration-300 font-inter h-full dark:bg-custom-darker overflow-y-auto"  id="content" />
+        <router-view :class="{ 'py-[15dvh] !w-10/12 mx-auto': isAuth }" class="w-full duration-300 font-inter h-full dark:bg-custom-darker overflow-y-auto"  id="content" />
       </div>
   </div>
 </template>

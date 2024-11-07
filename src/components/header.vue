@@ -1,5 +1,5 @@
 <template>
-    <header class="bg-white/55 backdrop-blur-sm dark:bg-dark-bg/85 absolute w-9/12 h-[6dvh] left-1/2 -translate-x-1/2 top-5 rounded-md border dark:border-gray-100/10">
+    <header class="bg-white/55 backdrop-blur-sm dark:bg-dark-bg/85 absolute w-10/12 h-[6dvh] left-1/2 -translate-x-1/2 top-5 rounded-md border dark:border-gray-100/10">
         <div class="flex items-center justify-between h-full w-full px-8">
             <div class="flex items-center space-x-4">
               <Icon icon="carbon:search" class="dark:text-dark-primary-text text-2xl" />

@@ -178,7 +178,6 @@ const getIsAccepted = async () => {
         })
 
         await Promise.all(promises)
-        loading.value = false
     } catch (error) {
         console.log(error)
     }
@@ -205,8 +204,11 @@ const getSchoolApplications = async (schoolId) => {
                 ...doc.data()
             })
         })
+
     } catch (error) {
         console.log(error)
+    }finally{
+        loading.value = false
     }
 }
 
@@ -247,7 +249,7 @@ const loadImageAsArrayBuffer = async (imageUrl) => {
 const generateDocx = async (schoolId) => {
   const schoolDetails = schools.value.find(school => school.schoolId == schoolId)
   try {
-    const response = await fetch('PRISAA-FORM-01-APPLICATION-FOR-MEMBERSHIP-FORM-1-1.docx'); 
+    const response = await fetch('/public/PRISAA-FORM-01-APPLICATION-FOR-MEMBERSHIP-FORM-1-1.docx'); 
     if (!response.ok) throw new Error('Failed to fetch DOCX template');
     
     const docxArrayBuffer = await response.arrayBuffer();
@@ -273,6 +275,7 @@ const generateDocx = async (schoolId) => {
     doc.setData({
       school: schoolDetails.schoolName,
       address: schoolDetails.schoolAddress,
+      email: schoolDetails.schoolEmail,
     });
 
     doc.render();

@@ -1,7 +1,13 @@
 <template>
     <div class="space-y-10">
-        <div v-if="role === 'admin' && !$route.query.status" class="flex justify-end">
-            <button class="border border-blue-900 px-3 py-1 text-blue-900 rounded" @click="addScheduleModal = true">Add Schedule</button>
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-x-2 text-2xl">
+                <Icon icon="healthicons:i-schedule-school-date-time" class="text-3xl" />
+                <h1>Schedules</h1>
+            </div>
+            <div v-if="role === 'admin' && !$route.query.status" class="flex justify-end">
+                <button class="border border-blue-900 px-3 py-1 text-blue-900 rounded" @click="addScheduleModal = true">Add Schedule</button>
+            </div>
         </div>
 
         <div v-for="(sport, index) in sports" :key="index" class="space-y-2">
@@ -11,12 +17,14 @@
                     <div v-for="schedule in filteredSchedule(sport)" :key="schedule.id" :class="{ '!bg-blue-900': index / 2 === 0 }" class="bg-red-600 h-16 py-9 px-5 rounded flex justify-between items-center">
                         <div class="flex items-center h-full gap-x-5">
                             <div class="flex items-center gap-x-2">
-                                <img :src="getSchoolDetails(schedule.participant1)?.schoolLogo" alt="School logo" class="h-12 object-cover aspect-square bg-gray-100 rounded-full">
+                                <img v-if="getSchoolDetails(schedule.participant1)?.schoolLogo" :src="getSchoolDetails(schedule.participant1)?.schoolLogo" alt="School logo" class="h-12 object-cover aspect-square bg-gray-100 rounded-full">
+                                <div v-else class="h-12 object-cover aspect-square bg-gray-100 rounded-full animate-pulse"></div>
                                 <p class="font-bold text-white">{{ getSchoolDetails(schedule.participant1)?.schoolAbbreviation }}</p>
                             </div>
                             <p class="font-bold text-xl text-white">VS.</p>
                             <div class="flex items-center gap-x-2">
-                                <img :src="getSchoolDetails(schedule.participant2)?.schoolLogo" alt="School logo" class="h-12 object-cover aspect-square bg-gray-100 rounded-full">
+                                <img v-if="getSchoolDetails(schedule.participant1)?.schoolLogo" :src="getSchoolDetails(schedule.participant2)?.schoolLogo" alt="School logo" class="h-12 object-cover aspect-square bg-gray-100 rounded-full">
+                                <div v-else class="h-12 object-cover aspect-square bg-gray-100 rounded-full animate-pulse"></div>
                                 <p class="font-bold text-white">{{ getSchoolDetails(schedule.participant2)?.schoolAbbreviation }}</p>
                             </div>
                         </div>
@@ -32,7 +40,7 @@
             <p class="text-center">No schedules to show</p>
         </div>
 
-        <addSchedule v-if="addScheduleModal" @closeModal="addScheduleModal = false" @addedNewSchedule="addedNewSchedule" />
+        <addSchedule v-if="addScheduleModal" @closeModal="addScheduleModal = false" @addedNewSchedule="addedNewSchedule" class="!-mt-0" />
     </div>
 </template>
 

@@ -88,6 +88,7 @@
                         <option value="ba-english">BA English</option>
                         <option value="ba-mass-communication">BA Mass Communication</option>
                         <option value="bs-accounting-information-system">BS Accounting Information System</option>
+                        <option value="others">others</option>
 
                         <!-- Courses of VMA Global College -->
                         <option value="bs-marine-transportation">BS Marine Transportation (VMA)</option>

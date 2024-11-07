@@ -184,7 +184,6 @@ const getIsAccepted = async () => {
         })
 
         await Promise.all(promises)
-        loading.value = false
     } catch (error) {
         console.log(error)
         errorFetching.value = true
@@ -212,6 +211,8 @@ const getSchoolApplications = async (schoolId) => {
                 ...doc.data()
             })
         })
+
+        loading.value = false
     } catch (error) {
         $toast.error(error.message)
     }
@@ -294,6 +295,7 @@ const generateDocx = async (schoolId) => {
     doc.setData({
       school: schoolDetails.schoolName,
       address: schoolDetails.schoolAddress,
+      email: schoolDetails.schoolEmail
     });
 
     doc.render();
