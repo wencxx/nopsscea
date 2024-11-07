@@ -1,11 +1,13 @@
 <template>
     <div class="space-y-10">
-        <div class="flex items-center gap-x-2 text-xl">
-            <Icon icon="mdi:announcement-outline" class="text-2xl" />
-            <h1>Announcements</h1>
-        </div>
-        <div class="flex">
-            <button class="ml-auto border px-3 py-1 rounded bg-blue-900 text-white hover:shadow" @click="addAnnouncement = true">Add announcement</button>
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-x-2 text-2xl">
+                <Icon icon="mdi:announcement-outline" class="text-3xl" />
+                <h1>Announcements</h1>
+            </div>
+            <div class="flex justify-end">
+                <button class="border border-blue-900 px-3 py-1 text-blue-900 rounded" @click="addAnnouncement = true">Add announcement</button>
+            </div>
         </div>
         <!-- table -->
         <div class="rounded overflow-hidden">

@@ -119,22 +119,14 @@ const login = async () => {
         const userRole = roleDocs.data()
 
         // remove query from the route
-        router.replace('/')
+        // router.replace('/')
 
         // show message base on user role if user is not accepted
-        if(!userRole.isAccepted ){
-            if(userRole.role === 'school'){
-                userNotAccepted.value = 'Wait for the admin to accept your registration.'
-                return
-            }
-            if(userRole.role === 'athlete'){
-                userNotAccepted.value = 'Wait for your school to accept your registration.'
-                return
-            }
-            if(userRole.role === 'coach'){
-                userNotAccepted.value = 'Wait for your school to accept your registration.'
-                return
-            }
+         if (!userRole.isAccepted) {
+            userNotAccepted.value = userRole.role === 'school'
+                ? 'Wait for the admin to accept your registration.'
+                : 'Wait for your school to accept your registration.'
+            return
         }
 
         // call pinia login action
@@ -150,6 +142,7 @@ const login = async () => {
         }else{
             router.push('/admin')
         }
+        
     } catch (error) {
         console.log(error.message)
 

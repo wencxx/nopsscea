@@ -1,5 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../store'
+import adminDashboard from '../views/admin/AdminDashboardView.vue'
+import schoolDashboard from '../views/school/SchoolDashboardView.vue'
+import coachDashboard from '../views/coach/CoachDashboardView.vue'
+import athleteNewsfeed from '../views/athlete/Newsfeed.vue'
 
 const routes =  [
     {
@@ -30,7 +34,7 @@ const routes =  [
     {
         path: '/admin',
         name: 'adminDashboard',
-        component: () => import('../views/admin/AdminDashboardView.vue'),
+        component: adminDashboard,
         meta: {
             requiresAuth: true
         }
@@ -129,7 +133,7 @@ const routes =  [
     {
         path: '/school',
         name: 'schoolDashboard',
-        component: () => import('../views/school/SchoolDashboardView.vue'),
+        component: schoolDashboard,
         meta: {
             requiresAuth: true,
             requiresRole: 'school'
@@ -179,7 +183,7 @@ const routes =  [
     {
         path: '/coach',
         name: 'coachDashboard',
-        component: () => import('../views/coach/CoachDashboardView.vue'),
+        component: coachDashboard,
         meta: {
             requiresAuth: true,
             requiresRole: 'coach'
@@ -222,7 +226,7 @@ const routes =  [
     {
         path: '/athlete/newsfeed',
         name: 'athleteNewsfeed',
-        component: () => import('../views/athlete/newsfeed.vue'),
+        component: athleteNewsfeed,
         meta: {
             requiresAuth: true
         }
