@@ -32,10 +32,13 @@
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">{{ convertBirthday(athlete.birthday) }}</td>
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">
                             <div class="flex justify-center gap-x-3">
+                                <button class="bg-custom-primary w-fit text-green-500 hover:scale-110" @click="viewAthleteDetails(athlete)">
+                                    <Icon icon="mdi:eye" class="text-2xl" />
+                                </button>
                                 <button class="bg-custom-primary w-fit text-green-500 hover:scale-110" @click="acceptAthlete(index)">
                                     <Icon icon="iconamoon:check-fill" class="text-2xl" />
                                 </button>
-                                <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" @click="removeSchool(school.id)">
+                                <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" @click="deleteAthlete(athlete.athleteId, index)">
                                     <Icon icon="mdi:trash" class="text-xl" />
                                 </button>
                             </div>
@@ -141,8 +144,9 @@ import { useAuthStore } from '../../store'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
 import { db } from '@config/firebaseConfig'
-import { getDocs, collection, where, query, queryEqual, and, doc, updateDoc } from 'firebase/firestore'
+import { getDocs, collection, where, query, queryEqual, and, doc, updateDoc, deleteDoc } from 'firebase/firestore'
 import moment from 'moment'
+import axios from 'axios'
 
 const convertBirthday = (bday) => {
     return moment(bday).format('ll')
@@ -232,6 +236,40 @@ const acceptAthlete = async (index) => {
     } catch (error) {
         $toast.error(error.message)
         console.log(error)
+    }
+}
+
+const athleteDataToView = ref({})
+
+const viewAthleteDetails = (athleteData) => {
+    athleteDataToView.value = athleteData
+}
+
+const deleteAthlete = async (uid, index) => {
+    const userRoleRef = doc(db, 'userRole', userRoleDocId.value[index])
+    const docRef = collection(db, 'athletes')
+    try {
+        const res = await axios.delete(`${import.meta.env.VITE_SERVER_URL}delete-user/${uid}`)
+
+        if(res.data === 'successfully deleted'){
+            athletes.value.splice(index, 1)
+
+            const q = query(
+                docRef,
+                where('athleteId', '==', uid)
+            )
+
+            const snapshots = await getDocs(q)
+
+            for(const snapshot of snapshots.docs){
+                const docRef = doc(db, 'athletes', snapshot.id)
+                await deleteDoc(docRef)
+            }
+
+            await deleteDoc(userRoleRef)
+        }
+    } catch (error) {
+        $toast.error('Failed to delete athlete')
     }
 }
 

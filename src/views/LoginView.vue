@@ -7,6 +7,10 @@
                 <Icon icon="bxs:error" class="inline text-xl" />
                 <p class="inline">{{ errorMessage }}</p>
             </div>
+            <div v-if="invalidCred" class="bg-red-500 pl-3 py-1 rounded space-x-2 text-white !-mb-3">
+                <Icon icon="bxs:error" class="inline text-xl" />
+                <p class="inline">Invalid Credentials</p>
+            </div>
             <div v-if="$route.query.school" class="bg-green-500 pl-3 py-1 rounded space-x-2 text-white !-mb-3">
                 <Icon icon="fluent:hand-wave-16-regular" class="inline text-xl" />
                 <p class="inline">Hooray, <span class="uppercase">{{ $route.query.school }}</span>! You are successfully registered!</p>
@@ -84,6 +88,7 @@ const userRoleRef = collection(db, 'userRole')
 // error messages
 const errorMessage = ref('')
 const userNotAccepted = ref('')
+const invalidCred = ref(false)
 
 const signingIn = ref(false)
 
@@ -121,8 +126,12 @@ const login = async () => {
         // remove query from the route
         // router.replace('/')
 
+        if (userRole.isDeleted) {
+            invalidCred.value = true
+        }
+
         // show message base on user role if user is not accepted
-         if (!userRole.isAccepted) {
+        if (!userRole.isAccepted) {
             userNotAccepted.value = userRole.role === 'school'
                 ? 'Wait for the admin to accept your registration.'
                 : 'Wait for your school to accept your registration.'
