@@ -135,7 +135,7 @@
         </div>
 
         <!-- eventEntry Form -->
-        <eventEntryForm  v-if="showEntryForm" @joinedEvent="joinEvent()" />
+        <eventEntryForm  v-if="showEntryForm" @joinedEvent="joinEvent()" @closeModal="showEntryForm = false" />
     </div>
 </template>
 

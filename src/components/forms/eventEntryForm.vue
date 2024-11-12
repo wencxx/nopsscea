@@ -409,7 +409,8 @@
                 </div>
             </div>
             <div class="flex justify-end gap-x-5 !mt-10">
-                <button class="border border-blue-900 text-blue-900 w-1/5 py-1 rounded" type="button" @click="currentPage--" :disabled="currentPage === 1">Back</button>
+                <button v-if="currentPage === 1" class="border border-blue-900 text-blue-900 w-1/5 py-1 rounded" type="button" @click="closeModal">Close</button>
+                <button v-if="currentPage === 2" class="border border-blue-900 text-blue-900 w-1/5 py-1 rounded" type="button" @click="currentPage--" :disabled="currentPage === 1">Back</button>
                 <button v-if="currentPage === 14 && joining" class="border border-transparent bg-blue-900 text-white w-1/5 py-1 rounded animate-pulse" disabled>Joining</button>
                 <button v-if="currentPage === 14 && !joining" class="border border-transparent bg-blue-900 text-white w-1/5 py-1 rounded">Join</button>
                 <button v-if="currentPage < 14 && !joining" class="border border-transparent bg-blue-900 text-white w-1/5 py-1 rounded" type="button" @click="currentPage++">Next</button>
@@ -429,7 +430,11 @@ import 'vue-toast-notification/dist/theme-sugar.css'
 const $toast = useToast()
 const route = useRoute()
 
-const emit = defineEmits(['joinedEvent'])
+const emit = defineEmits(['joinedEvent', 'closeModal'])
+
+const closeModal = () => {
+    emit('closeModal')
+}
 
 const formData = ref({
     b5x5m: '',

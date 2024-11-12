@@ -155,9 +155,9 @@
             <div class="flex items-center justify-end gap-x-5">
                 <router-link v-if="currentPage === 1" :to="{ name: 'selectRole' }" class="border text-center border-blue-900 h-8 text-custom-primary py-1 w-1/5 rounded hover:shadow-md hover:dark:shadow dark:shadow-white">Back</router-link>
                 <button v-else class="border text-center border-blue-900 h-8 text-custom-primary py-1 w-1/5 rounded hover:shadow-md hover:dark:shadow dark:shadow-white" type="button" @click="back()">Back</button>
-                <div v-if="currentPage == 2 || $route.query.page === 2" class="w-1/5">
-                    <button v-if="!registering" class="bg-blue-900 h-8 w-full text-white py-1 rounded hover:shadow-md hover:dark:shadow dark:shadow-white">Register</button>
-                    <button v-else class="bg-blue-900 h-8 w-full text-white py-1 rounded hover:shadow-md hover:dark:shadow dark:shadow-white flex items-center justify-center gap-x-2 animate-pulse" disabled>
+                <div v-if="currentPage == 2 || $route.query.page === 2" class="w-fit" :class="{'w-1/5': !registering}">
+                    <button v-if="!registering" class="bg-blue-900 h-8 px-5 w-full text-white py-1 rounded hover:shadow-md hover:dark:shadow dark:shadow-white">Register</button>
+                    <button v-else class="bg-blue-900 h-8 w-fit px-3 text-white py-1 rounded hover:shadow-md hover:dark:shadow dark:shadow-white flex items-center justify-center gap-x-2 animate-pulse" disabled>
                         <svg class="text-gray-300 animate-spin" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"
                             width="15" height="15">
                             <path

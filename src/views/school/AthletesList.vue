@@ -48,61 +48,7 @@
                     </tr>
                 </tbody>
                 <tbody v-if="loading">
-                    <tr>
-                        <td class="p-2 border dark:border-gray-100/10">
-                            <div class="flex gap-x-3">
-                                <div class="w-14 aspect-square animate-pulse bg-gray-200 dark:bg-gray-100/10 p-2 rounded"></div>
-                                <div class="flex flex-col gap-y-1 justify-center">
-                                    <div class="h-6 w-56 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                                    <div class="h-4 w-16 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="p-2 border space-y-1 dark:border-gray-100/10">
-                            <div class="h-6 w-50 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                            <div class="h-6 w-32 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                        </td>
-                        <td class="p-2 border dark:border-gray-100/10">
-                            <div class="h-6 w-50 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                        </td>
-                        <td class="p-2 border dark:border-gray-100/10">
-                            <div class="h-6 w-50 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                        </td>
-                        <td class="p-2 border dark:border-gray-100/10">
-                            <div class="flex justify-center gap-x-3">
-                                <div class="h-6 w-6 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                                <div class="h-6 w-6 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="p-2 border dark:border-gray-100/10">
-                            <div class="flex gap-x-3">
-                                <div class="w-14 aspect-square animate-pulse bg-gray-200 dark:bg-gray-100/10 p-2 rounded"></div>
-                                <div class="flex flex-col gap-y-1 justify-center">
-                                    <div class="h-6 w-56 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                                    <div class="h-4 w-16 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="p-2 border space-y-1 dark:border-gray-100/10">
-                            <div class="h-6 w-50 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                            <div class="h-6 w-32 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                        </td>
-                        <td class="p-2 border dark:border-gray-100/10">
-                            <div class="h-6 w-50 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                        </td>
-                        <td class="p-2 border dark:border-gray-100/10">
-                            <div class="h-6 w-50 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                        </td>
-                        <td class="p-2 border dark:border-gray-100/10">
-                            <div class="flex justify-center gap-x-3">
-                                <div class="h-6 w-6 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                                <div class="h-6 w-6 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
+                    <tr v-for="i in 5" :key="i">
                         <td class="p-2 border dark:border-gray-100/10">
                             <div class="flex gap-x-3">
                                 <div class="w-14 aspect-square animate-pulse bg-gray-200 dark:bg-gray-100/10 p-2 rounded"></div>
@@ -137,7 +83,7 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { useAuthStore } from '../../store'
+import { useAuthStore, useSchoolDataStore } from '../../store'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
 import { db } from '@config/firebaseConfig'
@@ -151,10 +97,12 @@ const convertBirthday = (bday) => {
 const $toast = useToast()
 
 const authStore = useAuthStore()
+const schoolDataStore = useSchoolDataStore()
 
 const currentUser = computed(() => authStore.user)
 
 const athletes = ref([])
+// const athletes = computed(() => schoolDataStore.athletes)
 
 // users ref
 const userRef = collection(db, 'userRole')

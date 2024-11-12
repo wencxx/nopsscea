@@ -39,7 +39,7 @@
             <div class="flex items-center justify-end gap-x-5">
                 <router-link :to="{ name: 'selectRole' }" class="border text-center border-blue-900 h-8 text-custom-primary py-1 w-1/5 rounded hover:shadow-md hover:dark:shadow dark:shadow-white">Back</router-link>
                 <button v-if="!registering" class="bg-blue-900 h-8 text-white py-1 w-1/5 rounded hover:shadow-md hover:dark:shadow dark:shadow-white">Register</button>
-                <button v-else class="bg-blue-900 h-8 text-white py-1 w-1/5 rounded hover:shadow-md hover:dark:shadow dark:shadow-white flex items-center justify-center gap-x-2 animate-pulse" disabled>
+                <button v-else class="bg-blue-900 h-8 text-white py-1 w-fit px-3 rounded hover:shadow-md hover:dark:shadow dark:shadow-white flex items-center justify-center gap-x-2 animate-pulse" disabled>
                     <svg class="text-gray-300 animate-spin" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"
                         width="15" height="15">
                         <path

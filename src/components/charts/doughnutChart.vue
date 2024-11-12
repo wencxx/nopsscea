@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
+import { defineProps, computed } from 'vue'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from 'chart.js'
 import { Pie } from 'vue-chartjs'
 
@@ -20,16 +20,16 @@ const props = defineProps({
 
 ChartJS.register(ArcElement, Tooltip, Legend, Title)
 
-const chartData = {
+const chartData = computed(() => ({
     labels: props.labels,
     datasets: [
         {
-        backgroundColor: ['#b91c1c', '#1e3a8a'],
-        data: props.data,
-        borderWidth: 1
+            backgroundColor: ['#b91c1c', '#1e3a8a'],
+            data: props.data,
+            borderWidth: 1
         }
-    ],
-}
+    ]
+}));
 
 const chartOptions = {
     responsive: true,
