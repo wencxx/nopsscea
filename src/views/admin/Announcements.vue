@@ -39,7 +39,7 @@
                     </tr>
                 </tbody>
                 <tbody v-if="loading">
-                    <tr>
+                    <tr v-for="l in 5" :key="l">
                         <td class="p-2 border space-y-1 dark:border-gray-100/10">
                             <div class="h-6 w-50 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
                         </td>
@@ -47,10 +47,7 @@
                             <div class="h-6 w-50 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
                         </td>
                         <td class="p-2 border dark:border-gray-100/10">
-                            <div class="h-6 w-50 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
-                        </td>
-                        <td class="p-2 border dark:border-gray-100/10">
-                            <div class="h-6 w-6 bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
+                            <div class="h-6 w-14 mx-auto bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
                         </td>
                     </tr>
                 </tbody>

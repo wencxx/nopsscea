@@ -153,6 +153,7 @@ const login = async () => {
         console.log(error.message)
 
         if(error.code === 'auth/invalid-credential') return errorMessage.value = 'Invalid Credentials'
+        if(error.code === 'auth/network-request-failed') return errorMessage.value = 'Check you internet connection'
         errorMessage.value = error.code
     }finally{
         signingIn.value = false

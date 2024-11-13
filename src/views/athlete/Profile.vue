@@ -24,7 +24,10 @@
             <lineChart :label="'Training Progress'" :data="trainingData" :labels="trainingLabels" class="!h-[40dvh] !w-full" />
         </div>
         <div class="border dark:border-gray-100/10 h-fit rounded-md p-5 flex flex-col gap-y-5">
-            <h1 class="text-lg font-bold">Documents</h1>
+            <div class="flex justify-between">
+                <h1 class="text-lg font-bold">Documents</h1>
+                <button class="border border-blue-900 rounded px-3 text-blue-900" @click="addDocumentModal = true">Add Document</button>
+            </div>
             <div class="bg-gray-100 dark:bg-gray-100/10 p-5 rounded-md">
                 <table class="w-full">
                     <thead>
@@ -103,40 +106,58 @@
                 <img :src="athleteData.certUrl" alt="certificate" class="w-1/4 aspect-square">
             </div>
         </div>
+
+        <!-- add new document -->
+         <addDocument v-if="addDocumentModal" @closeModal="addDocumentModal = false" />
     </div>
 </template>
 
 <script setup>
+import addDocument from '@components/addDocument.vue'
 import { useRoute } from 'vue-router'
 import { db } from '@config/firebaseConfig.js'
 import { doc, getDoc, collection, getDocs, query, where, limit } from 'firebase/firestore'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import moment from 'moment'
 import lineChart from '@components/charts/lineChart.vue'
+import { useAuthStore } from '@store'
+
+const addDocumentModal = ref(false)
+
+const authStore = useAuthStore()
+
+const currentUser = computed(() => authStore.user)
 
 const route = useRoute()
+
 const $toast = useToast()
 
 const athleteData = ref({})
 
 // get athlete data
 const getData = async () => {
-    const athleteRef = doc(db, 'athletes', route.params.id)
+    const athleteRef = collection(db, 'athletes')
     try {
-        const snapshot = await getDoc(athleteRef)
+        const q = query(
+            athleteRef,
+            where('athleteId', '==', currentUser.value?.uid),
+            limit(1)
+        )
+        const snapshot = await getDocs(q)
 
         athleteData.value = {
-            id: snapshot.id,
-            ...snapshot.data()
+            id: snapshot.docs[0].id,
+            ...snapshot.docs[0].data()
         }
 
-        getSchool(snapshot.data().school)
+        getSchool(snapshot.docs[0].data().school)
         getForms()
         getTrainingDetails()
     } catch (error) {
         $toast.error(error.message)
+        console.log(error)
     }
 }
 
@@ -156,7 +177,6 @@ const getSchool = async (schoolId) => {
             id: snapshot.docs[0].id,
             ...snapshot.docs[0].data()
         }
-        
     } catch (error) {
         $toast.error(error.message)
     }
@@ -199,35 +219,34 @@ const detsRef = collection(db, 'trainings')
 
 const getTrainingDetails = async () => {
   try {
-    const snapshot = await getDocs(detsRef);
+    const snapshot = await getDocs(detsRef)
 
     const allAttendance = snapshot.docs.flatMap((doc) => {
-      const data = doc.data();
+        const data = doc.data()
 
-      return Array.isArray(data.attendance)
+        return Array.isArray(data.attendance)
         ? data.attendance
-            .filter((entry) => entry.athlete === athleteData.value.athleteId)
+            .filter((entry) => entry.athlete === currentUser.value?.uid)
             .map((entry) => ({
-              ...entry, 
-              docId: doc.id, 
-              ...data
+                ...entry, 
+                docId: doc.id, 
+                ...data
             }))
-        : [];
-    });
+        : []
+    })
 
-    console.log(allAttendance);
-
-    trainingData.value = allAttendance.map(attendance => attendance.rating);
+    trainingData.value = allAttendance.map(attendance => attendance.rating)
     trainingLabels.value = allAttendance
     .sort((a, b) => new Date(a.date) - new Date(b.date))
-    .map(attendance => moment(new Date(attendance.date)).format('l'));
+    .map(attendance => moment(new Date(attendance.date)).format('l'))
   } catch (error) {
-    console.log(error);
+    console.log(error)
   }
-};
-
+}
 
 onMounted(() => {
-    getData()
+    if(currentUser.value?.uid){
+        getData()
+    }
 })
 </script>

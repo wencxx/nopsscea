@@ -224,6 +224,11 @@ const routes =  [
         }
     },
     {
+        path: '/profile',
+        name: 'athleteProfile',
+        component: () => import('../views/athlete/Profile.vue')
+    },
+    {
         path: '/athlete',
         name: 'athleteNewsfeed',
         component: athleteNewsfeed,
