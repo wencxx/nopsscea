@@ -33,7 +33,7 @@
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">
                             <div class="flex justify-center gap-x-3">
                                 <router-link :to="{ name: 'athleteDetails', params: { id: athlete.id } }" class="bg-custom-primary w-fit text-green-500 hover:scale-110">
-                                    <Icon icon="mdi-light:eye" class="text-2xl" />
+                                    <Icon icon="mdi:eye" class="text-2xl" />
                                 </router-link>
                                 <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" @click="removeSchool(school.id)">
                                     <Icon icon="mdi:trash" class="text-xl" />

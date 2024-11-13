@@ -20,6 +20,9 @@
                 <h1 class="text-lg"><span class="font-bold">Birthdate:</span> {{ formatData(athleteData.birthday) }}</h1>
             </div>
         </div>
+        <div>
+            <lineChart :label="'Training Progress'" :data="trainingData" :labels="trainingLabels" class="!h-[40dvh] !w-full" />
+        </div>
         <!-- form table -->
         <div class="border dark:border-gray-100/10 h-fit rounded-md p-5 flex flex-col gap-y-5">
             <h1 class="text-lg font-bold">Filled Out Forms</h1>
@@ -41,7 +44,7 @@
                             <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">
                                 <div class="flex justify-center gap-x-2">
                                     <a :href="form.storagePath">
-                                        <Icon icon="mdi:eye" class="text-2xl text-green-500 hover:scale-110" />
+                                        <Icon icon="mdi:download" class="text-2xl text-green-500 hover:scale-110" />
                                     </a>
                                     <button @click="deleteForm(form.id, index)">
                                         <Icon icon="mdi:trash" class="text-2xl text-red-500 hover:scale-110" />
@@ -71,6 +74,7 @@ import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
 import { onMounted, ref } from 'vue'
 import moment from 'moment'
+import lineChart from '@components/charts/lineChart.vue'
 
 const route = useRoute()
 const $toast = useToast()
@@ -90,6 +94,7 @@ const getData = async () => {
 
         getSchool(snapshot.data().school)
         getForms()
+        getTrainingDetails()
     } catch (error) {
         $toast.error(error.message)
     }
@@ -145,6 +150,42 @@ const getForms = async () => {
         $toast.error('Error fetching forms')
     }
 }
+
+// get training details
+const trainingData = ref(null)
+const trainingLabels = ref(null)
+
+const detsRef = collection(db, 'trainings')
+
+const getTrainingDetails = async () => {
+  try {
+    const snapshot = await getDocs(detsRef);
+
+    const allAttendance = snapshot.docs.flatMap((doc) => {
+      const data = doc.data();
+
+      return Array.isArray(data.attendance)
+        ? data.attendance
+            .filter((entry) => entry.athlete === athleteData.value.athleteId)
+            .map((entry) => ({
+              ...entry, 
+              docId: doc.id, 
+              ...data
+            }))
+        : [];
+    });
+
+    console.log(allAttendance);
+
+    trainingData.value = allAttendance.map(attendance => attendance.rating);
+    trainingLabels.value = allAttendance
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .map(attendance => moment(new Date(attendance.date)).format('ll'));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 onMounted(() => {
     getData()

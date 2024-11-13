@@ -4,12 +4,13 @@ import adminDashboard from '../views/admin/AdminDashboardView.vue'
 import schoolDashboard from '../views/school/SchoolDashboardView.vue'
 import coachDashboard from '../views/coach/CoachDashboardView.vue'
 import athleteNewsfeed from '../views/athlete/newsfeed.vue'
+import Login from '../views/LoginView.vue'
 
 const routes =  [
     {
         path: '/',
         name: 'login',
-        component: () => import('../views/LoginView.vue')
+        component: Login
     },
     {
         path: '/register/select-role',
@@ -156,12 +157,11 @@ const routes =  [
         }
     },
     {
-        path: '/school/athletes-details/:id',
+        path: '/athletes-details/:id',
         name: 'athleteDetails',
         component: () => import('../views/school/AthleteDetails.vue'),
         meta: {
             requiresAuth: true,
-            requiresRole: 'school'
         }
     },
     {

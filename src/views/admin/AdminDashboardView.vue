@@ -129,8 +129,6 @@ const getSchools = async () => {
                 ...doc.data()
             })
         })
-
-        schoolCount.value = snapshots.docs.length
     } catch (error) {
         console.log(error)
     }
@@ -154,6 +152,7 @@ const countSchools = async () => {
                 where('isAccepted', '==', true)
             )
         )
+
         const snapshots = await getCountFromServer(q)
 
         schoolCount.value = snapshots.data().count

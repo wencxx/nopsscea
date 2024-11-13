@@ -413,4 +413,8 @@ onMounted(() => {
         athleteData.value = JSON.parse(data)
     }
 }) 
+
+onMounted(() => {
+    localStorage.removeItem('data')
+}) 
 </script>

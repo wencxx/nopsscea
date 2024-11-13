@@ -12,15 +12,12 @@
                 <p class="inline">Invalid Credentials</p>
             </div>
             <div v-if="$route.query.school" class="bg-green-500 pl-3 py-1 rounded space-x-2 text-white !-mb-3">
-                <Icon icon="fluent:hand-wave-16-regular" class="inline text-xl" />
                 <p class="inline">Hooray, <span class="uppercase">{{ $route.query.school }}</span>! You are successfully registered!</p>
             </div>
             <div v-if="$route.query.athlete" class="bg-green-500 pl-3 py-1 rounded space-x-2 text-white !-mb-3">
-                <Icon icon="fluent:hand-wave-16-regular" class="inline text-xl" />
                 <p class="inline">Hooray, <span class="uppercase">{{ $route.query.athlete }}</span>! You are successfully registered!</p>
             </div>
             <div v-if="$route.query.coach" class="bg-green-500 pl-3 py-1 rounded space-x-2 text-white !-mb-3">
-                <Icon icon="fluent:hand-wave-16-regular" class="inline text-xl" />
                 <p class="inline">Hooray, <span class="uppercase">{{ $route.query.coach }}</span>! You are successfully registered!</p>
             </div>
             <div v-if="userNotAccepted" class="bg-green-500 pl-3 py-1 rounded space-x-2 text-white !-mb-3">
@@ -147,7 +144,7 @@ const login = async () => {
         }else if(userRole.role === 'athlete'){
             router.push('/athlete')
         }else if(userRole.role === 'coach'){
-            router.push('/coach')
+            router.push('/athlete')
         }else{
             router.push('/admin')
         }
@@ -155,6 +152,7 @@ const login = async () => {
     } catch (error) {
         console.log(error.message)
 
+        if(error.code === 'auth/invalid-credential') return errorMessage.value = 'Invalid Credentials'
         errorMessage.value = error.code
     }finally{
         signingIn.value = false

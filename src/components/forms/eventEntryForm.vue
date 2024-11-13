@@ -14,7 +14,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.b5x5w">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.b5x5c">
                 </div>
                 <h3 class="col-span-3">Youth</h3>
@@ -27,7 +27,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.b5x5g">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.b5x5yc">
                 </div>
             </div>
@@ -43,7 +43,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.b3x3w">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.b3x3c">
                 </div>
                 <h3 class="col-span-3">Youth</h3>
@@ -56,7 +56,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.b3x3g">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.b3x3yc">
                 </div>
             </div>
@@ -72,7 +72,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.bvw">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.bvc">
                 </div>
                 <h3 class="col-span-3">Youth</h3>
@@ -85,7 +85,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.bvg">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.ybvc">
                 </div>
             </div>
@@ -101,7 +101,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.fw">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.fc">
                 </div>
                 <h3 class="col-span-3">Youth</h3>
@@ -114,7 +114,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.fg">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.yfc">
                 </div>
             </div>
@@ -130,7 +130,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.stw">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.stc">
                 </div>
                 <h3 class="col-span-3">Youth</h3>
@@ -143,7 +143,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.stg">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.ystc">
                 </div>
             </div>
@@ -159,7 +159,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.vw">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.vc">
                 </div>
                 <h3 class="col-span-3">Youth</h3>
@@ -172,7 +172,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.vg">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.yvc">
                 </div>
             </div>
@@ -188,7 +188,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.aw">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.ac">
                 </div>
                 <h3 class="col-span-3">Youth</h3>
@@ -201,7 +201,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.ag">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.yac">
                 </div>
             </div>
@@ -217,7 +217,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.bw">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.bc">
                 </div>
                 <h3 class="col-span-3">Youth</h3>
@@ -230,7 +230,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.bg">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.ybc">
                 </div>
             </div>
@@ -246,7 +246,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.cw">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.cc">
                 </div>
                 <h3 class="col-span-3">Youth</h3>
@@ -259,7 +259,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.cg">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.ycc">
                 </div>
             </div>
@@ -275,7 +275,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.dw">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.dc">
                 </div>
                 <h3 class="col-span-3">Youth</h3>
@@ -288,7 +288,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.dg">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.ydc">
                 </div>
             </div>
@@ -304,7 +304,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.kw">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.kc">
                 </div>
                 <h3 class="col-span-3">Youth</h3>
@@ -317,7 +317,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.kg">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.ykc">
                 </div>
             </div>
@@ -333,7 +333,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.sw">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.sc">
                 </div>
                 <h3 class="col-span-3">Youth</h3>
@@ -346,7 +346,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.sg">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.ysc">
                 </div>
             </div>
@@ -362,7 +362,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.tnw">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.tnc">
                 </div>
                 <h3 class="col-span-3">Youth</h3>
@@ -375,7 +375,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.tng">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.ytnc">
                 </div>
             </div>
@@ -391,7 +391,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.tw">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.tc">
                 </div>
                 <h3 class="col-span-3">Youth</h3>
@@ -404,7 +404,7 @@
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.tg">
                 </div>
                 <div class="flex flex-col">
-                    <label>Combined</label>
+                    <label>College</label>
                     <input type="number" class="border rounded h-8 pl-2" v-model="formData.ytc">
                 </div>
             </div>

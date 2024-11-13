@@ -163,11 +163,12 @@ const getEventDetails = async () => {
             id: snapshot.id,
             ...snapshot.data()
         }
-        loadingDetails.value = false
         getParticipants(snapshot.id)
         getScheduleGame(snapshot.id)
     } catch (error) {
         $toast.error(error.message)
+    }finally{
+        loadingDetails.value = false
     }
 }
 
@@ -207,6 +208,8 @@ const getParticipants = async (eventId) => {
         await Promise.all(promises)
     } catch (error) {
         $toast.error('Error getting participants')
+    }finally{
+        loadingParticipants.value = false
     }
 }
 

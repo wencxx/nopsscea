@@ -17,7 +17,7 @@
                         <button v-else-if="!isParticipant && !isWaitingApproval" class="bg-blue-900 hover:bg-blue-950 py-1 rounded text-white dark:border border-gray-100/25" @click="showEntryForm = true" :class="{ '!bg-gray-200 animate-pulse text-gray-200': !eventDetails.id }">Join event</button>
                     </div>
                     <div v-else-if="role == 'admin' && eventDetails.id" class="w-full flex flex-col">
-                        <button class="bg-red-800 text-white py-1 rounded">Delete event</button>
+                        <button class="bg-red-800 text-white py-1 rounded" @click="deleteEvent(eventDetails.id)">Delete event</button>
                     </div>
                     <!-- <div v-else class="w-full flex flex-col">
                         <button class="bg-gray-200 animate-pulse text-gray-200 py-1 rounded">Join event</button>
@@ -142,11 +142,11 @@
 <script setup>
 import eventEntryForm from '@components/forms/eventEntryForm.vue'
 import { db } from '@config/firebaseConfig'
-import { getDoc, doc, addDoc, collection, Timestamp, getDocs, where, query } from 'firebase/firestore'
+import { getDoc, doc, addDoc, collection, Timestamp, getDocs, where, query, deleteDoc } from 'firebase/firestore'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
 import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@store'
 import { scales } from 'chart.js'
 import moment from 'moment'
@@ -156,6 +156,7 @@ const convertDate = (date) => {
 }
 
 const route = useRoute()
+const router = useRouter()
 const authStore = useAuthStore()
 
 // userRole and details
@@ -366,6 +367,20 @@ const acceptedApplicant = async (data) => {
             ...doc.data()
         })
     })
+}
+
+const deleteEvent = async (eventId) => {
+    try {
+        const docRef = doc(db, 'events',  eventId)
+
+        await deleteDoc(docRef)
+
+        $toast.success('Deletec event successfully')
+        router.push('/upcoming-events')
+    } catch (error) {
+        console.log(error)
+        $toast.error('Failed deleting event')
+    }
 }
 
 onMounted(() => {

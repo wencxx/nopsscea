@@ -22,9 +22,9 @@
 
         <div v-else>
             <div v-if="events.length > 0" class="w-full grid lg:grid-cols-2 xl:grid-cols-3 gap-5">
-                <div v-for="event in events" :key="event.id" class="border h-fit rounded shadow dark:border-gray-100/10 overflow-hidden">
+                <div v-for="event in events" :key="event.id" class="border h-full rounded shadow dark:border-gray-100/10 overflow-hidden flex flex-col">
                     <div class="w-full aspect-video">
-                        <img :src="event.coverPhoto" alt="event cover photo" class="h-full w-full">
+                        <img :src="event.coverPhoto" alt="event cover photo" class="h-full w-full aspect-video">
                     </div>
                     <div class="p-4 space-y-1">
                         <div>
@@ -35,7 +35,7 @@
                         </div>
                         <p class="capitalize text-sm text-white-secondary-text dark:text-dark-secondary-text line-clamp-3">{{ event.description }}</p>
                     </div>
-                    <div class="p-4 !pt-0">
+                    <div class="p-4 !pt-0 mt-auto">
                         <router-link :to="{ name: 'eventDashboard', params: { id: event.id } }" class="border border-blue-900 dark:border-gray-100/10 bg-blue-100/45 dark:bg-transparent text-blue-900 dark:text-dark-secondary-text hover:shadow-md rounded py-1 px-3">Details</router-link>
                     </div>
                 </div>

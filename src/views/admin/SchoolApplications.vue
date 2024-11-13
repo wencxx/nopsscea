@@ -34,9 +34,9 @@
                     <td class="p-2 border dark:border-gray-100/10 text-center">Wency Baterna</td>
                     <td class="p-2 border dark:border-gray-100/10">
                         <div class="flex justify-center gap-x-3">
-                            <button class="bg-custom-primary w-fit text-green-500 text-xl">
-                                <Icon icon="bxs:file-doc" class="text-2xl" @click="generateDocx(school.schoolId)" />
-                            </button>
+                            <a :href="school.applicationForm" download class="bg-custom-primary w-fit text-green-500 text-xl">
+                                <Icon icon="bxs:file-doc" class="text-2xl" />
+                            </a>
                             <button class="bg-custom-primary w-fit text-green-500 text-xl" @click="acceptSchool(school.schoolId, index)">
                                 <Icon icon="mdi:check" class="text-2xl" />
                             </button>
@@ -258,60 +258,6 @@ const acceptSchool = async (schoolId, index) => {
         $toast.error(error.message)
     }
 }
-
-// generate docx
-const loadImageAsArrayBuffer = async (imageUrl) => {
-  const response = await fetch(imageUrl);
-  if (!response.ok) throw new Error('Network response was not ok');
-  return await response.arrayBuffer(); 
-};
-
-const generateDocx = async (schoolId) => {
-  const schoolDetails = schools.value.find(school => school.schoolId == schoolId)
-  try {
-    const response = await fetch('/PRISAA-FORM-01-APPLICATION-FOR-MEMBERSHIP-FORM-1-1.docx'); 
-    if (!response.ok) throw new Error('Failed to fetch DOCX template');
-    
-    const docxArrayBuffer = await response.arrayBuffer();
-
-    const imageArrayBuffer = await loadImageAsArrayBuffer(schoolDetails.schoolLogo); 
-
-    const zip = new PizZip(docxArrayBuffer);
-
-    const imageModule = new ImageModule({
-      centered: false,
-      getImage: function (tagValue) {
-        return imageArrayBuffer;
-      },
-      getSize: function (img, tagValue) {
-        return [200, 150];
-      },
-    });
-
-    const doc = new Docxtemplater(zip, {
-      modules: [imageModule],
-    });
-
-    doc.setData({
-      school: schoolDetails.schoolName,
-      address: schoolDetails.schoolAddress,
-      email: schoolDetails.schoolEmail
-    });
-
-    doc.render();
-
-    const output = doc.getZip().generate({
-      type: 'blob',
-      mimeType:
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    });
-
-    saveAs(output, 'PRISAA-FORM-01-APPLICATION-FOR-MEMBERSHIP-FORM-1-1.docx');
-  } catch (error) {
-    console.error('Error generating document:', error);
-  }
-};
-
 
 onMounted(() => {
     getIsAccepted()

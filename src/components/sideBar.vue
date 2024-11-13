@@ -4,7 +4,7 @@
         <div class="w-full px-5 !py-4">
           <header class="h-[5dvh] flex items-center gap-x-3">
               <img src="../assets/images/logo.png" alt="logo" class="h-4/5">
-              <h2 class="font-semibold dark:text-dark-primary-text text-sm uppercase">Nopsscea</h2>
+              <h2 class="font-semibold dark:text-dark-primary-text text-sm uppercase">Nopsscea - {{ role }}</h2>
           </header>
         </div>
         <!-- nav for schools -->
@@ -164,7 +164,7 @@
         <nav class="p-5" v-if="role === 'coach'">
             <ul class="space-y-2">
               <li>
-                <router-link :to="{ name: 'coachDashboard' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'coachDashboard' }">
+                <router-link :to="{ name: 'athleteNewsfeed' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'coachDashboard' }">
                   <Icon icon="mdi:view-dashboard-outline" class="text-xl"/>
                   <p>Newsfeed</p>
                 </router-link>
