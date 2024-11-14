@@ -86,7 +86,7 @@
                 </table>
             </div>
 
-        <addMedal v-if="addEventMedal" @closeModal="addEventMedal = false" @addedNewMedal="addedNewMedal" class="!mt-0" :data="medalData" @click.self="addEventMedal = false" />
+        <addMedal v-if="addEventMedal" @closeModal="addEventMedal = false" @addedNewMedal="addedNewMedal" class="!mt-0" :data="medalData" />
     </div>
 </template>
 
@@ -219,6 +219,10 @@ const addedNewMedal = (data) => {
     const part = parti.value.find(participant => participant.schoolId === data.school)
 
      if (part) {
+        part.gold ||= 0;
+        part.silver ||= 0;
+        part.bronze ||= 0;
+        
         if(data.type === 'add'){
             part.gold += data.gold;
             part.silver += data.silver;

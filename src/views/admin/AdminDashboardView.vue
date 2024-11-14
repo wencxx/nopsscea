@@ -65,7 +65,7 @@
                         <th class="w-1/12 py-1 border dark:border-gray-100/10 font-medium">Total</th>
                     </tr>
                 </thead>
-                <tbody >
+                <tbody v-if="!schoolMedal.length">
                     <tr v-for="(medal, index) in schoolMedal" :key="medal" class="text-md">
                         <td class="p-2 border dark:border-gray-100/10 text-center">{{ index + 1 }}</td>
                         <td class="p-2 border dark:border-gray-100/10">
@@ -82,6 +82,11 @@
                         <td class="p-2 border dark:border-gray-100/10 text-center">{{ medal.silver }}</td>
                         <td class="p-2 border dark:border-gray-100/10 text-center">{{ medal.bronze }}</td>
                         <td class="p-2 border dark:border-gray-100/10 text-center">{{ medal.gold + medal.silver + medal.bronze }}</td>
+                    </tr>
+                </tbody>
+                <tbody v-else>
+                    <tr class="text-md">
+                        <td colspan="6" class="p-2 border dark:border-gray-100/10 text-center">No schools to show</td>
                     </tr>
                 </tbody>
             </table>

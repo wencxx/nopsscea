@@ -39,7 +39,7 @@
                     <Icon icon="mdi:event-outline" class="text-4xl text-red-900" />
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold">100</h1>
+                    <h1 class="text-2xl font-bold">{{ eventCounts }}</h1>
                 </div>
                 <div>
                     <h3 class="capitalize text-lg">Total Events Joined</h3>
@@ -50,40 +50,31 @@
             <doughnutChart :labels="doughNutLabels" :data="doughNutDatasets" :label="doughNutLabel" />
         </div>
         <div class="bg-gray-100 dark:bg-gray-100/10 col-span-2 p-3 border dark:border-gray-100/10 rounded-md">
-            <h1 class="mb-2 capitalize font-bold flex items-center gap-x-1"><Icon icon="noto:1st-place-medal" class="text-3xl" /> Top 5 most medals won all time</h1>
+            <h1 class="mb-2 capitalize font-bold flex items-center gap-x-1"><Icon icon="noto:1st-place-medal" class="text-3xl" />Events joined lists</h1>
             <table class="min-w-[500px] md:w-full tracking-wide rounded overflow-hidden">
                 <thead>
                     <tr>
-                        <th class="w-2/6 py-1 border dark:border-gray-100/10 font-medium">School</th>
-                        <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Gold</th>
-                        <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Silver</th>
-                        <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Bronze</th>
-                        <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Total</th>
+                        <th class="w-2/6 py-1 border dark:border-gray-100/10">Event Name</th>
+                        <th class="w-1/6 py-1 border dark:border-gray-100/10">Gold</th>
+                        <th class="w-1/6 py-1 border dark:border-gray-100/10">Silver</th>
+                        <th class="w-1/6 py-1 border dark:border-gray-100/10">Bronze</th>
+                        <th class="w-1/6 py-1 border dark:border-gray-100/10">Total</th>
                     </tr>
                 </thead>
                 <tbody >
-                    <tr v-for="i in 5" :key="i" class="text-md">
-                        <td class="p-2 border dark:border-gray-100/10">
-                            <div class="flex gap-x-3">
-                                <!-- <img :src="school?.schoolLogo" alt="school logo" class="w-14 bg-gray-200 dark:bg-gray-100/10 p-2 rounded"> -->
-                                <div class="w-16 aspect-square bg-gray-200 dark:bg-gray-100/10 p-2 rounded"></div>
-                                <div class="flex flex-col justify-center">
-                                    <h1 class="text-sm capitalize">Carlos Hilado Memorial State University</h1>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase">CHMSU</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="p-2 border dark:border-gray-100/10 text-center">32</td>
-                        <td class="p-2 border dark:border-gray-100/10 text-center">12</td>
-                        <td class="p-2 border dark:border-gray-100/10 text-center">18</td>
-                        <td class="p-2 border dark:border-gray-100/10 text-center">62</td>
+                    <tr v-for="event in eventsJoined" :key="event.id" class="text-md">
+                        <td class="p-2 border dark:border-gray-100/10 text-center">{{ event.title }}</td>
+                        <td class="p-2 border dark:border-gray-100/10 text-center">{{ event.gold || 0 }}</td>
+                        <td class="p-2 border dark:border-gray-100/10 text-center">{{ event.silver || 0 }}</td>
+                        <td class="p-2 border dark:border-gray-100/10 text-center">{{ event.bronze || 0 }}</td>
+                        <td class="p-2 border dark:border-gray-100/10 text-center">{{ event.gold + event.silver + event.bronze || 0 }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div class="bg-gray-100 dark:bg-gray-100/10 col-span-3 h-[50dvh] border dark:border-gray-100/10 rounded-md p-3">
+        <!-- <div class="bg-gray-100 dark:bg-gray-100/10 col-span-3 h-[50dvh] border dark:border-gray-100/10 rounded-md p-3">
             <barChart :labels="chartLabels" :data="chartDatasets" :label="chartLabel" class="!w-full" />
-        </div>
+        </div> -->
         <div class="bg-gray-100 dark:bg-gray-100/10 col-span-3 h-fit p-3 border dark:border-gray-100/10 rounded-md">
             <h1 class="mb-2 capitalize font-bold flex items-center gap-x-1"><Icon icon="fluent-emoji-high-contrast:person-running" class="text-2xl -mt-1"/>Athletes applicants</h1>
             <table class="min-w-[500px] md:w-full font-inter tracking-wide">
@@ -224,7 +215,7 @@ import barChart from '../../components/charts/barChart.vue'
 import { ref, computed, onMounted, watch } from 'vue'
 import { useAuthStore, useSchoolDataStore } from '@store'
 import { db } from '@config/firebaseConfig' 
-import { collection, query, where, getDocs, and, onSnapshot } from 'firebase/firestore'
+import { collection, query, where, getDocs, getDoc, and, onSnapshot, getCountFromServer, doc } from 'firebase/firestore'
 import moment from 'moment'
 
 const authStore = useAuthStore()
@@ -316,6 +307,50 @@ const getCoachAndAthlete = async () => {
     }
 }
 
+// events joined storage
+const eventsJoined = ref([])
+
+// count joineds event
+const eventCounts = ref(0)
+const partRefs = collection(db, 'participants')
+const countEventsJoined = async () => {
+    try {
+        const q = query(
+            partRefs,
+            where('schoolId', '==', currentUser.value?.uid)
+        )
+
+        const snapshots = await getDocs(q)
+
+        eventCounts.value = snapshots.docs.length
+
+        for(const doc of snapshots.docs){
+            eventsJoined.value.push({
+                ...doc.data(),
+                ...await getJoinedEvents(doc.data().eventId)
+            })
+        }
+    } catch (error) {
+        
+    }
+}
+
+// get joined events
+
+const getJoinedEvents = async (eventId) => {
+    const eventsRef = doc(db, 'events', eventId)
+    try {
+        const snapshot = await getDoc(eventsRef)
+
+        return {
+            id: snapshot.id,
+            ...snapshot.data()
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // const get athlete applicants
 const athleteApplicants = ref([])
 
@@ -360,6 +395,7 @@ const getAthleteApplicants  = async () => {
                 })
 
                 getCoachAndAthlete()
+                countEventsJoined()
             }
         )
     } catch (error) {
