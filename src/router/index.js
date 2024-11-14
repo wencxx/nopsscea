@@ -57,6 +57,14 @@ const routes =  [
         }
     },
     {
+        path: '/admin/school-details/:id',
+        name: 'schoolDetails',
+        component: () => import('../views/admin/SchoolDetails.vue'),
+        meta: {
+            requiresAuth: true,
+        }
+    },
+    {
         path: '/upcoming-events',
         name: 'upcomingEvents',
         component: () => import('../views/general/UpcomingEvents.vue'),

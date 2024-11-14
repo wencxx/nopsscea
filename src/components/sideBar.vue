@@ -120,15 +120,15 @@
         <nav class="p-5" v-if="role === 'athlete'">
           <ul class="space-y-2">
               <li>
-                <router-link :to="{ name: 'athleteNewsfeed' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'athleteNewsfeed' }">
-                  <Icon icon="mdi:view-dashboard-outline" class="text-xl"/>
-                  <p>Newsfeed</p>
+                <router-link :to="{ name: 'athleteProfile' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'athleteProfile' }">
+                  <Icon icon="mdi:user" class="text-xl"/>
+                  <p>Profile</p>
                 </router-link>
               </li>
               <li>
-                <router-link :to="{ name: 'athleteProfile' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'athleteProfile' }">
-                  <Icon icon="healthicons:ui-user-profile-outline" class="text-xl"/>
-                  <p>Profile</p>
+                <router-link :to="{ name: 'athleteNewsfeed' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'athleteNewsfeed' }">
+                  <Icon icon="mdi:view-dashboard-outline" class="text-xl"/>
+                  <p>Newsfeed</p>
                 </router-link>
               </li>
               <li>

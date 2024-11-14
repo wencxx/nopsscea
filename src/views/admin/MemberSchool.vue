@@ -12,7 +12,7 @@
                     <th class="w-2/6 py-1 border dark:border-gray-100/10 font-medium">School</th>
                     <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Address</th>
                     <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Email</th>
-                    <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Sports Director</th>
+                    <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">School H</th>
                     <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Action</th>
                 </tr>
             </thead>
@@ -22,14 +22,14 @@
                         <div class="flex gap-x-3">
                             <img :src="school?.schoolLogo" alt="school logo" class="w-14 bg-gray-200 dark:bg-gray-100/10 p-3 rounded">
                             <div class="flex flex-col justify-center">
-                                <h1 class="text-md capitalize">{{ school.schoolName  }}</h1>
+                                <router-link :to="{ name: 'schoolDetails', params: { id: school.schoolId} }" class="text-md capitalize">{{ school.schoolName  }}</router-link>
                                 <p class="text-xs text-gray-500 font-semibold uppercase">{{ school.schoolAbbreviation }}</p>
                             </div>
                         </div>
                     </td>
                     <td class="p-2 border dark:border-gray-100/10 text-center">{{ school.schoolAddress }}</td>
                     <td class="p-2 border dark:border-gray-100/10 text-center">{{ school.schoolEmail }}</td>
-                    <td class="p-2 border dark:border-gray-100/10 text-center">Wency Baterna</td>
+                    <td class="p-2 border dark:border-gray-100/10 text-center">{{ school.schoolHead }}</td>
                     <td class="p-2 border dark:border-gray-100/10">
                         <div class="flex justify-center gap-x-3">
                             <button class="bg-custom-primary w-fit text-gray-500 text-xl">

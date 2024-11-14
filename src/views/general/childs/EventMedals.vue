@@ -182,6 +182,8 @@ const getParticipants = async (eventId) => {
     } catch (error) {
         $toast.error('Error getting participants')
         console.log(error)
+    } finally {
+        loadingParticipants.value = false
     }
 }
 
@@ -205,7 +207,6 @@ const getParticipantsPersonalDetails = async (participantsId) => {
                 ...doc.data()
             })
         })
-        loadingParticipants.value = false
     } catch (error) {
         $toast.error(error.message)
     }
