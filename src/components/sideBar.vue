@@ -127,7 +127,7 @@
               </li>
               <li>
                 <router-link :to="{ name: 'athleteProfile' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'athleteProfile' }">
-                  <Icon icon="mdi:view-dashboard-outline" class="text-xl"/>
+                  <Icon icon="healthicons:ui-user-profile-outline" class="text-xl"/>
                   <p>Profile</p>
                 </router-link>
               </li>

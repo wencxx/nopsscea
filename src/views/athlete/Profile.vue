@@ -37,15 +37,31 @@
                             <th class="w-1/5 py-1 border border-gray-300 dark:border-gray-100/10">Action</th>
                         </tr>
                     </thead>
-                    <tbody v-if="forms.length">
-                        <tr v-for="(form, index) in forms" :key="index">
-                            <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">{{ form.formName }}</td>
-                            <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">{{ form.semester }}</td>
+                    <tbody v-if="documents.length">
+                        <tr v-for="(document, index) in documents" :key="index">
+                            <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">{{ document.documentType }}</td>
+                            <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">{{ document.file }}</td>
                             <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">
                                 <div class="flex justify-center gap-x-2">
-                                    <a :href="form.storagePath">
-                                        <Icon icon="mdi:download" class="text-2xl text-green-500 hover:scale-110" />
+                                    <a v-if="document.downloadUrl.includes('docx')"
+                                        :href="`https://docs.google.com/viewer?url=${encodeURIComponent(document.downloadUrl)}&embedded=true`"
+                                        target="_blank"
+                                        >
+                                        <Icon icon="bxs:file-doc" class="text-2xl text-green-500 hover:scale-110" />
                                     </a>
+                                    <a v-else-if="document.downloadUrl.includes('pdf')"
+                                        :href="document.downloadUrl"
+                                        target="_blank"
+                                        >
+                                        <Icon icon="bxs:file-pdf" class="text-2xl text-green-500 hover:scale-110" />
+                                    </a>
+                                    <a v-else 
+                                        :href="document.downloadUrl"
+                                        target="_blank"
+                                        >
+                                        <Icon icon="material-symbols:image-outline" class="text-2xl text-green-500 hover:scale-110" />
+                                    </a>
+
                                     <button @click="deleteForm(form.id, index)">
                                         <Icon icon="mdi:trash" class="text-2xl text-red-500 hover:scale-110" />
                                     </button>
@@ -108,7 +124,7 @@
         </div>
 
         <!-- add new document -->
-         <addDocument v-if="addDocumentModal" @closeModal="addDocumentModal = false" />
+         <addDocument v-if="addDocumentModal" @closeModal="closeModal" />
     </div>
 </template>
 
@@ -124,8 +140,6 @@ import moment from 'moment'
 import lineChart from '@components/charts/lineChart.vue'
 import { useAuthStore } from '@store'
 
-const addDocumentModal = ref(false)
-
 const authStore = useAuthStore()
 
 const currentUser = computed(() => authStore.user)
@@ -138,6 +152,11 @@ const athleteData = ref({})
 
 // get athlete data
 const getData = async () => {
+    if (!currentUser.value?.uid) {
+        console.error("User not authenticated");
+        return;
+    }
+
     const athleteRef = collection(db, 'athletes')
     try {
         const q = query(
@@ -155,6 +174,7 @@ const getData = async () => {
         getSchool(snapshot.docs[0].data().school)
         getForms()
         getTrainingDetails()
+        getDocuments()
     } catch (error) {
         $toast.error(error.message)
         console.log(error)
@@ -244,7 +264,44 @@ const getTrainingDetails = async () => {
   }
 }
 
+const addDocumentModal = ref(false)
+
+// get documents
+const documents = ref([])
+const docRef = collection(db, 'documents')
+
+const getDocuments = async () => {
+    try {
+        const q = query(
+            docRef,
+            where('userId', '==', currentUser.value?.uid)
+        )
+        const snapshots = await getDocs(q)
+
+        snapshots.docs.forEach(doc => {
+            documents.value.push({
+                id: doc.id,
+                ...doc.data()
+            })
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+// close add docs modal insert data if exists
+const closeModal = (data) => {
+    console.log(data)
+    documents.value.push(data)
+
+    addDocumentModal.value = false
+}
+
+
 onMounted(() => {
+    watch(currentUser, () => {
+        getData()
+    })
     if(currentUser.value?.uid){
         getData()
     }
