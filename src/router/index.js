@@ -222,6 +222,14 @@ const routes =  [
         }
     },
     {
+        path: '/coach/newsfeed',
+        name: 'coachNewsfeed',
+        component: athleteNewsfeed,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
         path: '/coach/training',
         name: 'training',
         component: () => import('../views/coach/Training.vue'),
@@ -256,12 +264,12 @@ const routes =  [
         }
     },
     {
-        path: '/profile',
+        path: '/athlete',
         name: 'athleteProfile',
         component: () => import('../views/athlete/Profile.vue')
     },
     {
-        path: '/athlete',
+        path: '/athlete/newsfeed',
         name: 'athleteNewsfeed',
         component: athleteNewsfeed,
         meta: {

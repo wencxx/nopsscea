@@ -4,16 +4,8 @@
             <h1 class="text-center text-xl">Add Certificates</h1>
             <h1 v-if="hasEmptyField" class="bg-red-500 text-white pl-2 rounded py-1">Fill out empty fields</h1>
             <div class="flex flex-col gap-y-1">
-                <label>Document Type</label>
-                <select class="h-8 rounded border" v-model="documentType">
-                    <option value="" disabled>Select document type</option>
-                    <option>Birth Certificate</option>
-                    <option>Transcript of Records</option>
-                </select>
-            </div>
-            <div class="flex flex-col gap-y-1">
-                <label>Insert File</label>
-                <input type="file" @change="changeFileUpload">
+                <label>Certificate</label>
+                <input type="file" accept=".jpg, .png, .jpeg" @change="handleImageUpload">
             </div>
             <div class="flex gap-x-2 justify-end !mt-8">
                 <button class="border border-blue-900 text-blue-900 w-1/3 rounded" @click="closeModal">Close</button>
@@ -44,11 +36,10 @@ const closeModal = () => {
     emit('closeModal')
 }
 
-const documentType = ref('')
 const fileToBeUploaded = ref(null)
 const fileName = ref('')
 
-const changeFileUpload = () => {
+const handleImageUpload = () => {
     const file = event.target.files[0]
 
     fileName.value = file.name
@@ -58,14 +49,14 @@ const changeFileUpload = () => {
 const hasEmptyField = ref(false)
 const addingDocs = ref(false)
 
-const docReference = collection(db, 'documents')
+const docReference = collection(db, 'certificates')
 
 const addDocument = async () => {
-    if(fileToBeUploaded.value === null || !documentType.value) return hasEmptyField.value = true
+    if(fileToBeUploaded.value === null) return hasEmptyField.value = true
 
     try {
         addingDocs.value = true
-        const storagePath = `documents/${fileName.value}`
+        const storagePath = `certs/${fileName.value}`
 
         const storageReference = storageRef(storage, storagePath)
 
@@ -75,7 +66,6 @@ const addDocument = async () => {
 
         const snapshot = await addDoc(docReference, {
             userId: currentUser.value.uid,
-            documentType: documentType.value,
             file: fileName.value,
             downloadUrl: downloadUrl
         })
@@ -84,17 +74,16 @@ const addDocument = async () => {
             const data = {
                 id: snapshot.id,
                 userId: currentUser.value.uid,
-                documentType: documentType.value,
                 file: fileName.value,
                 downloadUrl: downloadUrl
             }
 
             emit('closeModal', data)
 
-            $toast.success('Uploaded document successfully')
+            $toast.success('Uploaded certificate successfully')
         }
     } catch (error) {
-        $toast.error('Failed uploading document')
+        $toast.error('Failed uploading certificate')
         console.log(error)
     }finally{
         addingDocs.value = false

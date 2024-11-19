@@ -155,8 +155,8 @@
         <!-- certificates -->
         <div class="border dark:border-gray-100/10 h-fit rounded-md p-5 flex flex-col gap-y-5">
             <h1 class="text-lg font-bold">Certificates</h1>
-            <div v-if="certificates.length" class="w-full grid-cols-4 gap-5">
-                <img v-for="certificate in certificates" :key="certificate.id" :src="certificate.downloadUrl" alt="certificate" class="w-1/4 aspect-square shadow rounded-md">
+            <div v-if="certificates.length" class="w-full grid grid-cols-4 gap-2">
+                <img v-for="certificate in certificates" :key="certificate.id" :src="certificate.downloadUrl" alt="certificate" class="w-full aspect-square shadow rounded-md">
             </div>
             <p v-else class="text-center">No certificates to show</p>
         </div>

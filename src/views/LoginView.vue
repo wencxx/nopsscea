@@ -144,7 +144,7 @@ const login = async () => {
         }else if(userRole.role === 'athlete'){
             router.push('/athlete')
         }else if(userRole.role === 'coach'){
-            router.push('/athlete')
+            router.push('/coach')
         }else{
             router.push('/admin')
         }

@@ -119,21 +119,25 @@
          <div class="border dark:border-gray-100/10 h-fit rounded-md p-5 flex flex-col gap-y-5">
             <div class="flex justify-between">
                 <h1 class="text-lg font-bold">Certificates</h1>
-                <button class="border border-blue-900 rounded px-3 text-blue-900" @click="addDocumentModal = true">Add Certificates</button>
+                <button class="border border-blue-900 rounded px-3 text-blue-900" @click="addCertificateModal = true">Add Certificates</button>
             </div>
-            <div v-if="certificates.length" class="w-full grid-cols-4 gap-5">
-                <img v-for="certificate in certificates" :key="certificate.id" :src="certificate.downloadUrl" alt="certificate" class="w-1/4 aspect-square shadow rounded-md">
+            <div v-if="certificates.length" class="w-full grid grid-cols-4 gap-2">
+                <img v-for="(certificate, index) in certificates" :key="certificate.id" @click="viewImages(certificates, index)" :src="certificate.downloadUrl" alt="certificate" class="w-full aspect-square shadow rounded-md">
             </div>
             <p v-else class="text-center">No certificates to show</p>
         </div>
 
         <!-- add new document -->
          <addDocument v-if="addDocumentModal" @closeModal="closeModal" />
+         <addCertificate v-if="addCertificateModal" @closeModal="closeCertificateModal" />
+         <viewImagesModal v-if="showViewImagesModal" :images="imagesToView" :currentImage="currentImageViewing" @closeModal="showViewImagesModal = false" />
     </div>
 </template>
 
 <script setup>
 import addDocument from '@components/addDocument.vue'
+import addCertificate from '@components/addCertificate.vue'
+import viewImagesModal from '@components/viewImages.vue'
 import { useRoute } from 'vue-router'
 import { db } from '@config/firebaseConfig.js'
 import { doc, getDoc, collection, getDocs, query, where, limit } from 'firebase/firestore'
@@ -294,6 +298,9 @@ const getDocuments = async () => {
     }
 }
 
+const addCertificateModal = ref(false)
+
+
 // get certificates
 const certificates = ref([])
 const certRef = collection(db, 'certificates')
@@ -320,10 +327,30 @@ const getCertificates = async () => {
 // close add docs modal insert data if exists
 const closeModal = (data) => {
     if(data){
-        documents.value.push(data)
+        documents.value.unshift(data)
     }
 
     addDocumentModal.value = false
+}
+
+const closeCertificateModal = (data) => {
+    if(data){
+        certificates.value.unshift(data)
+    }
+
+    addCertificateModal.value = false
+}
+
+// view images
+const showViewImagesModal = ref(false)
+
+const imagesToView = ref(null)
+const currentImageViewing = ref(0)
+
+const viewImages = (images, index) => {
+    showViewImagesModal.value = true
+    imagesToView.value = images
+    currentImageViewing.value = index
 }
 
 
