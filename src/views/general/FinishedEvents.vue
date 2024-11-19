@@ -36,7 +36,7 @@
                         <p class="capitalize text-sm text-white-secondary-text dark:text-dark-secondary-text line-clamp-3">{{ event.description }}</p>
                     </div>
                     <div class="p-4 !pt-0 mt-auto">
-                        <router-link :to="{ name: 'eventDashboard', params: { id: event.id } }" class="border border-blue-900 dark:border-gray-100/10 bg-blue-100/45 dark:bg-transparent text-blue-900 dark:text-dark-secondary-text hover:shadow-md rounded py-1 px-3">Details</router-link>
+                        <router-link :to="{ name: 'eventDashboardFinished', params: { id: event.id } }" class="border border-blue-900 dark:border-gray-100/10 bg-blue-100/45 dark:bg-transparent text-blue-900 dark:text-dark-secondary-text hover:shadow-md rounded py-1 px-3">Details</router-link>
                     </div>
                 </div>
             </div>

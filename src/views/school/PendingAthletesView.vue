@@ -17,7 +17,7 @@
                     </tr>
                 </thead>
                 <tbody v-if="athletes.length > 0">
-                    <tr class="text-md" v-for="(athlete, index) in athletes" :key="athlete.id">
+                    <tr class="text-md" v-for="(athlete, index) in athletes" :class="{ 'bg-gray-100 animate-pulse': deleting && athleteIndexToDelete === index }" :key="athlete.id">
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10">
                             <div class="flex gap-x-3">
                                 <img :src="athlete?.photoUrl" alt="school logo" class="w-20 aspect-square bg-gray-200 dark:bg-gray-100/10 p-2 rounded">
@@ -32,13 +32,13 @@
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">{{ convertBirthday(athlete.birthday) }}</td>
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">
                             <div class="flex justify-center gap-x-3">
-                                <button class="bg-custom-primary w-fit text-green-500 hover:scale-110" @click="viewAthleteDetails(athlete)">
+                                <router-link v-if="athleteIndexToDelete !== index" :to="{ name: 'athleteDetails', params: { id: athlete.id }, query: { status: 'pending' } }" class="bg-custom-primary w-fit text-green-500 hover:scale-110">
                                     <Icon icon="mdi:eye" class="text-2xl" />
-                                </button>
-                                <button class="bg-custom-primary w-fit text-green-500 hover:scale-110" @click="acceptAthlete(index)">
+                                </router-link>
+                                <button class="bg-custom-primary w-fit text-green-500 hover:scale-110" :disabled="deleting && athleteIndexToDelete === index" @click="acceptAthlete(index)">
                                     <Icon icon="iconamoon:check-fill" class="text-2xl" />
                                 </button>
-                                <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" @click="deleteAthlete(athlete.athleteId, index)">
+                                <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" :disabled="deleting && athleteIndexToDelete === index" @click="showDeleteModal(athlete.athleteId, index)">
                                     <Icon icon="mdi:trash" class="text-xl" />
                                 </button>
                             </div>
@@ -135,6 +135,8 @@
                 </tbody>
             </table>
         </div>
+
+        <deleteModal v-if="showModalDelete" @closeModal="showModalDelete = false" @acceptDelete="deleteAthlete()" :user="'athlete'" :type="'decline'" />
     </div>
 </template>
 
@@ -147,6 +149,7 @@ import { db } from '@config/firebaseConfig'
 import { getDocs, collection, where, query, queryEqual, and, doc, updateDoc, deleteDoc } from 'firebase/firestore'
 import moment from 'moment'
 import axios from 'axios'
+import deleteModal from '@components/deleteModal.vue'
 
 const convertBirthday = (bday) => {
     return moment(bday).format('ll')
@@ -223,6 +226,7 @@ const getAthletePersonalDetails = async (athleteId) => {
     }
 }
 
+// accept athlete
 const acceptAthlete = async (index) => {
     const userRoleRef = doc(db, 'userRole', userRoleDocId.value[index])
     try {
@@ -239,37 +243,85 @@ const acceptAthlete = async (index) => {
     }
 }
 
-const athleteDataToView = ref({})
+// delete athlete
+const deleting = ref(false)
+const athleteIdToDelete = ref('')
+const athleteIndexToDelete = ref('')
+const showModalDelete = ref(false)
 
-const viewAthleteDetails = (athleteData) => {
-    athleteDataToView.value = athleteData
+const showDeleteModal = (uid, index) => {
+    showModalDelete.value = true
+    athleteIdToDelete.value = uid
+    athleteIndexToDelete.value = index
 }
 
-const deleteAthlete = async (uid, index) => {
-    const userRoleRef = doc(db, 'userRole', userRoleDocId.value[index])
+const deleteAthlete = async () => {
+    const userRoleRef = collection(db, 'userRole')
     const docRef = collection(db, 'athletes')
+    const docsRef = collection(db, 'documents')
+    const certsRef = collection(db, 'certificates')
     try {
-        const res = await axios.delete(`${import.meta.env.VITE_SERVER_URL}delete-user/${uid}`)
+        showModalDelete.value = false
+        deleting.value = true
+        const res = await axios.delete(`${import.meta.env.VITE_SERVER_URL}delete-user/${athleteIdToDelete.value}`)
+        console.log(res.data)
 
         if(res.data === 'successfully deleted'){
-            athletes.value.splice(index, 1)
-
             const q = query(
                 docRef,
-                where('athleteId', '==', uid)
+                where('athleteId', '==', athleteIdToDelete.value)
+            )
+            const q2 = query(
+                docsRef,
+                where('userId', '==', athleteIdToDelete.value)
+            )
+            const q3 = query(
+                certsRef,
+                where('userId', '==', athleteIdToDelete.value)
+            )
+
+            const q4 = query(
+                userRoleRef,
+                where('userId', '==', athleteIdToDelete.value)
             )
 
             const snapshots = await getDocs(q)
+            const snapshots2 = await getDocs(q2)
+            const snapshots3 = await getDocs(q3)
+            const snapshots4 = await getDocs(q4)
 
             for(const snapshot of snapshots.docs){
                 const docRef = doc(db, 'athletes', snapshot.id)
                 await deleteDoc(docRef)
             }
 
-            await deleteDoc(userRoleRef)
+            for(const snapshot of snapshots2.docs){
+                const docRef = doc(db, 'documents', snapshot.id)
+                const fileRef = ref(storage, `documents/${snapshot.docs().file}`)
+
+                await Promise.all([deleteObject(fileRef), deleteDoc(docRef)])
+            }
+
+            for(const snapshot of snapshots3.docs){
+                const docRef = doc(db, 'certificates', snapshot.id)
+                const fileRef = ref(storage, `certs/${snapshot.docs().file}`)
+
+                await Promise.all([deleteObject(fileRef), deleteDoc(docRef)])
+            }
+
+            for(const snapshot of snapshots4.docs){
+                const docRef = doc(db, 'userRole', snapshot.id)
+                await deleteDoc(docRef)
+            }
+
+            athletes.value.splice(athleteIndexToDelete.value, 1)
+            $toast.success('Athlete successfully declined')
         }
     } catch (error) {
+        console.log(error)
         $toast.error('Failed to delete athlete')
+    } finally {
+        deleting.value = false
     }
 }
 

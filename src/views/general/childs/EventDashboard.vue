@@ -8,11 +8,11 @@
                 <div class="flex flex-col justify-between w-1/4">
                     <h1 class="text-lg font-semibold">Event: <span class="font-medium">{{ eventDetails.title }}</span></h1>
                     <h1 class="text-lg font-semibold line-clamp-4">Description: <span class="font-medium">{{ eventDetails.description }}</span></h1>
-                    <h1 class="text-lg font-semibold">Status: <span class="font-medium">Upcoming</span></h1>
+                    <h1 class="text-lg font-semibold">Status: <span class="font-medium">Ongoing</span></h1>
                     <h1 class="text-lg font-semibold">Start date: <span class="font-medium">{{ convertDate(eventDetails.startDate) }}</span></h1>
                     <h1 class="text-lg font-semibold">End date: <span class="font-medium">{{ convertDate(eventDetails.endDate) }}</span></h1>
                     <div v-if="role == 'admin' && eventDetails.id" class="w-full flex flex-col">
-                        <button class="bg-red-800 text-white py-1 rounded">Delete event</button>
+                        <button class="bg-red-800 text-white py-1 rounded" @click="showDeleteModal(eventDetails.id)">Delete event</button>
                     </div>
                 </div>
             </div>
@@ -115,16 +115,19 @@
                 </table>
             </div>
         </div>
+
+        <deleteModal v-if="willDelete" user="event" type="delete" @closeModal="willDelete = false" @acceptDelete="deleteEvent()" />
     </div>
 </template>
 
 <script setup>
+import deleteModal from '@components/deleteModal.vue'
 import { db } from '@config/firebaseConfig'
-import { getDoc, doc, addDoc, collection, Timestamp, getDocs, where, query } from 'firebase/firestore'
+import { getDoc, doc, addDoc, collection, Timestamp, getDocs, where, query, deleteDoc } from 'firebase/firestore'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
 import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@store'
 import { scales } from 'chart.js'
 import moment from 'moment'
@@ -133,6 +136,7 @@ const convertDate = (date) => {
     return moment(date).format('ll')
 }
 
+const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
 
@@ -370,6 +374,31 @@ const acceptedApplicant = async (data) => {
             ...doc.data()
         })
     })
+}
+
+// delete event
+const willDelete = ref(false)
+const eventToDeleteId = ref('')
+
+const showDeleteModal = (eventId) => {
+    eventToDeleteId.value = eventId
+    willDelete.value = true
+}
+
+const deleteEvent = async () => {
+    try {
+        const docRef = doc(db, 'events',  eventToDeleteId.value)
+
+        await deleteDoc(docRef)
+
+        $toast.success('Deletec event successfully')
+        router.push('/upcoming-events')
+    } catch (error) {
+        console.log(error)
+        $toast.error('Failed deleting event')
+    } finally {
+        willDelete.value = false
+    }
 }
 
 onMounted(() => {

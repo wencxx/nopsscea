@@ -34,8 +34,17 @@
                     <td class="p-2 border dark:border-gray-100/10 text-center">Wency Baterna</td>
                     <td class="p-2 border dark:border-gray-100/10">
                         <div class="flex justify-center gap-x-3">
-                            <a :href="school.applicationForm" download class="bg-custom-primary w-fit text-green-500 text-xl">
-                                <Icon icon="bxs:file-doc" class="text-2xl" />
+                            <a
+                                :href="`https://docs.google.com/viewer?url=${encodeURIComponent(school.applicationForm)}&embedded=true`"
+                                target="_blank"
+                            >
+                                <Icon icon="bxs:file-doc" class="text-2xl text-green-500 hover:scale-110" />
+                            </a>
+                            <a
+                                :href="school.applicationForm"
+                                download
+                            >
+                                <Icon icon="mdi:download" class="text-2xl text-blue-900 hover:scale-110" />
                             </a>
                             <button class="bg-custom-primary w-fit text-green-500 text-xl" @click="acceptSchool(school.schoolId, index)">
                                 <Icon icon="mdi:check" class="text-2xl" />

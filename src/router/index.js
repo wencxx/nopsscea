@@ -124,6 +124,30 @@ const routes =  [
         },
     },
     {
+        path: '/finished-event-details/:id',
+        component: () => import('../views/general/FinishedEventDetails.vue'),
+        children: [
+            {
+                path: '',
+                name: 'eventDashboardFinished',
+                component: () => import('../views/general/childs/FinishedEventDashboard.vue')
+            },
+            {
+                path: 'schedules',
+                name: 'eventSchedules',
+                component: () => import('../views/general/childs/EventSchedules.vue')
+            },
+            {
+                path: 'medals',
+                name: 'eventMedals',
+                component: () => import('../views/general/childs/EventMedals.vue')
+            }
+        ],
+        meta: {
+            requiresAuth: true
+        },
+    },
+    {
         path: '/finished-events',
         name: 'FinishedEvents',
         component: () => import('../views/general/FinishedEvents.vue'),

@@ -28,6 +28,7 @@
                 <button v-else class="bg-blue-900 text-white rounded px-3 py-1 float-right !mt-5 animate-pulse" type="button" disabled>Adding event</button>
             </div>
         </form>
+
     </div>
 </template>
 

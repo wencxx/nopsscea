@@ -5,14 +5,14 @@
                 <img v-if="schoolData.schoolLogo" :src="schoolData.schoolLogo" alt="profile picture" class="w-32 aspect-square rounded-full">
                 <div v-else class="w-32 aspect-square rounded-full bg-gray-300 animate-pulse"></div>
                 <div class="flex flex-col items-center">
-                    <h1 class="font-bold text-center">{{ schoolData.schoolName }}</h1>
+                    <h1 class="font-bold text-center capitalize">{{ schoolData.schoolName }}</h1>
                     <p class="uppercase text-sm text-gray-500 dark:text-gray-100">{{ schoolData.schoolAbbreviation }}</p>
                 </div>
             </div>
             <div class="w-4/5 h-full grid grid-cols-2 gap-y-3">
-                <h1 class="text-lg"><span class="font-bold">School Head:</span> {{ schoolData.schoolHead }}, {{ schoolData.headTitle }}</h1>
+                <h1 class="text-lg capitalize"><span class="font-bold">School Head:</span> {{ schoolData.schoolHead }}, {{ schoolData.headTitle }}</h1>
                 <h1 class="text-lg"><span class="font-bold">School Classification:</span> {{ schoolData.schoolClassification }}</h1>
-                <h1 class="text-lg"><span class="font-bold">School Address:</span> {{ schoolData.schoolAddress }}</h1>
+                <h1 class="text-lg"><span class="font-bold capitalize">School Address:</span> {{ schoolData.schoolAddress }}</h1>
                 <h1 class="text-lg"><span class="font-bold">School Email:</span> {{ schoolData.schoolEmail }}</h1>
                 <h1 class="text-lg"><span class="font-bold">No. of Secondary Students:</span> {{ schoolData.noSecondary }}</h1>
                 <h1 class="text-lg"><span class="font-bold">No. of Tertiary Students:</span> {{ schoolData.noTertiary }}</h1>

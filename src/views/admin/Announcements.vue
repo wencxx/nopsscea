@@ -28,7 +28,7 @@
                         <td class="p-2 border dark:border-gray-100/10 text-center">
                             <div class="flex items-center justify-center gap-x-2">
                                 <Icon class="text-xl cursor-pointer text-blue-900" icon="mdi:pencil" /> 
-                                <Icon class="text-xl cursor-pointer text-red-500   " icon="mdi:trash" /> 
+                                <Icon class="text-xl cursor-pointer text-red-500  " icon="mdi:trash" @click="deleteAnnouncement(announcement.id, index)" /> 
                             </div>
                         </td>
                     </tr>
@@ -55,15 +55,20 @@
         </div>
 
         <addAnnouncements class="!my-0" v-if="addAnnouncement" @addedAnnouncementDetails="getAddedAnnouncement" @closeModal="addAnnouncement = false" />
+        <deleteModal v-if="showDeleteModal" @closeModal="showDeleteModal = false" user="announcement" type="delete" @acceptDelete="proceedDelete" />
     </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
 import addAnnouncements from '../../components/addAnnouncements.vue'
+import deleteModal from '@components/deleteModal.vue'
 import { db } from '@config/firebaseConfig'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore'
+import { useToast } from 'vue-toast-notification'
+import 'vue-toast-notification/dist/theme-sugar.css'
 
+const $toast = useToast()
 
 const addAnnouncement = ref(false)
 
@@ -94,6 +99,30 @@ const getAnnouncements = async () => {
 // get added announcement from child component
 const getAddedAnnouncement = (data) => {
     announcements.value.unshift(data)
+}
+
+// delete announcement
+const showDeleteModal = ref(false)
+const annToDeleteId = ref('')
+const annToDeleteIndex = ref('')
+
+const deleteAnnouncement = (annId, index) => {
+    annToDeleteId.value = annId
+    annToDeleteIndex.value = index
+    showDeleteModal.value = true
+}
+
+const proceedDelete = async () => {
+    try {
+        const docRef = doc(db, 'announcements', annToDeleteId.value)
+
+        await deleteDoc(docRef)
+        showDeleteModal.value = false
+        announcements.value.splice(annToDeleteIndex.value, 1)
+        $toast.success('Successfully deleted announcement')
+    } catch (error) {
+        $toast.error(error)
+    }
 }
 
 onMounted(() => {

@@ -35,7 +35,7 @@
                                 <router-link :to="{ name: 'athleteDetails', params: { id: athlete.id } }" class="bg-custom-primary w-fit text-green-500 hover:scale-110">
                                     <Icon icon="mdi:eye" class="text-2xl" />
                                 </router-link>
-                                <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" @click="undoAthlete(school.id, index)">
+                                <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" @click="undoAthlete(index)">
                                     <Icon icon="mdi:trash" class="text-xl" />
                                 </button>
                             </div>
@@ -173,6 +173,8 @@ const undoAthlete = async (index) => {
         await updateDoc(docRef, {
             isAccepted: false
         })
+        athletes.value.splice(index, 1)
+        $toast.success('Athlete undo  successfully')
     } catch (error) {
         $toast.error('Failed to undo athlete')
     }

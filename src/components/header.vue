@@ -1,9 +1,14 @@
 <template>
     <header class="bg-white/55 backdrop-blur-sm dark:bg-dark-bg/85 absolute w-10/12 h-[6dvh] left-1/2 -translate-x-1/2 top-5 rounded-md border dark:border-gray-100/10">
-        <div class="flex items-center justify-between h-full w-full px-8">
-            <div class="flex items-center space-x-4">
+        <div class="flex items-center justify-between h-full w-full px-8 gap-x-5">
+            <!-- <div class="flex items-center space-x-4">
               <Icon icon="carbon:search" class="dark:text-dark-primary-text text-2xl" />
               <p class="text-md dark:text-dark-primary-text cursor-pointer">Search</p>
+            </div> -->
+            <div class="overflow-x-hidden w-full">
+                <div class="animate-marquee whitespace-nowrap ">
+                    <span v-for="(i, index) in 10" :key="index" class="mx-10 text-xl">Marquee Item {{ i }}</span>
+                </div>
             </div>
             <div class="flex items-center gap-x-3">
               <Icon icon="line-md:moon-alt-loop" class="text-2xl cursor-pointer hidden dark:block dark:text-dark-primary-text" @click="toggleDarkmode" />
@@ -133,5 +138,26 @@ onMounted(() => {
 </script>
 
 <style scoped>
+ .marquee {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+  }
 
+  .marquee p {
+    display: inline-block;
+    padding-left: 100%;
+    margin-right: 50px;
+    animation: marquee 10s linear infinite;
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
 </style>

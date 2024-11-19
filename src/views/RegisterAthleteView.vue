@@ -66,43 +66,43 @@
                 <div class="flex flex-col gap-y-2">
                     <label>Course</label>
                     <select v-model="athleteData.course" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
-                        <option value="bs-accountancy">BS Accountancy</option>
-                        <option value="bs-architecture">BS Architecture</option>
-                        <option value="bs-business-administration">BS Business Administration</option>
-                        <option value="bs-education">BS Education</option>
-                        <option value="bs-computer-science">BS Computer Science</option>
-                        <option value="bs-information-technology">BS Information Technology</option>
-                        <option value="bs-hospitality-management">BS Hospitality Management</option>
-                        <option value="bs-tourism-management">BS Tourism Management</option>
-                        <option value="bs-psychology">BS Psychology</option>
-                        <option value="bs-nursing">BS Nursing</option>
-                        <option value="bs-pharmacy">BS Pharmacy</option>
-                        <option value="bs-medical-technology">BS Medical Technology</option>
-                        <option value="bs-physical-therapy">BS Physical Therapy</option>
-                        <option value="bs-criminology">BS Criminology</option>
-                        <option value="bs-engineering">BS Engineering (Various fields)</option>
-                        <option value="bs-agriculture">BS Agriculture</option>
-                        <option value="bs-communication">BS Communication</option>
-                        <option value="bs-social-work">BS Social Work</option>
-                        <option value="ba-political-science">BA Political Science</option>
-                        <option value="ba-english">BA English</option>
-                        <option value="ba-mass-communication">BA Mass Communication</option>
-                        <option value="bs-accounting-information-system">BS Accounting Information System</option>
+                        <option value="BS-accountancy">BS Accountancy</option>
+                        <option value="BS-architecture">BS Architecture</option>
+                        <option value="BS-business-administration">BS Business Administration</option>
+                        <option value="BS-education">BS Education</option>
+                        <option value="BS-computer-science">BS Computer Science</option>
+                        <option value="BS-information-technology">BS Information Technology</option>
+                        <option value="BS-hospitality-management">BS Hospitality Management</option>
+                        <option value="BS-tourism-management">BS Tourism Management</option>
+                        <option value="BS-psychology">BS Psychology</option>
+                        <option value="BS-nursing">BS Nursing</option>
+                        <option value="BS-pharmacy">BS Pharmacy</option>
+                        <option value="BS-medical-technology">BS Medical Technology</option>
+                        <option value="BS-physical-therapy">BS Physical Therapy</option>
+                        <option value="BS-criminology">BS Criminology</option>
+                        <option value="BS-engineering">BS Engineering (Various fields)</option>
+                        <option value="BS-agriculture">BS Agriculture</option>
+                        <option value="BS-communication">BS Communication</option>
+                        <option value="BS-social-work">BS Social Work</option>
+                        <option value="BA-political-science">BA Political Science</option>
+                        <option value="BA-english">BA English</option>
+                        <option value="BA-mass-communication">BA Mass Communication</option>
+                        <option value="BS-accounting-information-system">BS Accounting Information System</option>
                         <option value="others">others</option>
 
                         <!-- Courses of VMA Global College -->
-                        <option value="bs-marine-transportation">BS Marine Transportation (VMA)</option>
-                        <option value="bs-marine-engineering">BS Marine Engineering (VMA)</option>
-                        <option value="bs-customs-administration">BS Customs Administration (VMA)</option>
-                        <option value="bs-hotel-and-restaurant-management">BS Hotel and Restaurant Management (VMA)</option>
-                        <option value="bs-business-administration">BS Business Administration (VMA)</option>
+                        <option value="BS-marine-transportation">BS Marine Transportation (VMA)</option>
+                        <option value="BS-marine-engineering">BS Marine Engineering (VMA)</option>
+                        <option value="BS-customs-administration">BS Customs Administration (VMA)</option>
+                        <option value="BS-hotel-and-restaurant-management">BS Hotel and Restaurant Management (VMA)</option>
+                        <option value="BS-business-administration">BS Business Administration (VMA)</option>
 
                         <!-- Courses of John B. Lacson Colleges Foundation (JBLF) -->
-                        <option value="bs-marine-transportation-jblf">BS Marine Transportation (JBLF)</option>
-                        <option value="bs-marine-engineering-jblf">BS Marine Engineering (JBLF)</option>
-                        <option value="bs-cruise-ship-management">BS Cruise Ship Management (JBLF)</option>
-                        <option value="bs-customs-administration-jblf">BS Customs Administration (JBLF)</option>
-                        <option value="bs-hotel-and-restaurant-management-jblf">BS Hotel and Restaurant Management (JBLF)</option>
+                        <option value="BS-marine-transportation-jblf">BS Marine Transportation (JBLF)</option>
+                        <option value="BS-marine-engineering-jblf">BS Marine Engineering (JBLF)</option>
+                        <option value="BS-cruise-ship-management">BS Cruise Ship Management (JBLF)</option>
+                        <option value="BS-customs-administration-jblf">BS Customs Administration (JBLF)</option>
+                        <option value="BS-hotel-and-restaurant-management-jblf">BS Hotel and Restaurant Management (JBLF)</option>
                     </select>
                 </div>
                 <div class="flex flex-col gap-y-2">
@@ -128,14 +128,6 @@
                     </select>
                 </div>
                 <div class="flex flex-col gap-y-2">
-                    <label>Athletes Photo</label>
-                    <div :class="{ '!border-red-500': noImage}" class="h-8 border rounded cursor-pointer pl-2 focus:outline-custom-primary flex items-center justify-center gap-x-2 dark:bg-transparent dark:border-gray-100/10" @click="toggleFileInput">
-                        <Icon icon="mage:image-upload" class="text-xl"/>
-                        <p class="line-clamp-1 text-sm">{{ imageName }}</p>
-                    </div>
-                    <input @change="handleImageUploadPhoto" type="file" accept=".jpg, .jpeg, .png" class="hidden" id="fileInput">
-                </div>
-                <div class="flex flex-col gap-y-2">
                     <label>Mother's Fullname</label>
                     <input type="text" v-model="athleteData.mothersName" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
@@ -144,12 +136,36 @@
                     <input type="text" v-model="athleteData.fathersName" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
                 <div class="flex flex-col gap-y-2">
+                    <label>Athletes Photo</label>
+                    <div :class="{ '!border-red-500': noImage}" class="h-8 border rounded cursor-pointer pl-2 focus:outline-custom-primary flex items-center justify-center gap-x-2 dark:bg-transparent dark:border-gray-100/10" @click="toggleFileInput">
+                        <Icon icon="mage:image-upload" class="text-xl"/>
+                        <p class="line-clamp-1 text-sm">{{ imageName }}</p>
+                    </div>
+                    <input @change="handleImageUploadPhoto" type="file" accept=".jpg, .jpeg, .png" class="hidden" id="fileInput">
+                </div>
+                <div class="flex flex-col gap-y-2">
                     <label>Certificate</label>
                     <div :class="{ '!border-red-500': noImageCert}" class="h-8 border rounded cursor-pointer pl-2 focus:outline-custom-primary flex items-center justify-center gap-x-2 dark:bg-transparent dark:border-gray-100/10" @click="toggleFileInputCert">
                         <Icon icon="mage:image-upload" class="text-xl"/>
                         <p class="line-clamp-1 text-sm">{{ imageNameCert }}</p>
                     </div>
                     <input @change="handleImageUploadCert" type="file" accept=".jpg, .jpeg, .png" class="hidden" id="fileInputCert">
+                </div>
+                <div class="flex flex-col gap-y-2">
+                    <label>Birth Certificate</label>
+                    <div :class="{ '!border-red-500': noImageBirthCert}" class="h-8 border rounded cursor-pointer pl-2 focus:outline-custom-primary flex items-center justify-center gap-x-2 dark:bg-transparent dark:border-gray-100/10" @click="toggleFileInputBirthCert">
+                        <Icon icon="mage:image-upload" class="text-xl"/>
+                        <p class="line-clamp-1 text-sm">{{ imageNameBirthCert }}</p>
+                    </div>
+                    <input @change="handleImageUploadBirthCert" type="file" class="hidden" id="fileInputBirthCert">
+                </div>
+                <div class="flex flex-col gap-y-2">
+                    <label>Transcript of Records</label>
+                    <div :class="{ '!border-red-500': noTORFile}" class="h-8 border rounded cursor-pointer pl-2 focus:outline-custom-primary flex items-center justify-center gap-x-2 dark:bg-transparent dark:border-gray-100/10" @click="toggleFileInputTOR">
+                        <Icon icon="mage:image-upload" class="text-xl"/>
+                        <p class="line-clamp-1 text-sm">{{ imageNameTOR }}</p>
+                    </div>
+                    <input @change="handleImageUploadTOR" type="file" class="hidden" id="fileInputTOR">
                 </div>
             </div>
             <div class="flex items-center justify-end gap-x-5">
@@ -240,6 +256,18 @@ const toggleFileInputCert = () => {
     fileInput.click()
 }
 
+const toggleFileInputBirthCert = () => {
+    const fileInput = document.getElementById('fileInputBirthCert')
+
+    fileInput.click()
+}
+
+const toggleFileInputTOR = () => {
+    const fileInput = document.getElementById('fileInputTOR')
+
+    fileInput.click()
+}
+
 // handle image upload for profile picture
 const image = ref(null)
 const imageName = ref('Choose a photo')
@@ -264,6 +292,32 @@ const handleImageUploadCert = () => {
     imageCert.value = uploadedImage
     imageNameCert.value = uploadedImage.name
     noImageCert.value = false
+}
+
+// handle file upload for birth certificate
+const imageBirthCert = ref(null)
+const imageNameBirthCert = ref('Choose a file')
+const noImageBirthCert = ref(false)
+
+const handleImageUploadBirthCert = () => {
+    const uploadedImage = event.target.files[0]
+
+    imageBirthCert.value = uploadedImage
+    imageNameBirthCert.value = uploadedImage.name
+    noImageBirthCert.value = false
+}
+
+// handle file upload for TOR
+const TORFile = ref(null)
+const imageNameTOR = ref('Choose a file')
+const noTORFile = ref(false)
+
+const handleImageUploadTOR = () => {
+    const uploadedImage = event.target.files[0]
+
+    TORFile.value = uploadedImage
+    imageNameTOR.value = uploadedImage.name
+    noTORFile.value = false
 }
 
 // check age base on birthday
@@ -297,62 +351,77 @@ const checkFields = () => {
 // user role reference
 const userRoleRef = collection(db, 'userRole')
 const athletesRef = collection(db, 'athletes')
+const documentsRef = collection(db, 'documents')
+const certRef = collection(db, 'certificates')
 
 const errorMessage = ref('')
 const registering = ref(false)
 
-// register school
+// register athlete
 const register = async () => {
-
-    if(checkFields() === 'fill out all fields'){
-        errorMessage.value = 'Fill out all fields'
-        return
+    if (checkFields() === 'fill out all fields') {
+        errorMessage.value = 'Fill out all fields';
+        return;
     }
 
-    if(checkAge() === 'age restriction'){
-        errorMessage.value = 'Age Restriction'
-        return
+    if (checkAge() === 'age restriction') {
+        errorMessage.value = 'Age Restriction';
+        return;
     }
 
-    if(image.value === null) {
-        noImage.value = true
-        errorMessage.value = 'Upload picture'
-        return 
-    }
-    
-    if(imageCert.value === null) {
-        noImageCert.value = true
-        errorMessage.value = 'Upload certificate'
-        return 
+    if (!image.value) {
+        noImage.value = true;
+        errorMessage.value = 'Upload Picture';
+        return;
     }
 
-    const imageRef = storageRef(storage, `profilePictures/${image.value.name}`)
-    const certRef = storageRef(storage, `certs/${imageCert.value.name}`)
+    if (!imageBirthCert.value) {
+        noImageBirthCert.value = true;
+        errorMessage.value = 'Upload Birth Certificate';
+        return;
+    }
+
+    if (!TORFile.value) {
+        noTORFile.value = true;
+        errorMessage.value = 'Upload Transcript of Records';
+        return;
+    }
+
+    const imageRef = storageRef(storage, `profilePictures/${image.value.name}`);
+    const birthRef = storageRef(storage, `documents/${imageBirthCert.value.name}`);
+    const torRef = storageRef(storage, `documents/${TORFile.value.name}`);
+    let photoUrl, birthUrl, torUrl;
 
     try {
-        registering.value = true
-        const newUser = await createUserWithEmailAndPassword(auth, athleteData.value.email, athleteData.value.password)
+        registering.value = true;
 
-        const user = newUser.user
+        const newUser = await createUserWithEmailAndPassword(auth, athleteData.value.email, athleteData.value.password);
+        const user = newUser.user;
 
-        await uploadBytes(imageRef, image.value)
-        await uploadBytes(certRef, imageCert.value)
+        await Promise.all([
+            uploadBytes(imageRef, image.value),
+            uploadBytes(birthRef, imageBirthCert.value),
+            uploadBytes(torRef, TORFile.value),
+        ]);
 
-        const photoUrl = await getDownloadURL(imageRef)
-        const certUrl = await getDownloadURL(certRef)
+        [photoUrl, birthUrl, torUrl] = await Promise.all([
+            getDownloadURL(imageRef),
+            getDownloadURL(birthRef),
+            getDownloadURL(torRef),
+        ]);
 
         await updateProfile(user, {
             displayName: `${athleteData.value.firstName} ${athleteData.value.middleName} ${athleteData.value.lastName}`,
-            photoURL: photoUrl
-        })
-        
-        addDoc(userRoleRef, {
+            photoURL: photoUrl,
+        });
+
+        await addDoc(userRoleRef, {
             userId: user.uid,
             role: 'athlete',
             isAccepted: false,
-        })
-        
-        addDoc(athletesRef, {
+        });
+
+        await addDoc(athletesRef, {
             firstName: athleteData.value.firstName,
             middleName: athleteData.value.middleName,
             lastName: athleteData.value.lastName,
@@ -365,25 +434,52 @@ const register = async () => {
             course: athleteData.value.course,
             sport: athleteData.value.sport,
             photoUrl: photoUrl,
-            certUrl: certUrl,
             mothersName: athleteData.value.mothersName,
             fathersName: athleteData.value.fathersName,
             athleteId: user.uid,
-        })
+        });
+
+        if (imageCert.value) {
+            const certStorageRef = storageRef(storage, `certs/${imageCert.value.name}`);
+            await uploadBytes(certStorageRef, imageCert.value);
+            const certUrl = await getDownloadURL(certStorageRef);
+
+            await addDoc(certRef, {
+                downloadUrl: certUrl,
+                file: imageCert.value.name,
+                userId: user.uid,
+            });
+        }
+
+        await Promise.all([
+            addDoc(documentsRef, {
+                documentType: 'Birth Certificate',
+                downloadUrl: birthUrl,
+                file: imageBirthCert.value.name,
+                userId: user.uid,
+            }),
+            addDoc(documentsRef, {
+                documentType: 'Transcript of Records',
+                downloadUrl: torUrl,
+                file: TORFile.value.name,
+                userId: user.uid,
+            })
+        ]);
 
         router.push({
             path: '/',
             query: {
                 athlete: athleteData.value.firstName
             }
-        })
+        });
     } catch (error) {
-        console.log(error.message)
-        errorMessage.value = error.message.split('/')[1].slice(0, -2).replaceAll('-', ' ')
-    }finally {
-        registering.value = false
+        console.error('Registration Error:', error);
+        errorMessage.value = error.message || 'An unexpected error occurred';
+    } finally {
+        registering.value = false;
     }
-}
+};
+
 
 
 // get school list

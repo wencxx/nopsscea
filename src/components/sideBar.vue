@@ -17,17 +17,23 @@
                 </router-link>
               </li>
               <li>
+                <router-link :to="{ name: 'athleteNewsfeed' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'athleteNewsfeed' }">
+                  <Icon icon="mdi:view-dashboard-outline" class="text-xl"/>
+                  <p>Newsfeed</p>
+                </router-link>
+              </li>
+              <li>
                 <div @click="toggleDropdown('athletes')" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'pendingAthletes' || $route.name == 'athletesList' }">
                   <Icon icon="ic:round-sports-gymnastics" class="text-xl"/>
                   <p>Athletes</p>
                    <Icon icon="iconamoon:arrow-down-2-duotone" class="text-2xl ml-auto transition-all duration-100" :class="{ 'rotate-180': openDropdown.includes('athletes') }" />
                 </div>
                 <div v-if="openDropdown.includes('athletes')" class="border-l dark:border-gray-100/10 ml-3 mt-1">
-                    <router-link :to="{ name: 'pendingAthletes' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'pendingAthletes' }">
-                      <p>Pending Athletes</p>
-                    </router-link>
                     <router-link :to="{ name: 'athletesList' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'athletesList' }">
                       <p>Athlete Lists</p>
+                    </router-link>
+                    <router-link :to="{ name: 'pendingAthletes' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'pendingAthletes' }">
+                      <p>Pending Athletes</p>
                     </router-link>
                 </div>
               </li>
@@ -103,7 +109,7 @@
                     <router-link :to="{ name: 'upcomingEvents' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'upcomingEvents' || $route.name == 'upcomingEventDetails' || $route.name == 'eventApplicants' }">
                       <p>Upcoming Events</p>
                     </router-link>
-                    <router-link :to="{ name: 'FinishedEvents' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'FinishedEvents' }">
+                    <router-link :to="{ name: 'FinishedEvents' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'FinishedEvents' || $route.name == 'eventDashboardFinished' }">
                       <p>Finished Events</p>
                     </router-link>
                 </div>
@@ -188,11 +194,11 @@
                    <Icon icon="iconamoon:arrow-down-2-duotone" class="text-2xl ml-auto transition-all duration-100" :class="{ 'rotate-180': openDropdown.includes('athletes') }" />
                 </div>
                 <div v-if="openDropdown.includes('athletes')" class="border-l dark:border-gray-100/10 ml-3 mt-1">
-                    <router-link :to="{ name: 'pendingAthletesCoach' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'pendingAthletesCoach' }">
-                      <p>Pending Athletes</p>
-                    </router-link>
                     <router-link :to="{ name: 'athletesListCoach' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'athletesListCoach' }">
                       <p>Athlete Lists</p>
+                    </router-link>
+                    <router-link :to="{ name: 'pendingAthletesCoach' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 pl-3 rounded-tr rounded-br" :class="{ 'bg-gray-100 dark:bg-gray-50/10 border-l !text-white-primary-text dark:!text-dark-primary-text border-dark-bg dark:border-white': $route.name == 'pendingAthletesCoach' }">
+                      <p>Pending Athletes</p>
                     </router-link>
                 </div>
               </li>
