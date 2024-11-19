@@ -24,7 +24,7 @@
                         <div class="flex gap-x-3">
                             <img :src="school?.schoolLogo" alt="school logo" class="w-14 bg-gray-200 dark:bg-gray-100/10 p-2 rounded">
                             <div class="flex flex-col justify-center">
-                                <h1 class="text-md capitalize">{{ school.schoolName  }}</h1>
+                                <router-link :to="{ name: 'schoolDetails', params: { id: school.schoolId} }" class="text-md capitalize">{{ school.schoolName  }}</router-link>
                                 <p class="text-xs text-gray-500 font-semibold uppercase">{{ school.schoolAbbreviation }}</p>
                             </div>
                         </div>
@@ -50,7 +50,7 @@
                                 <Icon icon="mdi:check" class="text-2xl" />
                             </button>
                             <button class="bg-custom-secondary text-red-500 w-fit text-xl">
-                                <Icon icon="mdi:trash" class="text-2xl" />
+                                <Icon icon="mdi:trash" class="text-2xl" @click="showDeleteModal(school.schoolId, index)" />
                             </button>
                         </div>
                     </td>
@@ -91,12 +91,14 @@
                 </tr>
             </tbody>
         </table>
+
+        <deleteModal v-if="showModalDelete" @closeModal="showModalDelete = false" @acceptDelete="deleteSchool()" :user="'school'" :type="'delete'" />
     </div>
 </template>
 
 <script setup>
 import { db } from '@config/firebaseConfig'
-import { collection, getDocs, query, where, updateDoc, doc, addDoc, Timestamp } from 'firebase/firestore'
+import { collection, getDocs, query, where, updateDoc, doc, addDoc, Timestamp, deleteDoc } from 'firebase/firestore'
 import { computed, onMounted, ref } from 'vue'
 import { useAuthStore } from '@store'
 import { useToast } from 'vue-toast-notification'
@@ -105,6 +107,8 @@ import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import { saveAs } from 'file-saver';
 import ImageModule from 'docxtemplater-image-module-free';
+import deleteModal from '@components/deleteModal.vue'
+import axios from 'axios'
 
 const $toast = useToast();
 
@@ -211,6 +215,88 @@ const acceptSchool = async (schoolId, index) => {
         $toast.success('School accepted successfully')
     } catch (error) {
         $toast.error(error.message)
+    }
+}
+
+// delete school
+const deleting = ref(false)
+const schoolIdToDelete = ref('')
+const schoolIndexToDelete = ref('')
+const showModalDelete = ref(false)
+
+const showDeleteModal = (uid, index) => {
+    showModalDelete.value = true
+    schoolIdToDelete.value = uid
+    schoolIndexToDelete.value = index
+}
+
+const deleteSchool = async () => {
+    const userRoleRef = collection(db, 'userRole')
+    const schoolRef = collection(db, 'schools')
+    const athleteRef = collection(db, 'athletes')
+    const coachRef = collection(db, 'coaches')
+    try {
+        deleting.value = true
+        const res = await axios.delete(`${import.meta.env.VITE_SERVER_URL}delete-user/${schoolIdToDelete.value}`)
+        console.log(res.data)
+
+        if(res.data === 'successfully deleted'){
+            const q = query(
+                schoolRef,
+                where('schoolId', '==', schoolIdToDelete.value)
+            )
+
+            const q2 = query(
+                userRoleRef,
+                where('userId', '==', schoolIdToDelete.value)
+            )
+
+            const q3 = query(
+                athleteRef,
+                where('school', '==', schoolIdToDelete.value)
+            )
+
+            const q4 = query(
+                coachRef,
+                where('school', '==', schoolIdToDelete.value)
+            )
+
+            const snapshots = await getDocs(q)
+            const snapshots2 = await getDocs(q2)
+            const snapshots3 = await getDocs(q3)
+            const snapshots4 = await getDocs(q4)
+         
+            for(const snapshot of snapshots.docs){
+                const docRef = doc(db, 'schools', snapshot.id)
+                await deleteDoc(docRef)
+            }
+
+            for(const snapshot of snapshots2.docs){
+                const docRef = doc(db, 'userRole', snapshot.id)
+                await deleteDoc(docRef)
+            }
+
+            for(const snapshot of snapshots3.docs){
+                const docRef = doc(db, 'athletes', snapshot.id)
+                await deleteDoc(docRef)
+            }
+
+            for(const snapshot of snapshots4.docs){
+                const docRef = doc(db, 'coaches', snapshot.id)
+                await deleteDoc(docRef)
+            }
+            showModalDelete.value = false
+
+            schools.value.splice(schoolIndexToDelete.value, 1)
+            
+            $toast.success('Deleted school successfully.')
+        }
+    } catch (error) {
+        console.log(error)
+        $toast.error('Failed to delete school')
+    } finally {
+        deleting.value = false
+        showModalDelete.value = false
     }
 }
 

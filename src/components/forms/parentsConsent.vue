@@ -15,7 +15,7 @@
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>2x2 Picture</label>
-                <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload('2x2Picture')">
+                <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload($event, '2x2Picture')">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Sports Event</label>
@@ -54,7 +54,7 @@
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>E-Signature</label>
-                <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload('fEsign')">
+                <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload($event, 'fEsign')">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Mothers Name</label>
@@ -62,7 +62,7 @@
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>E-Signature</label>
-                <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload('mEsign')">
+                <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload($event, 'mEsign')">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Guardians Name</label>
@@ -70,7 +70,7 @@
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>E-Signature</label>
-                <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload('gEsign')">
+                <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload($event, 'gEsign')">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Semester</label>
@@ -214,17 +214,24 @@ const fESign = ref(null)
 const mESign = ref(null)
 const gESign = ref(null)
 
-const handleImageUpload = (imageType) => {
-    if(imageType === '2x2Picture'){
-        picture2x2.value = event.target.files[0] 
-    }else if(imageType === 'fEsign'){
-        fESign.value = event.target.files[0] 
-    }else if(imageType === 'mEsign'){
-        mESign.value = event.target.files[0] 
-    }else if(imageType === 'gEsign'){
-        gESign.value = event.target.files[0] 
+const handleImageUpload = (event, imageType) => {
+    if (event.target && event.target.files && event.target.files[0]) {
+        const file = event.target.files[0];
+        if (imageType === '2x2Picture') {
+            picture2x2.value = file;
+        } else if (imageType === 'fEsign') {
+            fESign.value = file;
+        } else if (imageType === 'mEsign') {
+            mESign.value = file;
+        } else if (imageType === 'gEsign') {
+            gESign.value = file;
+        }
+    } else {
+        console.error('No file selected');
     }
-}
+};
+
+
 
 
 
@@ -232,42 +239,66 @@ const handleImageUpload = (imageType) => {
 const formRef = collection(db, 'forms')
 const submittingForm = ref(false)
 
-const loadImageAsArrayBuffer = async (imageUrl) => {
-  const response = await fetch(imageUrl)
-  if (!response.ok) throw new Error('Network response was not ok')
-  return await response.arrayBuffer()
-}
-
-const submitForm = async (index) => {
+const loadImageAsArrayBuffer = async (file) => {
     try {
-        const response = await fetch('/PRISAA-FORM-2019-02-Parental-Consent-1.docx')
+        if (file instanceof File) {
+            return await file.arrayBuffer();
+        }
+        throw new Error('Invalid file type');
+    } catch (error) {
+        throw new Error('Failed to load image: ' + error.message);
+    }
+};
 
-        if (!response.ok) throw new Error('Failed to fetch DOCX template')
 
-        const docxArrayBuffer = await response.arrayBuffer()
 
-        const imageArrayBuffer = await loadImageAsArrayBuffer(picture2x2.value)
 
-        const zip = new PizZip(docxArrayBuffer)
+const submitForm = async () => {
+    submittingForm.value = true;
+    try {
+        // Step 1: Fetch the DOCX template
+        const response = await fetch('/PRISAA-FORM-2019-02-Parental-Consent-1.docx');
+        if (!response.ok) throw new Error('Failed to fetch DOCX template');
+        const docxArrayBuffer = await response.arrayBuffer();
 
+        // Step 2: Load images as ArrayBuffer
+        const picture2x2Buffer = picture2x2.value ? await loadImageAsArrayBuffer(picture2x2.value) : null;
+        const fESignBuffer = fESign.value ? await loadImageAsArrayBuffer(fESign.value) : null;
+        const mESignBuffer = mESign.value ? await loadImageAsArrayBuffer(mESign.value) : null;
+        const gESignBuffer = gESign.value ? await loadImageAsArrayBuffer(gESign.value) : null;
+
+        // Step 3: Configure ImageModule for Docxtemplater
         const imageModule = new ImageModule({
             centered: false,
-            getImage: function () {
-                return imageArrayBuffer
+            getImage: (tagValue) => {
+                switch (tagValue) {
+                    case 'image':
+                        return picture2x2Buffer || new ArrayBuffer(0);
+                    case 'fEsign':
+                        return fESignBuffer || new ArrayBuffer(0);
+                    case 'mEsign':
+                        return mESignBuffer || new ArrayBuffer(0);
+                    case 'gEsign':
+                        return gESignBuffer || new ArrayBuffer(0);
+                    default:
+                        return new ArrayBuffer(0);
+                }
             },
-            getSize: function () {
-                return [200, 200]
+            getSize: (tagValue) => {
+                // Set size based on the tag
+                return [200, 200]; // Adjust image size if needed
             },
-        })
+        });
 
-        const doc = new Docxtemplater(zip, {
-            modules: [imageModule],
-        })
+        const zip = new PizZip(docxArrayBuffer);
+        const doc = new Docxtemplater(zip, { modules: [imageModule] });
 
+        // Step 4: Set template data
         doc.setData({
-            // image: picture2x2.value,
+            image: 'image',
             name: formData.value.name,
             schoolname: formData.value.schoolName,
+            sport: formData.value.sport,
             cluster: 'NOPSSCEA',
             provDate: moment(formData.value.provDate).format('LL'),
             provVenue: formData.value.provVenue,
@@ -277,41 +308,45 @@ const submitForm = async (index) => {
             natVenue: formData.value.natVenue,
             fathersName: formData.value.fathersName,
             mothersName: formData.value.mothersName,
-            guardiansName: formData.value.guardianName,
-            sports: formData.value.sport
-        })
-
-        doc.render()
-
-        submittingForm.value = true
-
-        const output = doc.getZip().generate({
-            type: 'blob',
-            mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        })
-
-        const storagePath = `forms/${formData.value.name}-parents-consent.docx`;
-        const storageReference = storageRef(storage, storagePath);
-        
-        await uploadBytes(storageReference, output);
-
-        const downloadURL = await getDownloadURL(storageReference);
-
-        await addDoc(formRef, {
-            sy: formData.value.sy,
+            guardianName: formData.value.guardianName,
+            fEsign: 'fEsign',
+            mEsign: 'mEsign',
+            gEsign: 'gEsign',
             semester: formData.value.semester,
-            formName: 'Parents Consent',
-            storagePath: downloadURL,
-            userId: currentUser.value?.uid,
+            sy: formData.value.sy,
+        });
+
+        // Step 5: Render the document
+        doc.render();
+
+        // Step 6: Generate Blob from the rendered document
+        const generatedDoc = doc.getZip().generate({ type: 'blob' });
+
+        // Step 7: Upload generated document to Firebase Storage
+        const docStorageRef = storageRef(storage, `forms/${formData.value.name}-consent.docx`);
+        await uploadBytes(docStorageRef, generatedDoc);
+
+        // Get the download URL
+        const docDownloadUrl = await getDownloadURL(docStorageRef);
+
+        // Step 8: Save form data along with the download URL to Firestore
+        await addDoc(formRef, {
+            ...formData.value,
+            userId: currentUser.value.uid,
+            documentUrl: docDownloadUrl,
             createdAt: new Date(),
         });
 
-        closeModal()
-
-        submittingForm.value = false
-        $toast.success('Filled out form successfully')
+        $toast.success('Form submitted successfully!');
+        closeModal();
     } catch (error) {
-        $toast.error(error.message)
+        console.error('Error submitting form:', error);
+        $toast.error('Failed to submit form');
+    } finally {
+        submittingForm.value = false;
     }
-}
+};
+
+
+
 </script>

@@ -134,13 +134,13 @@ const routes =  [
             },
             {
                 path: 'schedules',
-                name: 'eventSchedules',
-                component: () => import('../views/general/childs/EventSchedules.vue')
+                name: 'eventSchedulesFinished',
+                component: () => import('../views/general/childs/FinishedEventSchedules.vue')
             },
             {
                 path: 'medals',
-                name: 'eventMedals',
-                component: () => import('../views/general/childs/EventMedals.vue')
+                name: 'eventMedalsFinished',
+                component: () => import('../views/general/childs/FinishedEventMedals.vue')
             }
         ],
         meta: {

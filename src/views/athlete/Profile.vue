@@ -2,7 +2,7 @@
     <div class="space-y-10">
         <div class="border dark:border-gray-100/10 h-[30dvh] rounded-md p-5 flex gap-x-5">
             <div class="flex flex-col w-1/5 items-center justify-center h-full gap-y-5 border-r dark:border-gray-100/10">
-                <img v-if="athleteData.photoUrl" :src="athleteData.photoUrl" alt="profile picture" class="w-32 aspect-square rounded-full">
+                <img v-if="athleteData.photoUrl" :src="athleteData.photoUrl" alt="profile picture" class="w-32 aspect-square rounded-full border">
                 <div v-else class="w-32 aspect-square rounded-full bg-gray-300 animate-pulse"></div>
                 <div class="flex flex-col items-center">
                     <h1 class="font-bold text-lg">{{ athleteData.firstName }} {{ athleteData.middleName }} {{ athleteData.lastName }}</h1>
@@ -39,24 +39,24 @@
                     </thead>
                     <tbody v-if="documents.length">
                         <tr v-for="(document, index) in documents" :key="index">
-                            <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">{{ document.documentType }}</td>
-                            <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">{{ document.file }}</td>
+                            <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">{{ document?.documentType }}</td>
+                            <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">{{ document?.file }}</td>
                             <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">
                                 <div class="flex justify-center gap-x-2">
-                                    <a v-if="document.downloadUrl.includes('docx')"
-                                        :href="`https://docs.google.com/viewer?url=${encodeURIComponent(document.downloadUrl)}&embedded=true`"
+                                    <a v-if="document?.downloadUrl.includes('docx')"
+                                        :href="`https://docs.google.com/viewer?url=${encodeURIComponent(document?.downloadUrl)}&embedded=true`"
                                         target="_blank"
                                         >
                                         <Icon icon="bxs:file-doc" class="text-2xl text-green-500 hover:scale-110" />
                                     </a>
-                                    <a v-else-if="document.downloadUrl.includes('pdf')"
-                                        :href="document.downloadUrl"
+                                    <a v-else-if="document?.downloadUrl.includes('pdf')"
+                                        :href="document?.downloadUrl"
                                         target="_blank"
                                         >
                                         <Icon icon="bxs:file-pdf" class="text-2xl text-green-500 hover:scale-110" />
                                     </a>
                                     <a v-else 
-                                        :href="document.downloadUrl"
+                                        :href="document?.downloadUrl"
                                         target="_blank"
                                         >
                                         <Icon icon="material-symbols:image-outline" class="text-2xl text-green-500 hover:scale-110" />
@@ -116,11 +116,15 @@
             </div>
         </div>
         <!-- certificates -->
-        <div class="border dark:border-gray-100/10 h-fit rounded-md p-5 flex flex-col gap-y-5">
-            <h1 class="text-lg font-bold">Certificates</h1>
-            <div>
-                <img :src="athleteData.certUrl" alt="certificate" class="w-1/4 aspect-square">
+         <div class="border dark:border-gray-100/10 h-fit rounded-md p-5 flex flex-col gap-y-5">
+            <div class="flex justify-between">
+                <h1 class="text-lg font-bold">Certificates</h1>
+                <button class="border border-blue-900 rounded px-3 text-blue-900" @click="addDocumentModal = true">Add Certificates</button>
             </div>
+            <div v-if="certificates.length" class="w-full grid-cols-4 gap-5">
+                <img v-for="certificate in certificates" :key="certificate.id" :src="certificate.downloadUrl" alt="certificate" class="w-1/4 aspect-square shadow rounded-md">
+            </div>
+            <p v-else class="text-center">No certificates to show</p>
         </div>
 
         <!-- add new document -->
@@ -175,6 +179,7 @@ const getData = async () => {
         getForms()
         getTrainingDetails()
         getDocuments()
+        getCertificates()
     } catch (error) {
         $toast.error(error.message)
         console.log(error)
@@ -289,10 +294,34 @@ const getDocuments = async () => {
     }
 }
 
+// get certificates
+const certificates = ref([])
+const certRef = collection(db, 'certificates')
+
+const getCertificates = async () => {
+    try {
+        const q = query(
+            certRef,
+            where('userId', '==', currentUser.value?.uid)
+        )
+        const snapshots = await getDocs(q)
+
+        snapshots.docs.forEach(doc => {
+            certificates.value.push({
+                id: doc.id,
+                ...doc.data()
+            })
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // close add docs modal insert data if exists
 const closeModal = (data) => {
-    console.log(data)
-    documents.value.push(data)
+    if(data){
+        documents.value.push(data)
+    }
 
     addDocumentModal.value = false
 }

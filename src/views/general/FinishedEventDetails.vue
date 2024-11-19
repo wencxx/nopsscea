@@ -8,12 +8,12 @@
                     </router-link>
                 </li>
                 <li class="w-full h-full p-2" :class="{ 'bg-gray-200 dark:bg-gray-100/10': $route.name === 'eventSchedules' }">
-                    <router-link :to="{ name: 'eventSchedules', query: { status: $route.query.status } }">
+                    <router-link :to="{ name: 'eventSchedulesFinished', query: { status: $route.query.status } }">
                         <Icon icon="healthicons:i-schedule-school-date-time" class="text-xl" />
                     </router-link>
                 </li>
                 <li class="w-full h-full p-2" :class="{ 'bg-gray-200 dark:bg-gray-100/10': $route.name === 'eventMedals' }">
-                    <router-link :to="{ name: 'eventMedals', query: { status: $route.query.status } }">
+                    <router-link :to="{ name: 'eventMedalsFinished', query: { status: $route.query.status } }">
                         <Icon icon="mdi:medal-outline" class="text-lg" />
                     </router-link>
                 </li>

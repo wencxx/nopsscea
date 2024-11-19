@@ -21,7 +21,7 @@
                         <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">{{ form.sy }}</td>
                         <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">
                             <div class="flex justify-center gap-x-2">
-                                <a :href="form.storagePath">
+                                <a :href="form.documentUrl">
                                     <Icon icon="mdi:download" class="text-2xl text-green-500 hover:scale-110" />
                                 </a>
                                 <button @click="deleteForm(form.id, index)">

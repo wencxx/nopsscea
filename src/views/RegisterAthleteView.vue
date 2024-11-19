@@ -198,7 +198,7 @@ import { db, auth, google, storage } from '@config/firebaseConfig'
 import { collection, addDoc, getDocs } from 'firebase/firestore'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { getDownloadURL, ref as storageRef, uploadBytes } from 'firebase/storage'
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
@@ -510,7 +510,7 @@ onMounted(() => {
     }
 }) 
 
-onMounted(() => {
+onUnmounted(() => {
     localStorage.removeItem('data')
 }) 
 </script>
