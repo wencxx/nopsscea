@@ -130,7 +130,7 @@
         <!-- add new document -->
          <addDocument v-if="addDocumentModal" @closeModal="closeModal" />
          <addCertificate v-if="addCertificateModal" @closeModal="closeCertificateModal" />
-         <viewImagesModal v-if="showViewImagesModal" :images="imagesToView" :currentImage="currentImageViewing" @closeModal="showViewImagesModal = false" />
+         <viewImagesModal v-if="showViewImagesModal" :images="imagesToView" :currentImage="currentImageViewing" @closeModal="showViewImagesModal = false" @deleteImage="deleteCert" />
     </div>
 </template>
 
@@ -351,6 +351,12 @@ const viewImages = (images, index) => {
     showViewImagesModal.value = true
     imagesToView.value = images
     currentImageViewing.value = index
+}
+
+// delete certificates
+const deleteCert = (data) => {
+    showViewImagesModal.value = false
+    certificates.value.splice(data)
 }
 
 

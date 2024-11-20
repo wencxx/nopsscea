@@ -112,6 +112,7 @@ import Docxtemplater from 'docxtemplater'
 import { saveAs } from 'file-saver'
 import ImageModule from 'docxtemplater-image-module-free'
 import moment from 'moment'
+import { PDFDocument } from 'pdf-lib'
 
 onMounted(() => {
     getAthleteData()
@@ -216,20 +217,20 @@ const gESign = ref(null)
 
 const handleImageUpload = (event, imageType) => {
     if (event.target && event.target.files && event.target.files[0]) {
-        const file = event.target.files[0];
+        const file = event.target.files[0]
         if (imageType === '2x2Picture') {
-            picture2x2.value = file;
+            picture2x2.value = file
         } else if (imageType === 'fEsign') {
-            fESign.value = file;
+            fESign.value = file
         } else if (imageType === 'mEsign') {
-            mESign.value = file;
+            mESign.value = file
         } else if (imageType === 'gEsign') {
-            gESign.value = file;
+            gESign.value = file
         }
     } else {
-        console.error('No file selected');
+        console.error('No file selected')
     }
-};
+}
 
 
 
@@ -242,58 +243,53 @@ const submittingForm = ref(false)
 const loadImageAsArrayBuffer = async (file) => {
     try {
         if (file instanceof File) {
-            return await file.arrayBuffer();
+            return await file.arrayBuffer()
         }
-        throw new Error('Invalid file type');
+        throw new Error('Invalid file type')
     } catch (error) {
-        throw new Error('Failed to load image: ' + error.message);
+        throw new Error('Failed to load image: ' + error.message)
     }
-};
+}
 
 
 
 
 const submitForm = async () => {
-    submittingForm.value = true;
+    submittingForm.value = true
     try {
-        // Step 1: Fetch the DOCX template
-        const response = await fetch('/PRISAA-FORM-2019-02-Parental-Consent-1.docx');
-        if (!response.ok) throw new Error('Failed to fetch DOCX template');
-        const docxArrayBuffer = await response.arrayBuffer();
+        const response = await fetch('/PRISAA-FORM-2019-02-Parental-Consent-1.docx')
+        if (!response.ok) throw new Error('Failed to fetch DOCX template')
+        const docxArrayBuffer = await response.arrayBuffer()
 
-        // Step 2: Load images as ArrayBuffer
-        const picture2x2Buffer = picture2x2.value ? await loadImageAsArrayBuffer(picture2x2.value) : null;
-        const fESignBuffer = fESign.value ? await loadImageAsArrayBuffer(fESign.value) : null;
-        const mESignBuffer = mESign.value ? await loadImageAsArrayBuffer(mESign.value) : null;
-        const gESignBuffer = gESign.value ? await loadImageAsArrayBuffer(gESign.value) : null;
+        const picture2x2Buffer = picture2x2.value ? await loadImageAsArrayBuffer(picture2x2.value) : null
+        const fESignBuffer = fESign.value ? await loadImageAsArrayBuffer(fESign.value) : null
+        const mESignBuffer = mESign.value ? await loadImageAsArrayBuffer(mESign.value) : null
+        const gESignBuffer = gESign.value ? await loadImageAsArrayBuffer(gESign.value) : null
 
-        // Step 3: Configure ImageModule for Docxtemplater
         const imageModule = new ImageModule({
             centered: false,
             getImage: (tagValue) => {
                 switch (tagValue) {
                     case 'image':
-                        return picture2x2Buffer || new ArrayBuffer(0);
+                        return picture2x2Buffer || new ArrayBuffer(0)
                     case 'fEsign':
-                        return fESignBuffer || new ArrayBuffer(0);
+                        return fESignBuffer || new ArrayBuffer(0)
                     case 'mEsign':
-                        return mESignBuffer || new ArrayBuffer(0);
+                        return mESignBuffer || new ArrayBuffer(0)
                     case 'gEsign':
-                        return gESignBuffer || new ArrayBuffer(0);
+                        return gESignBuffer || new ArrayBuffer(0)
                     default:
-                        return new ArrayBuffer(0);
+                        return new ArrayBuffer(0)
                 }
             },
             getSize: (tagValue) => {
-                // Set size based on the tag
-                return [200, 200]; // Adjust image size if needed
+                return [200, 200]
             },
-        });
+        })
 
-        const zip = new PizZip(docxArrayBuffer);
-        const doc = new Docxtemplater(zip, { modules: [imageModule] });
+        const zip = new PizZip(docxArrayBuffer)
+        const doc = new Docxtemplater(zip, { modules: [imageModule] })
 
-        // Step 4: Set template data
         doc.setData({
             image: 'image',
             name: formData.value.name,
@@ -314,39 +310,44 @@ const submitForm = async () => {
             gEsign: 'gEsign',
             semester: formData.value.semester,
             sy: formData.value.sy,
-        });
+        })
 
-        // Step 5: Render the document
-        doc.render();
+        doc.render()
 
-        // Step 6: Generate Blob from the rendered document
-        const generatedDoc = doc.getZip().generate({ type: 'blob' });
+        const generatedDoc = doc.getZip().generate({ type: 'blob' })
 
-        // Step 7: Upload generated document to Firebase Storage
-        const docStorageRef = storageRef(storage, `forms/${formData.value.name}-consent.docx`);
-        await uploadBytes(docStorageRef, generatedDoc);
+        const docStorageRef = storageRef(storage, `forms/${formData.value.name}-consent.docx`)
+        await uploadBytes(docStorageRef, generatedDoc)
 
-        // Get the download URL
-        const docDownloadUrl = await getDownloadURL(docStorageRef);
+        const docDownloadUrl = await getDownloadURL(docStorageRef)
 
-        // Step 8: Save form data along with the download URL to Firestore
+        // Convert DOCX to PDF
+        const pdfDoc = await PDFDocument.create()
+        const page = pdfDoc.addPage([595, 842]) 
+        page.drawText('Your PDF conversion logic here', { x: 50, y: 800 })
+
+        const pdfBytes = await pdfDoc.save()
+
+        const pdfStorageRef = storageRef(storage, `forms/${formData.value.name}-consent.pdf`)
+        await uploadBytes(pdfStorageRef, pdfBytes)
+
+        const pdfDownloadUrl = await getDownloadURL(pdfStorageRef)
+
         await addDoc(formRef, {
             ...formData.value,
             userId: currentUser.value.uid,
             documentUrl: docDownloadUrl,
+            pdfUrl: pdfDownloadUrl,
             createdAt: new Date(),
-        });
+        })
 
-        $toast.success('Form submitted successfully!');
-        closeModal();
+        $toast.success('Form submitted successfully!')
+        closeModal()
     } catch (error) {
-        console.error('Error submitting form:', error);
-        $toast.error('Failed to submit form');
+        console.error('Error submitting form:', error)
+        $toast.error('Failed to submit form')
     } finally {
-        submittingForm.value = false;
+        submittingForm.value = false
     }
-};
-
-
-
+}
 </script>
