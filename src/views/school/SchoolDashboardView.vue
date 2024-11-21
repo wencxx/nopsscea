@@ -61,13 +61,37 @@
                         <th class="w-1/6 py-1 border dark:border-gray-100/10">Total</th>
                     </tr>
                 </thead>
-                <tbody >
+                <tbody v-if="!loadingEvents && eventsJoined.length">
                     <tr v-for="event in eventsJoined" :key="event.id" class="text-md">
                         <td class="p-2 border dark:border-gray-100/10 text-center">{{ event.title }}</td>
                         <td class="p-2 border dark:border-gray-100/10 text-center">{{ event.gold || 0 }}</td>
                         <td class="p-2 border dark:border-gray-100/10 text-center">{{ event.silver || 0 }}</td>
                         <td class="p-2 border dark:border-gray-100/10 text-center">{{ event.bronze || 0 }}</td>
                         <td class="p-2 border dark:border-gray-100/10 text-center">{{ event.gold + event.silver + event.bronze || 0 }}</td>
+                    </tr>
+                </tbody>
+                <tbody v-if="!loadingEvents && !eventsJoined.length">
+                    <tr class="text-md">
+                        <td class="p-2 border dark:border-gray-100/10 text-center" colspan="6">No events joined yet</td>
+                    </tr>
+                </tbody>
+                <tbody v-if="loadingEvents">
+                    <tr v-for="i in 5" :key="i">
+                        <td class="p-2 border">
+                            <div class="w-3/4 h-7 mx-auto rounded bg-gray-200 animate-pulse"></div>
+                        </td>
+                        <td class="p-2 border">
+                            <div class="w-1/2 h-7 mx-auto rounded bg-gray-200 animate-pulse"></div>
+                        </td>
+                        <td class="p-2 border">
+                            <div class="w-1/2 h-7 mx-auto rounded bg-gray-200 animate-pulse"></div>
+                        </td>
+                        <td class="p-2 border">
+                            <div class="w-1/2 h-7 mx-auto rounded bg-gray-200 animate-pulse"></div>
+                        </td>
+                        <td class="p-2 border">
+                            <div class="w-1/2 h-7 mx-auto rounded bg-gray-200 animate-pulse"></div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -309,12 +333,14 @@ const getCoachAndAthlete = async () => {
 
 // events joined storage
 const eventsJoined = ref([])
+const loadingEvents = ref(false)
 
 // count joineds event
 const eventCounts = ref(0)
 const partRefs = collection(db, 'participants')
 const countEventsJoined = async () => {
     try {
+        loadingEvents.value = true
         const q = query(
             partRefs,
             where('schoolId', '==', currentUser.value?.uid)
@@ -330,8 +356,9 @@ const countEventsJoined = async () => {
                 ...await getJoinedEvents(doc.data().eventId)
             })
         }
+        loadingEvents.value = false
     } catch (error) {
-        
+        console.log(error)   
     }
 }
 

@@ -1,6 +1,6 @@
 <template>
     <div class="space-y-10">
-        <div class="border dark:border-gray-100/10 h-[30dvh] rounded-md p-5 flex gap-x-5">
+        <div class="border dark:border-gray-100/10 h-[35dvh] rounded-md p-5 flex gap-x-5">
             <div class="flex flex-col w-1/5 items-center justify-center h-full gap-y-5 border-r dark:border-gray-100/10">
                 <img v-if="athleteData.photoUrl" :src="athleteData.photoUrl" alt="profile picture" class="w-32 aspect-square rounded-full border">
                 <div v-else class="w-32 aspect-square rounded-full bg-gray-300 animate-pulse border"></div>
@@ -156,12 +156,13 @@
         <div class="border dark:border-gray-100/10 h-fit rounded-md p-5 flex flex-col gap-y-5">
             <h1 class="text-lg font-bold">Certificates</h1>
             <div v-if="certificates.length" class="w-full grid grid-cols-4 gap-2">
-                <img v-for="certificate in certificates" :key="certificate.id" :src="certificate.downloadUrl" alt="certificate" class="w-full aspect-square shadow rounded-md">
+                <img v-for="certificate in certificates" :key="certificate.id" :src="certificate.downloadUrl" alt="certificate" class="w-full aspect-square shadow rounded-md" @click="viewImages(certificates, index)">
             </div>
             <p v-else class="text-center">No certificates to show</p>
         </div>
 
         <deleteModal v-if="showModalDelete" @closeModal="showModalDelete = false" @acceptDelete="deleteAthlete()" :user="'athlete'" :type="'remove'" />
+            <viewImagesModal v-if="showViewImagesModal" :images="imagesToView" :currentImage="currentImageViewing" @closeModal="showViewImagesModal = false" @deleteImage="deleteCert" />
     </div>
 </template>
 
@@ -177,6 +178,7 @@ import moment from 'moment'
 import lineChart from '@components/charts/lineChart.vue'
 import axios from 'axios'
 import deleteModal from '@components/deleteModal.vue'
+import viewImagesModal from '@components/viewImages.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -466,6 +468,18 @@ const deleteAthlete = async () => {
     } finally {
         deleting.value = false
     }
+}
+
+// view images
+const showViewImagesModal = ref(false)
+
+const imagesToView = ref(null)
+const currentImageViewing = ref(0)
+
+const viewImages = (images, index) => {
+    showViewImagesModal.value = true
+    imagesToView.value = images
+    currentImageViewing.value = index
 }
 
 onMounted(() => {

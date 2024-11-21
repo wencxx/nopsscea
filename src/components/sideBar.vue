@@ -18,7 +18,7 @@
               </li>
               <li>
                 <router-link :to="{ name: 'athleteNewsfeed' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'athleteNewsfeed' }">
-                  <Icon icon="mdi:view-dashboard-outline" class="text-xl"/>
+                  <Icon icon="gridicons:posts" class="text-xl"/>
                   <p>Newsfeed</p>
                 </router-link>
               </li>
@@ -117,7 +117,7 @@
               <li>
                 <router-link :to="{ name: 'announcements' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'announcements' }">
                   <Icon icon="mdi:announcement-outline" class="text-xl"/>
-                  <p>Announcemens</p>
+                  <p>Announcemets</p>
                 </router-link>
               </li>
             </ul>
@@ -133,7 +133,7 @@
               </li>
               <li>
                 <router-link :to="{ name: 'athleteNewsfeed' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'athleteNewsfeed' }">
-                  <Icon icon="mdi:view-dashboard-outline" class="text-xl"/>
+                  <Icon icon="gridicons:posts" class="text-xl"/>
                   <p>Newsfeed</p>
                 </router-link>
               </li>
@@ -177,7 +177,7 @@
             <ul class="space-y-2">
               <li>
                 <router-link :to="{ name: 'athleteNewsfeed' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'coachDashboard' }">
-                  <Icon icon="mdi:view-dashboard-outline" class="text-xl"/>
+                  <Icon icon="gridicons:posts" class="text-xl"/>
                   <p>Newsfeed</p>
                 </router-link>
               </li>
