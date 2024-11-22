@@ -65,7 +65,7 @@
                         <th class="w-1/12 py-1 border dark:border-gray-100/10 font-medium">Total</th>
                     </tr>
                 </thead>
-                <tbody v-if="!schoolMedal.length">
+                <tbody v-if="schoolMedal.length">
                     <tr v-for="(medal, index) in schoolMedal" :key="medal" class="text-md">
                         <td class="p-2 border dark:border-gray-100/10 text-center">{{ index + 1 }}</td>
                         <td class="p-2 border dark:border-gray-100/10">
