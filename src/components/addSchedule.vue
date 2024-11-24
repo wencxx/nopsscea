@@ -1,6 +1,6 @@
 <template>
     <div class="h-screen w-screen bg-black/10 fixed top-0 left-0 flex items-center justify-center">
-        <form @submit.prevent="addSchedule" class="bg-white p-4 rounded shadow space-y-5 dark:text-black">
+        <form @submit.prevent="addSchedule" class="bg-white w-96 p-4 rounded shadow space-y-5 dark:text-black">
             <h1 class="text-center text-lg">Add Schedule</h1>
             <p v-if="hasEmptyField" class="!-mb-3 bg-red-500 pl-2 text-white rounded">All fields are required</p>
             <div class="flex flex-col gap-y-2">

@@ -10,11 +10,11 @@
             </div>
         </div>
 
-        <div v-for="(sport, index) in sports" :key="index" class="space-y-2">
-            <div class="space-y-2" v-if="filteredSchedule(sport).length">
+        <div v-for="(sport, index) in sports.filter(s => filteredSchedule(s).length)" :key="index" class="space-y-2">
+            <div class="space-y-2">
                 <h1 class="text-lg uppercase">{{ sport }}</h1>
                 <div class="grid grid-cols-2 gap-x-4">
-                    <div v-for="schedule in filteredSchedule(sport)" :key="schedule.id" :class="{ '!bg-blue-900': index / 2 === 0 }" class="bg-red-600 h-16 py-9 px-5 rounded flex justify-between items-center">
+                    <div v-for="schedule in filteredSchedule(sport)" :key="schedule.id" :class="{ '!bg-blue-900': index % 2 === 0 }" class="bg-red-600 h-16 py-9 px-5 rounded-lg flex justify-between items-center">
                         <div class="flex items-center h-full gap-x-5">
                             <div class="flex items-center gap-x-2">
                                 <img v-if="getSchoolDetails(schedule.participant1)?.schoolLogo" :src="getSchoolDetails(schedule.participant1)?.schoolLogo" alt="School logo" class="h-12 object-cover aspect-square bg-gray-100 rounded-full">
