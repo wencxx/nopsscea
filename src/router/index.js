@@ -4,6 +4,7 @@ import adminDashboard from '../views/admin/AdminDashboardView.vue'
 import schoolDashboard from '../views/school/SchoolDashboardView.vue'
 import coachDashboard from '../views/coach/CoachDashboardView.vue'
 import athleteNewsfeed from '../views/athlete/newsfeed.vue'
+import athleteProfile from '../views/athlete/Profile.vue'
 import Login from '../views/LoginView.vue'
 
 const routes =  [
@@ -266,7 +267,7 @@ const routes =  [
     {
         path: '/athlete',
         name: 'athleteProfile',
-        component: () => import('../views/athlete/Profile.vue')
+        component: athleteProfile
     },
     {
         path: '/athlete/newsfeed',

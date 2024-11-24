@@ -157,7 +157,7 @@
                         <Icon icon="mage:image-upload" class="text-xl"/>
                         <p class="line-clamp-1 text-sm">{{ imageNameBirthCert }}</p>
                     </div>
-                    <input @change="handleImageUploadBirthCert" type="file" class="hidden" id="fileInputBirthCert">
+                    <input @change="handleImageUploadBirthCert" accept=".jpg, .jpeg, .jpg, .png, .docx, .docs" type="file" class="hidden" id="fileInputBirthCert">
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Transcript of Records</label>
@@ -165,7 +165,7 @@
                         <Icon icon="mage:image-upload" class="text-xl"/>
                         <p class="line-clamp-1 text-sm">{{ imageNameTOR }}</p>
                     </div>
-                    <input @change="handleImageUploadTOR" type="file" class="hidden" id="fileInputTOR">
+                    <input @change="handleImageUploadTOR" type="file" accept=".jpg, .jpeg, .jpg, .png, .docx, .docs" class="hidden" id="fileInputTOR">
                 </div>
             </div>
             <div class="flex items-center justify-end gap-x-5">

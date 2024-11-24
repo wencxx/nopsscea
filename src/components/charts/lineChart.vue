@@ -11,7 +11,8 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 } from 'chart.js'
 import { Line } from 'vue-chartjs'
 import { computed } from 'vue'
@@ -29,7 +30,8 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 )
 
 const chartData = computed(() => ({
@@ -39,7 +41,10 @@ const chartData = computed(() => ({
       label: props.label || 'Total #',
       backgroundColor: ['#1e3a8a'],
       data: props.data,
-      borderWidth: 1
+      borderWidth: 1,
+      borderColor: '#1e3a8a', 
+      backgroundColor: 'rgba(30, 58, 138, 0.3)',
+      fill: true 
     }
   ]
 }))

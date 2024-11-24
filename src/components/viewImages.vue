@@ -1,5 +1,5 @@
 <template>
-    <div class="w-screen h-screen top-0 left-0 fixed bg-black/10 !mt-0 flex items-center justify-between px-3">
+    <div class="w-screen h-screen top-0 left-0 fixed bg-black/10 dark:bg-black/55 !mt-0 flex items-center justify-between px-3">
         <div class="bg-gray-300 p-2 text-xl rounded-full cursor-pointer" @click="prev">
             <Icon icon="mdi:keyboard-arrow-left" />
         </div>

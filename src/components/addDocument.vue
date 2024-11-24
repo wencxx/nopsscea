@@ -13,7 +13,7 @@
             </div>
             <div class="flex flex-col gap-y-1">
                 <label>Insert File</label>
-                <input type="file" @change="changeFileUpload">
+                <input type="file" accept=".jpg, .jpeg, .jpg, .png, .docx, .docs" @change="changeFileUpload">
             </div>
             <div class="flex gap-x-2 justify-end !mt-8">
                 <button class="border border-blue-900 text-blue-900 w-1/3 rounded" @click="closeModal">Close</button>

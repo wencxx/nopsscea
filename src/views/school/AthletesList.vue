@@ -13,6 +13,7 @@
                         <th class="w-1/6 py-1 border border-gray-300 dark:border-gray-100/10">Address</th>
                         <th class="w-1/6 py-1 border border-gray-300 dark:border-gray-100/10">Email</th>
                         <th class="w-1/6 py-1 border border-gray-300 dark:border-gray-100/10">Birthday</th>
+                        <th class="w-1/6 py-1 border border-gray-300 dark:border-gray-100/10">Status</th>
                         <th class="w-1/6 py-1 border border-gray-300 dark:border-gray-100/10">Action</th>
                     </tr>
                 </thead>
@@ -30,6 +31,11 @@
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">{{ athlete.address }}</td>
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">{{ athlete.email }}</td>
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">{{ convertBirthday(athlete.birthday) }}</td>
+                        <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">
+                            <div class="w-full bg-orange-500 py-1 text-sm rounded text-white" :class="{ '!bg-green-500': athlete.status === 'Qualified', '!bg-red-500': athlete.status === 'Not Qualified' }">
+                                {{ athlete.status || 'Under Review' }}
+                            </div>
+                        </td>
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">
                             <div class="flex justify-center gap-x-3">
                                 <router-link :to="{ name: 'athleteDetails', params: { id: athlete.id } }" class="bg-custom-primary w-fit text-green-500 hover:scale-110">
