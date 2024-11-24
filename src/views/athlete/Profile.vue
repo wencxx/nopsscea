@@ -21,6 +21,32 @@
             </div>
         </div>
         <div>
+            <div class="flex justify-end gap-x-5">
+                <select class="border rounded px-2" v-model="monthQuery">
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+                <select class="border rounded px-2" v-model="yearQuery">
+                    <option>2023</option>
+                    <option>2024</option>
+                    <option>2025</option>
+                    <option>2026</option>
+                    <option>2027</option>
+                    <option>2028</option>
+                    <option>2029</option>
+                    <option>2030</option>
+                </select>
+            </div>
             <lineChart :label="'Training Progress'" :data="trainingData" :labels="trainingLabels" class="!h-[40dvh] !w-full" />
         </div>
         <div class="border dark:border-gray-100/10 h-fit rounded-md p-5 flex flex-col gap-y-5">
@@ -43,10 +69,11 @@
                             <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">{{ document?.file }}</td>
                             <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">
                                 <div class="flex justify-center gap-x-2">
-                                    <a v-if="document?.downloadUrl.includes('docx')"
-                                        :href="`https://docs.google.com/viewer?url=${encodeURIComponent(document?.downloadUrl)}&embedded=true`"
+                                    <a 
+                                        v-if="document?.downloadUrl.includes('docx')"
+                                        :href="`https://docs.google.com/viewer?url=${encodeURIComponent(document.downloadUrl)}&embedded=true&cache-bust=${new Date().getTime()}`"
                                         target="_blank"
-                                        >
+                                    >
                                         <Icon icon="bxs:file-doc" class="text-2xl text-green-500 hover:scale-110" />
                                     </a>
                                     <a v-else-if="document?.downloadUrl.includes('pdf')"
@@ -61,7 +88,6 @@
                                         >
                                         <Icon icon="material-symbols:image-outline" class="text-2xl text-green-500 hover:scale-110" />
                                     </a>
-
                                     <button @click="deleteForm(form.id, index)">
                                         <Icon icon="mdi:trash" class="text-2xl text-red-500 hover:scale-110" />
                                     </button>
@@ -79,7 +105,10 @@
         </div>
         <!-- form table -->
         <div class="border dark:border-gray-100/10 h-fit rounded-md p-5 flex flex-col gap-y-5">
-            <h1 class="text-lg font-bold">Forms</h1>
+            <div class="flex justify-between">
+                <h1 class="text-lg font-bold">Forms</h1>
+                <router-link :to="{ name: 'forms' }" class="border border-blue-900 rounded px-3 text-blue-900">Fill Out Form</router-link>
+            </div>
             <div class="bg-gray-100 dark:bg-gray-100/10 p-5 rounded-md">
                 <table class="min-w-[500px] md:w-full font-inter tracking-wide">
                     <thead>
@@ -97,7 +126,13 @@
                             <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">{{ form.sy }}</td>
                             <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">
                                 <div class="flex justify-center gap-x-2">
-                                    <a :href="form.storagePath">
+                                    <a 
+                                        :href="form.pdfUrl"
+                                        target="_blank"
+                                    >
+                                        <Icon icon="bxs:file-pdf" class="text-2xl text-green-500 hover:scale-110" />
+                                    </a>
+                                    <a :href="form.documentUrl">
                                         <Icon icon="mdi:download" class="text-2xl text-green-500 hover:scale-110" />
                                     </a>
                                     <button @click="deleteForm(form.id, index)">
@@ -131,6 +166,7 @@
          <addDocument v-if="addDocumentModal" @closeModal="closeModal" />
          <addCertificate v-if="addCertificateModal" @closeModal="closeCertificateModal" />
          <viewImagesModal v-if="showViewImagesModal" :images="imagesToView" :currentImage="currentImageViewing" @closeModal="showViewImagesModal = false" @deleteImage="deleteCert" />
+         <documentView v-if="isViewingDocs" :docsUrl="docsToView"   />
     </div>
 </template>
 
@@ -138,6 +174,7 @@
 import addDocument from '@components/addDocument.vue'
 import addCertificate from '@components/addCertificate.vue'
 import viewImagesModal from '@components/viewImages.vue'
+import documentView from '@components/documentView.vue'
 import { useRoute } from 'vue-router'
 import { db } from '@config/firebaseConfig.js'
 import { doc, getDoc, collection, getDocs, query, where, limit } from 'firebase/firestore'
@@ -241,37 +278,60 @@ const getForms = async () => {
 }
 
 // get training details
-const trainingData = ref(null)
-const trainingLabels = ref(null)
-
+const trainingData = ref([])
+const trainingLabels = ref([])
+const allAttendance = ref([]) 
 const detsRef = collection(db, 'trainings')
 
 const getTrainingDetails = async () => {
   try {
     const snapshot = await getDocs(detsRef)
 
-    const allAttendance = snapshot.docs.flatMap((doc) => {
-        const data = doc.data()
+    const attendanceRecords = snapshot.docs.flatMap((doc) => {
+      const data = doc.data()
 
-        return Array.isArray(data.attendance)
+      return Array.isArray(data.attendance)
         ? data.attendance
-            .filter((entry) => entry.athlete === currentUser.value?.uid)
+            .filter((entry) => entry.athlete === athleteData.value.athleteId)
             .map((entry) => ({
-                ...entry, 
-                docId: doc.id, 
-                ...data
+              ...entry,
+              docId: doc.id,
+              ...data,
             }))
         : []
     })
 
-    trainingData.value = allAttendance.map(attendance => attendance.rating)
-    trainingLabels.value = allAttendance
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
-    .map(attendance => moment(new Date(attendance.date)).format('l'))
+    allAttendance.value = attendanceRecords
+
+    filterAttendance()
   } catch (error) {
     console.log(error)
   }
 }
+
+const filterAttendance = () => {
+  const filteredAttendance = allAttendance.value.filter((entry) => {
+    const entryDate = new Date(entry.date)
+    const entryMonth = String(entryDate.getMonth() + 1).padStart(2, '0')
+    const entryYear = entryDate.getFullYear().toString()
+
+    return (
+      (!monthQuery.value || entryMonth === monthQuery.value) &&
+      (!yearQuery.value || entryYear === yearQuery.value)
+    )
+  })
+
+  trainingData.value = filteredAttendance.map((attendance) => attendance.rating)
+  trainingLabels.value = filteredAttendance
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .map((attendance) => moment(new Date(attendance.date)).format('ll').split(',')[0])
+}
+
+const todaysDate = new Date().toISOString().split('-')
+const monthQuery = ref(todaysDate[1]) 
+const yearQuery = ref(todaysDate[0]) 
+
+watch([monthQuery, yearQuery], filterAttendance)
 
 const addDocumentModal = ref(false)
 
@@ -359,6 +419,14 @@ const deleteCert = (data) => {
     certificates.value.splice(data)
 }
 
+// view documenst and forms
+const isViewingDocs = ref(false)
+const docsToView = ref('')
+
+const viewDocs = (docUrl) => {
+    isViewingDocs.value = true
+    docsToView.value = docUrl
+}
 
 onMounted(() => {
     watch(currentUser, () => {

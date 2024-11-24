@@ -233,9 +233,6 @@ const handleImageUpload = (event, imageType) => {
 }
 
 
-
-
-
 // submit form to database
 const formRef = collection(db, 'forms')
 const submittingForm = ref(false)
@@ -251,45 +248,34 @@ const loadImageAsArrayBuffer = async (file) => {
     }
 }
 
-
-
-
 const submitForm = async () => {
-    submittingForm.value = true
+    submittingForm.value = true;
     try {
-        const response = await fetch('/PRISAA-FORM-2019-02-Parental-Consent-1.docx')
-        if (!response.ok) throw new Error('Failed to fetch DOCX template')
-        const docxArrayBuffer = await response.arrayBuffer()
+        const response = await fetch('/PRISAA-FORM-2019-02-Parental-Consent-1.docx');
+        if (!response.ok) throw new Error('Failed to fetch DOCX template');
+        const docxArrayBuffer = await response.arrayBuffer();
 
-        const picture2x2Buffer = picture2x2.value ? await loadImageAsArrayBuffer(picture2x2.value) : null
-        const fESignBuffer = fESign.value ? await loadImageAsArrayBuffer(fESign.value) : null
-        const mESignBuffer = mESign.value ? await loadImageAsArrayBuffer(mESign.value) : null
-        const gESignBuffer = gESign.value ? await loadImageAsArrayBuffer(gESign.value) : null
+        const picture2x2Buffer = picture2x2.value ? await loadImageAsArrayBuffer(picture2x2.value) : null;
+        const fESignBuffer = fESign.value ? await loadImageAsArrayBuffer(fESign.value) : null;
+        const mESignBuffer = mESign.value ? await loadImageAsArrayBuffer(mESign.value) : null;
+        const gESignBuffer = gESign.value ? await loadImageAsArrayBuffer(gESign.value) : null;
 
         const imageModule = new ImageModule({
             centered: false,
             getImage: (tagValue) => {
                 switch (tagValue) {
-                    case 'image':
-                        return picture2x2Buffer || new ArrayBuffer(0)
-                    case 'fEsign':
-                        return fESignBuffer || new ArrayBuffer(0)
-                    case 'mEsign':
-                        return mESignBuffer || new ArrayBuffer(0)
-                    case 'gEsign':
-                        return gESignBuffer || new ArrayBuffer(0)
-                    default:
-                        return new ArrayBuffer(0)
+                    case 'image': return picture2x2Buffer || new ArrayBuffer(0);
+                    case 'fEsign': return fESignBuffer || new ArrayBuffer(0);
+                    case 'mEsign': return mESignBuffer || new ArrayBuffer(0);
+                    case 'gEsign': return gESignBuffer || new ArrayBuffer(0);
+                    default: return new ArrayBuffer(0);
                 }
             },
-            getSize: (tagValue) => {
-                return [200, 200]
-            },
-        })
+            getSize: () => [200, 200],
+        });
 
-        const zip = new PizZip(docxArrayBuffer)
-        const doc = new Docxtemplater(zip, { modules: [imageModule] })
-
+        const zip = new PizZip(docxArrayBuffer);
+        const doc = new Docxtemplater(zip, { modules: [imageModule] });
         doc.setData({
             image: 'image',
             name: formData.value.name,
@@ -304,34 +290,70 @@ const submitForm = async () => {
             natVenue: formData.value.natVenue,
             fathersName: formData.value.fathersName,
             mothersName: formData.value.mothersName,
-            guardianName: formData.value.guardianName,
+            guardiansName: formData.value.guardianName,
             fEsign: 'fEsign',
             mEsign: 'mEsign',
             gEsign: 'gEsign',
             semester: formData.value.semester,
             sy: formData.value.sy,
-        })
+        });
+        doc.render();
 
-        doc.render()
+        const generatedDoc = doc.getZip().generate({ type: 'blob' });
 
-        const generatedDoc = doc.getZip().generate({ type: 'blob' })
+        const docStorageRef = storageRef(storage, `forms/${formData.value.name}-consent.docx`);
+        await uploadBytes(docStorageRef, generatedDoc);
+        const docDownloadUrl = await getDownloadURL(docStorageRef);
 
-        const docStorageRef = storageRef(storage, `forms/${formData.value.name}-consent.docx`)
-        await uploadBytes(docStorageRef, generatedDoc)
+        const fileResponse = await fetch(docDownloadUrl);  
+        if (!fileResponse.ok) throw new Error("Failed to fetch DOCX file");
 
-        const docDownloadUrl = await getDownloadURL(docStorageRef)
+        const docBlob = await fileResponse.blob();
 
-        // Convert DOCX to PDF
-        const pdfDoc = await PDFDocument.create()
-        const page = pdfDoc.addPage([595, 842]) 
-        page.drawText('Your PDF conversion logic here', { x: 50, y: 800 })
+        const formData2 = new FormData();
+        formData2.append("file", docBlob, "document.docx");
 
-        const pdfBytes = await pdfDoc.save()
+        const uploadResponse = await fetch("https://api.pdf.co/v1/file/upload", {
+            method: "POST",
+            headers: {
+                "x-api-key": "wncbtrn@gmail.com_xTAaBkXRa6Bax84AsEmaF49ilnMoB5pIurbompilEmvjqWVVdmrFQw9GbqytWZ2E", 
+            },
+            body: formData2
+        });
 
-        const pdfStorageRef = storageRef(storage, `forms/${formData.value.name}-consent.pdf`)
-        await uploadBytes(pdfStorageRef, pdfBytes)
+        if (!uploadResponse.ok) {
+            const errorDetails = await uploadResponse.text();
+            console.error("Failed to upload file:", errorDetails);
+            throw new Error("Failed to upload DOCX file");
+        }
 
-        const pdfDownloadUrl = await getDownloadURL(pdfStorageRef)
+        const uploadResult = await uploadResponse.json();
+        const uploadedFileUrl = uploadResult.url;
+
+        const pdfResponse = await fetch("https://api.pdf.co/v1/pdf/convert/from/doc", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-api-key": "wncbtrn@gmail.com_xTAaBkXRa6Bax84AsEmaF49ilnMoB5pIurbompilEmvjqWVVdmrFQw9GbqytWZ2E", 
+            },
+            body: JSON.stringify({
+                url: uploadedFileUrl,
+            }),
+        });
+
+        if (!pdfResponse.ok) {
+            const errorDetails = await pdfResponse.text();
+            console.error("Failed to convert DOCX to PDF:", errorDetails);
+            throw new Error("Failed to convert DOCX to PDF");
+        }
+
+        const pdfResult = await pdfResponse.json();
+        const pdfUrl = pdfResult.url;
+
+        const pdfBlob = await (await fetch(pdfUrl)).blob();
+        const pdfStorageRef = storageRef(storage, `forms/${formData.value.name}-consent.pdf`);
+        await uploadBytes(pdfStorageRef, pdfBlob);
+        const pdfDownloadUrl = await getDownloadURL(pdfStorageRef);
 
         await addDoc(formRef, {
             ...formData.value,
@@ -339,15 +361,16 @@ const submitForm = async () => {
             documentUrl: docDownloadUrl,
             pdfUrl: pdfDownloadUrl,
             createdAt: new Date(),
-        })
+        });
 
-        $toast.success('Form submitted successfully!')
-        closeModal()
+        $toast.success("Form submitted successfully!");
+        closeModal();
     } catch (error) {
-        console.error('Error submitting form:', error)
-        $toast.error('Failed to submit form')
+        console.error("Error submitting form:", error);
+        $toast.error("Failed to submit form");
     } finally {
-        submittingForm.value = false
+        submittingForm.value = false;
     }
-}
+};
+
 </script>
