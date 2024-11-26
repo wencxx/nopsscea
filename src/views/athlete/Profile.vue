@@ -1,12 +1,18 @@
 <template>
     <div class="space-y-10">
-        <div class="border dark:border-gray-100/10 h-[30dvh] rounded-md p-5 flex gap-x-5">
+        <div class="border dark:border-gray-100/10 h-[35dvh] rounded-md p-5 flex gap-x-5">
             <div class="flex flex-col w-1/5 items-center justify-center h-full gap-y-5 border-r dark:border-gray-100/10">
                 <img v-if="athleteData.photoUrl" :src="athleteData.photoUrl" alt="profile picture" class="w-32 aspect-square rounded-full border">
-                <div v-else class="w-32 aspect-square rounded-full bg-gray-300 animate-pulse"></div>
-                <div class="flex flex-col items-center">
-                    <h1 class="font-bold text-lg">{{ athleteData.firstName }} {{ athleteData.middleName }} {{ athleteData.lastName }}</h1>
+                <div v-else class="w-32 aspect-square rounded-full bg-gray-300 animate-pulse border"></div>
+                <div v-if="Object.keys(athleteData).length" class="flex flex-col items-center">
+                    <h1 class="font-bold text-lg text-center">{{ athleteData.firstName }} {{ athleteData.middleName }} {{ athleteData.lastName }}</h1>
+                    <p class="uppercase text-xs px-3 text-white rounded bg-orange-500" :class="{ '!bg-green-500': athleteData.status === 'Qualified', '!bg-red-500': athleteData.status === 'Not Qualified' }">{{ athleteData.status || 'Under Review' }}</p>
                     <p class="uppercase text-sm">{{ athleteData.sport }}</p>
+                </div>
+                <div v-else class="flex w-4/5 gap-y-1 flex-col items-center">
+                    <div class="w-full h-6 bg-gray-300 animate-pulse rounded"></div>
+                    <div class="w-1/2 h-4 bg-gray-300 animate-pulse rounded"></div>
+                    <div class="w-1/2 h-5 bg-gray-300 animate-pulse rounded"></div>
                 </div>
             </div>
             <div class="w-4/5 h-full grid grid-cols-2">

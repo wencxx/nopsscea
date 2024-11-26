@@ -27,14 +27,14 @@
                         </td>
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">
                             <div class="flex justify-center gap-x-3">
-                            <Icon
-                                v-for="star in 5"
-                                :key="star"
-                                :icon="ratings[athlete.athleteId] >= star ? 'mdi:star' : 'mdi:star-outline'"
-                                class="text-2xl cursor-pointer"
-                                :class="{ 'text-yellow-500': ratings[athlete.athleteId] >= star }"
-                                @click="rateAthlete(star, athlete.athleteId, trainingDets.attendance?.findIndex(item => item.athlete === athlete.athleteId))"
-                            />
+                                <Icon
+                                    v-for="star in 5"
+                                    :key="star"
+                                    :icon="ratings[athlete.athleteId] >= star ? 'mdi:star' : 'mdi:star-outline'"
+                                    class="text-2xl cursor-pointer"
+                                    :class="{ 'text-yellow-500': ratings[athlete.athleteId] >= star }"
+                                    @click="rateAthlete(star, athlete.athleteId, trainingDets.attendance?.findIndex(item => item.athlete === athlete.athleteId))"
+                                />
                             </div>
                         </td>
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">

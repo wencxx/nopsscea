@@ -25,10 +25,10 @@
                                     :href="form.pdfUrl"
                                     target="_blank"
                                 >
-                                    <Icon icon="bxs:file-doc" class="text-2xl text-green-500 hover:scale-110" />
+                                    <Icon icon="bxs:file-pdf" class="text-2xl text-green-500 hover:scale-110" />
                                 </a>
                                 <a :href="form.documentUrl">
-                                    <Icon icon="mdi:download" class="text-2xl text-green-500 hover:scale-110" />
+                                    <Icon icon="mdi:download" class="text-2xl text-blue-500 hover:scale-110" />
                                 </a>
                                 <button @click="deleteForm(form.id, index)">
                                     <Icon icon="mdi:trash" class="text-2xl text-red-500 hover:scale-110" />
@@ -60,6 +60,8 @@
                 </tbody>
             </table>
         </div>
+
+        <deleteModal v-if="showModalDelete" @closeModal="showModalDelete = false" @acceptDelete="confirmtDeletion()" :user="'form'" :type="'delete'" />
     </div>
 </template>
 
@@ -107,19 +109,29 @@ const getUserForms = async () => {
     }
 }
 
+const showModalDelete = ref(false)
+const formIdToDelete = ref('')
+const formIndextoDelete = ref('')
+
 // delete form
 const deleteForm = async (formId, index) => {
-    const docRef = doc(db, 'forms', formId)
+    formIdToDelete.value = formId
+    formIndextoDelete.value = index
+    showModalDelete.value = true
+}
+
+const confirmtDeletion = async () => {
+    const docRef = doc(db, 'forms', formIdToDelete.value)
     try {
         await deleteDoc(docRef)
-        forms.value.splice(index, 1)
+        forms.value.splice(formIndextoDelete.value, 1)
 
+        showModalDelete.value = false
         $toast.success('Form deleted successfully')
     } catch (error) {
         $toast.error('Failed to deleted docs')
     }
 }
-
 
 onMounted(() => {
 watchEffect(() => {

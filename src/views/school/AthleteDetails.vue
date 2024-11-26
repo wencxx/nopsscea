@@ -6,10 +6,12 @@
                 <div v-else class="w-32 aspect-square rounded-full bg-gray-300 animate-pulse border"></div>
                 <div v-if="Object.keys(athleteData).length" class="flex flex-col items-center">
                     <h1 class="font-bold text-lg text-center">{{ athleteData.firstName }} {{ athleteData.middleName }} {{ athleteData.lastName }}</h1>
+                    <p class="uppercase text-xs px-3 text-white rounded bg-orange-500" :class="{ '!bg-green-500': athleteData.status === 'Qualified', '!bg-red-500': athleteData.status === 'Not Qualified' }">{{ athleteData.status || 'Under Review' }}</p>
                     <p class="uppercase text-sm">{{ athleteData.sport }}</p>
                 </div>
                 <div v-else class="flex w-4/5 gap-y-1 flex-col items-center">
                     <div class="w-full h-6 bg-gray-300 animate-pulse rounded"></div>
+                    <div class="w-1/2 h-4 bg-gray-300 animate-pulse rounded"></div>
                     <div class="w-1/2 h-5 bg-gray-300 animate-pulse rounded"></div>
                 </div>
             </div>
@@ -22,15 +24,47 @@
                 <h1 class="text-lg"><span class="font-bold">Address:</span> {{ athleteData.address }}</h1>
                 <h1 class="text-lg"><span class="font-bold">Gender:</span> {{ athleteData.gender }}</h1>
                 <h1 class="text-lg"><span class="font-bold">Birthdate:</span> {{ formatData(athleteData.birthday) }}</h1>
-                <div v-if="$route.query.status === 'pending'" class="col-span-2 flex justify-end gap-x-3 h-fit">
-                    <button v-if="!deleting" class="w-1/6 h-fit py-1 rounded border bg-red-700 text-white" @click="showDeleteModal(athleteData.athleteId)">Decline</button>
-                    <button v-else class="w-1/6 h-fit py-1 rounded border bg-red-700 text-white animate-pulse" disabled>Declining</button>
-                    <button v-if="!acceptingAthlete" class="w-1/6 h-fit py-1 rounded border bg-blue-900 text-white" @click="acceptAthlete(athleteData.athleteId)">Accept</button>
-                    <button v-else class="w-1/6 h-fit py-1 rounded border bg-blue-900 text-white animate-pulse" disabled>Accepting</button>
+                <div v-if="role === 'school'" class="col-span-2 flex justify-between">
+                    <div class="flex items-center gap-x-2">
+                        <div class="flex justify-center">
+                            <Icon
+                                v-for="star in 5"
+                                :key="star"
+                                :icon="average >= star ? 'mdi:star' : 'mdi:star-outline'"
+                                class="text-2xl cursor-pointer"
+                                :class="{ 'text-yellow-500': average >= star }"
+                            />
+                        </div>
+                        <p class="mt-1">{{ average }}</p>
+                    </div>
+                    <div v-if="$route.query.status === 'pending'" class="flex justify-end gap-x-3 h-fit w-fit">
+                        <button v-if="!deleting" class="w-36 h-fit py-1 rounded border bg-red-700 text-white" @click="showDeleteModal(athleteData.athleteId)">Decline</button>
+                        <button v-else class="w-36 h-fit py-1 rounded border bg-red-700 text-white animate-pulse" disabled>Declining</button>
+                        <button v-if="!acceptingAthlete" class="w-36 h-fit py-1 rounded border bg-blue-900 text-white" @click="acceptAthlete(athleteData.athleteId)">Accept</button>
+                        <button v-else class="w-36 h-fit py-1 rounded border bg-blue-900 text-white animate-pulse" disabled>Accepting</button>
+                    </div>
+                    <div v-else class="flex justify-end gap-x-3 h-fit w-fit">
+                        <button v-if="!deleting" class="w-36 h-fit py-1 rounded border bg-red-700 text-white" @click="showDeleteModal(athleteData.athleteId)">Remove</button>
+                        <button v-else class="w-36 h-fit py-1 rounded border bg-red-700 text-white animate-pulse" disabled>Removing</button>
+                    </div>
                 </div>
-                <div v-else class="col-span-2 flex justify-end gap-x-3 h-fit">
-                    <button v-if="!deleting" class="w-1/6 h-fit py-1 rounded border bg-red-700 text-white" @click="showDeleteModal(athleteData.athleteId)">Remove</button>
-                    <button v-else class="w-1/6 h-fit py-1 rounded border bg-red-700 text-white animate-pulse" disabled>Removing</button>
+                <div v-if="role === 'admin'" class="col-span-2 flex justify-between items-center">
+                    <div class="flex items-center gap-x-2">
+                        <div class="flex justify-center">
+                            <Icon
+                                v-for="star in 5"
+                                :key="star"
+                                :icon="average >= star ? 'mdi:star' : 'mdi:star-outline'"
+                                class="text-2xl cursor-pointer"
+                                :class="{ 'text-yellow-500': average >= star }"
+                            />
+                        </div>
+                        <p class="mt-1">{{ average }}</p>
+                    </div>
+                    <div class="flex justify-end gap-x-3 h-fit border w-fit">
+                        <button v-if="athleteData.status === 'Qualified' || !athleteData.status" class="w-36 h-fit py-1 rounded border bg-red-700 text-white" @click="updateStatus(athleteData.athleteId, 'NQ')">Not Qualified</button>
+                        <button v-if="athleteData.status === 'Not Qualified' || !athleteData.status" class="w-36 h-fit py-1 rounded border bg-blue-900 text-white" @click="updateStatus(athleteData.athleteId, 'Q')">Qualified</button>
+                    </div>
                 </div>
             </div>  
         </div>
@@ -173,12 +207,15 @@ import { deleteObject } from 'firebase/storage'
 import { doc, getDoc, collection, getDocs, query, where, limit, updateDoc, deleteDoc } from 'firebase/firestore'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, watchEffect } from 'vue'
 import moment from 'moment'
 import lineChart from '@components/charts/lineChart.vue'
 import axios from 'axios'
 import deleteModal from '@components/deleteModal.vue'
 import viewImagesModal from '@components/viewImages.vue'
+
+
+const role = localStorage.getItem('role')
 
 const route = useRoute()
 const router = useRouter()
@@ -306,6 +343,7 @@ const getCertificates = async () => {
 
 // get training details
 const trainingData = ref([])
+const allTrainingData = ref([])
 const trainingLabels = ref([])
 const allAttendance = ref([]) 
 const detsRef = collection(db, 'trainings')
@@ -329,6 +367,7 @@ const getTrainingDetails = async () => {
     })
 
     allAttendance.value = attendanceRecords
+    allTrainingData.value = attendanceRecords.map((attendance) => attendance.rating)
 
     filterAttendance()
   } catch (error) {
@@ -359,6 +398,16 @@ const monthQuery = ref(todaysDate[1])
 const yearQuery = ref(todaysDate[0]) 
 
 watch([monthQuery, yearQuery], filterAttendance)
+
+// get average training data 
+
+const average = ref(0)
+
+watchEffect(() => {
+    const sum = allTrainingData.value.reduce((acc, data) => acc + data, 0)
+    average.value = parseFloat((sum / allTrainingData.value.length).toFixed(1))
+})
+
 
 // accept athlete
 const userRoleRef = collection(db, 'userRole')
@@ -468,6 +517,48 @@ const deleteAthlete = async () => {
     } finally {
         deleting.value = false
     }
+}
+
+// change athlete status
+const updateStatus = async (athleteId, status) => {
+     try {
+        if(status === 'Q'){
+            const q = query(
+                collection(db, 'athletes'),
+                where('athleteId', '==', athleteId),
+                limit(1)
+            )
+
+            const snapshot = await getDocs(q)
+
+            await updateDoc(doc(db, 'athletes', snapshot.docs[0].id), {
+                status: 'Qualified'
+            })
+
+            athleteData.value.status = 'Qualified'
+
+            $toast.success('Updated athlete status successfully')
+        }else{
+            const q = query(
+                collection(db, 'athletes'),
+                where('athleteId', '==', athleteId),
+                limit(1)
+            )
+
+            const snapshot = await getDocs(q)
+
+            await updateDoc(doc(db, 'athletes', snapshot.docs[0].id), {
+                status: 'Not Qualified'
+            })
+
+            athleteData.value.status = 'Not Qualified'
+
+            $toast.success('Updated athlete status successfully')
+        }
+     } catch (error) {
+        console.log(error)
+        $toast.success('Failed to update athlete status')
+     }
 }
 
 // view images

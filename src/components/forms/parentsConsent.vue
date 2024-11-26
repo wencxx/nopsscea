@@ -281,7 +281,7 @@ const submitForm = async () => {
             name: formData.value.name,
             schoolname: formData.value.schoolName,
             sport: formData.value.sport,
-            cluster: 'NIRPRISAA',
+            cluster: 'NIPRISAA',
             provDate: moment(formData.value.provDate).format('LL'),
             provVenue: formData.value.provVenue,
             regDate: moment(formData.value.regDate).format('LL'),
@@ -296,12 +296,16 @@ const submitForm = async () => {
             gEsign: 'gEsign',
             semester: formData.value.semester,
             sy: formData.value.sy,
+            day: moment(new Date()).format('MMMM Do YYYY, h:mm:ss a').split(' ')[1],
+            month: moment(new Date()).format('MMMM Do YYYY, h:mm:ss a').split(' ')[0],
+            year: moment(new Date()).format('MMMM Do YYYY, h:mm:ss a').split(' ')[2],
+            at: formData.value.schoolAddress
         });
         doc.render();
 
         const generatedDoc = doc.getZip().generate({ type: 'blob' });
 
-        const docStorageRef = storageRef(storage, `forms/${formData.value.name}-consent.docx`);
+        const docStorageRef = storageRef(storage, `forms/${formData.value.name}parents-consent.docx`);
         await uploadBytes(docStorageRef, generatedDoc);
         const docDownloadUrl = await getDownloadURL(docStorageRef);
 
@@ -351,7 +355,7 @@ const submitForm = async () => {
         const pdfUrl = pdfResult.url;
 
         const pdfBlob = await (await fetch(pdfUrl)).blob();
-        const pdfStorageRef = storageRef(storage, `forms/${formData.value.name}-consent.pdf`);
+        const pdfStorageRef = storageRef(storage, `forms/${formData.value.name}-parents-consent.pdf`);
         await uploadBytes(pdfStorageRef, pdfBlob);
         const pdfDownloadUrl = await getDownloadURL(pdfStorageRef);
 
