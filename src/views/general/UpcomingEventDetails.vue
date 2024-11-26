@@ -88,7 +88,7 @@
                         <tr class="text-md" v-for="(participant, index) in participants" :key="index">
                             <td class="p-2 border dark:border-gray-100/10">
                                 <div class="flex gap-x-3">
-                                    <img :src="participant?.schoolLogo" alt="school logo" class="w-14 bg-gray-200 dark:bg-gray-100/10 p-2 rounded">
+                                    <img :src="participant?.schoolLogo" alt="school logo" class="w-14 rounded">
                                     <div class="flex flex-col justify-center">
                                         <h1 class="text-md capitalize">{{ participant.schoolName  }}</h1>
                                         <p class="text-xs text-gray-500 font-semibold uppercase">{{ participant.schoolAbbreviation }}</p>

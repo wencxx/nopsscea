@@ -14,7 +14,7 @@
             <div class="space-y-2">
                 <h1 class="text-lg uppercase">{{ sport }}</h1>
                 <div class="grid grid-cols-2 gap-x-4">
-                    <div v-for="schedule in filteredSchedule(sport)" :key="schedule.id" :class="{ '!bg-blue-900': index % 2 === 0 }" class="bg-red-600 h-16 py-9 px-5 rounded-lg flex justify-between items-center">
+                    <div v-for="schedule in filteredSchedule(sport)" :key="schedule.id" :class="{ '!bg-blue-900': index % 2 === 0 }" class="bg-red-600 h-16 py-9 px-5 rounded-lg flex justify-between items-center cursor-pointer" @click="openScoreboard(schedule)">
                         <div class="flex items-center h-full gap-x-5">
                             <div class="flex items-center gap-x-2">
                                 <img v-if="getSchoolDetails(schedule.participant1)?.schoolLogo" :src="getSchoolDetails(schedule.participant1)?.schoolLogo" alt="School logo" class="h-12 object-cover aspect-square bg-gray-100 rounded-full">
@@ -41,11 +41,13 @@
         </div>
 
         <addSchedule v-if="addScheduleModal" @closeModal="addScheduleModal = false" @addedNewSchedule="addedNewSchedule" class="!-mt-0" />
+        <scoreBoard v-if="showScoreboard" class="!-mt-0" :scheduleDetails="schedDetsToShow" @closeScoreboard="showScoreboard = false" />
     </div>
 </template>
 
 <script setup>
 import addSchedule from '@components/addSchedule.vue'
+import scoreBoard from '@components/scoreBoard.vue'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { db } from '@config/firebaseConfig'
@@ -132,9 +134,24 @@ const filteredSchedule = (sport) => {
     return filteredSched
 }
 
-
+// add new schedule
 const addedNewSchedule = (data) => {
     schedules.value.unshift(data)
+}
+
+// open score board
+const schedDetsToShow = ref({})
+const showScoreboard = ref(false)
+
+const openScoreboard  = (schedule) => {
+    const scheduleData = {
+        ...schedule,
+        part1ABBR: getSchoolDetails(schedule.participant1)?.schoolAbbreviation,
+        part2ABBR: getSchoolDetails(schedule.participant2)?.schoolAbbreviation
+    }
+
+    schedDetsToShow.value = scheduleData
+    showScoreboard.value = true
 }
 
 onMounted(() => {

@@ -131,7 +131,7 @@ const login = async () => {
         if (!userRole.isAccepted) {
             userNotAccepted.value = userRole.role === 'school'
                 ? 'Wait for the admin to accept your registration.'
-                : 'Wait for your school to accept your registration.'
+                : 'Wait for your school or coach to accept your registration.'
             return
         }
 

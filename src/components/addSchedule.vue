@@ -150,7 +150,9 @@ const addSchedule = async () => {
         await addDoc(scheduleRef, {
             ...scheduleData.value,
             eventId: route.params.id,
-            ended: false,
+            status: 'waiting',
+            part1Score: 0,
+            part2Score: 0,
             addedAt: Timestamp.now()
         })
         emit('addedNewSchedule', scheduleData.value)
