@@ -9,11 +9,29 @@
             <div v-if="currentPage === 1" class="grid grid-cols-2 gap-4">
                 <div class="flex flex-col gap-y-2">
                     <label>School Name</label>
-                    <input type="text" v-model="schoolData.schoolName" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                    <select  v-model="schoolData.schoolName" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                        <option disabled value="">Select School</option>
+                        <option>University of Negros Occidental – Recoletos</option>
+                        <option>La Consolacion College Bacolod</option>
+                        <option>Riverside College</option>
+                        <option>STI West Negros University</option>
+                        <option>VMA Global College and Training Centers</option>
+                        <option>John B. Lacson Colleges Foundation</option>
+                        <option>Colegio San Agustin</option>
+                        <option>St. Scholastica’s Academy Bacolod</option>
+                        <option>Technological University of the Philippines</option>
+                        <option>Binalbagan Catholic College</option>
+                        <option>Southland College</option>
+                        <option>Central Philippines State University</option>
+                    </select>
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>School Abrreviation</label>
                     <input type="text" v-model="schoolData.schoolAbbreviation" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                </div>
+                <div class="flex flex-col gap-y-2">
+                    <label>School ID</label>
+                    <input type="text" v-model="schoolData.schoolID" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>School Address</label>
@@ -22,10 +40,6 @@
                 <div class="flex flex-col gap-y-2">
                     <label>School Email</label>
                     <input type="text" v-model="schoolData.schoolEmail" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
-                </div>
-                <div class="flex flex-col gap-y-2">
-                    <label>School Password</label>
-                    <input type="password" v-model="schoolData.schoolPassword" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>School Logo</label>
@@ -59,6 +73,10 @@
                 <div class="flex flex-col gap-y-2">
                     <label>No. of Students Tertiary</label>
                     <input type="number" v-model="schoolData.noTertiary" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                </div>
+                <div class="flex flex-col gap-y-2">
+                    <label>School Password</label>
+                    <input type="password" v-model="schoolData.schoolPassword" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
             </div>
             <div class="flex items-center justify-end gap-x-5">
@@ -122,6 +140,7 @@ const next = () => {
 const schoolData = ref({
     schoolName: '',
     schoolAbbreviation: '',
+    schoolID: '',
     schoolAddress: '',
     schoolEmail: '',
     schoolHead: '',
@@ -183,6 +202,10 @@ const register = async () => {
             secon: schoolData.value.noSecondary,
             terci: schoolData.value.noTertiary,
             total: schoolData.value.noTertiary + schoolData.value.noSecondary,
+            amount: (schoolData.value.noTertiary + schoolData.value.noSecondary) * 80,
+            affiliation: 'NIRPRISAA',
+            sec: 'NIRPRISAA',
+            nsec: 'NIRPRISAA',
         });
 
         doc.render();
@@ -222,6 +245,7 @@ const register = async () => {
         addDoc(schoolRef, {
             schoolName: schoolData.value.schoolName,
             schoolAbbreviation: schoolData.value.schoolAbbreviation,
+            schoolCode: schoolData.value.schoolID,
             schoolAddress: schoolData.value.schoolAddress,
             schoolEmail: schoolData.value.schoolEmail,
             schoolHead: schoolData.value.schoolHead,
@@ -242,62 +266,9 @@ const register = async () => {
         })
     } catch (error) {
         console.log(error.message)
-        // errorMessage.value = error.message.split('/')[1].slice(0, -2).replaceAll('-', ' ')
+        errorMessage.value = error.message.split('/')[1].slice(0, -2).replaceAll('-', ' ')
     }finally {
         registering.value = false
     }
 };
-
-// // register school
-// const register = async () => {
-//     try {
-//         registering.value = true
-//         const newUser = await createUserWithEmailAndPassword(auth, schoolData.value.schoolEmail, schoolData.value.schoolPassword)
-//         const user = newUser.user
-
-//         await uploadBytes(imageRef, image.value)
-
-//         const photoUrl = await getDownloadURL(imageRef)
-
-//         await updateProfile(user, {
-//             displayName: schoolData.value.schoolAbbreviation,
-//             photoURL: photoUrl
-//         })
-        
-//         addDoc(userRoleRef, {
-//             userId: user.uid,
-//             role: 'school',
-//             isAccepted: false,
-//         })
-
-//         addDoc(schoolRef, {
-//             schoolName: schoolData.value.schoolName,
-//             schoolAbbreviation: schoolData.value.schoolAbbreviation,
-//             schoolAddress: schoolData.value.schoolAddress,
-//             schoolEmail: schoolData.value.schoolEmail,
-//             schoolHead: schoolData.value.schoolHead,
-//             headTitle: schoolData.value.headTitle,
-//             schoolClassification: schoolData.value.schoolClassification,
-//             noSecondary: schoolData.value.noSecondary,
-//             noTertiary: schoolData.value.noTertiary,
-//             schoolLogo: photoUrl,
-//             schoolId: user.uid,
-//         })
-        
-//         router.push({
-//             path: '/',
-//             query: {
-//                 school: schoolData.value.schoolAbbreviation
-//             }
-//         })
-//     } catch (error) {
-//         console.log(error.message)
-//         errorMessage.value = error.message.split('/')[1].slice(0, -2).replaceAll('-', ' ')
-//     }finally {
-//         registering.value = false
-//     }
-// }
-
-
-
 </script>

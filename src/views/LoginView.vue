@@ -12,13 +12,13 @@
                 <p class="inline">Invalid Credentials</p>
             </div>
             <div v-if="$route.query.school" class="bg-green-500 pl-3 py-1 rounded space-x-2 text-white !-mb-3">
-                <p class="inline">Hooray, <span class="uppercase">{{ $route.query.school }}</span>! You are successfully registered!</p>
+                <p class="inline">You are successfully registered!</p>
             </div>
             <div v-if="$route.query.athlete" class="bg-green-500 pl-3 py-1 rounded space-x-2 text-white !-mb-3">
-                <p class="inline">Hooray, <span class="uppercase">{{ $route.query.athlete }}</span>! You are successfully registered!</p>
+                <p class="inline">You are successfully registered!</p>
             </div>
             <div v-if="$route.query.coach" class="bg-green-500 pl-3 py-1 rounded space-x-2 text-white !-mb-3">
-                <p class="inline">Hooray, <span class="uppercase">{{ $route.query.coach }}</span>! You are successfully registered!</p>
+                <p class="inline">You are successfully registered!</p>
             </div>
             <div v-if="userNotAccepted" class="bg-green-500 pl-3 py-1 rounded space-x-2 text-white !-mb-3">
                 <Icon icon="material-symbols-light:notifications-active-outline" class="inline text-xl" />

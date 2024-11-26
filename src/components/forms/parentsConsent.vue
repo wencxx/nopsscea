@@ -281,7 +281,7 @@ const submitForm = async () => {
             name: formData.value.name,
             schoolname: formData.value.schoolName,
             sport: formData.value.sport,
-            cluster: 'NOPSSCEA',
+            cluster: 'NIRPRISAA',
             provDate: moment(formData.value.provDate).format('LL'),
             provVenue: formData.value.provVenue,
             regDate: moment(formData.value.regDate).format('LL'),
@@ -356,7 +356,9 @@ const submitForm = async () => {
         const pdfDownloadUrl = await getDownloadURL(pdfStorageRef);
 
         await addDoc(formRef, {
-            ...formData.value,
+            sy: formData.value.sy,
+            semester: formData.value.semester,
+            formName: 'Parental Consent',
             userId: currentUser.value.uid,
             documentUrl: docDownloadUrl,
             pdfUrl: pdfDownloadUrl,
