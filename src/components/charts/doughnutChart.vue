@@ -10,15 +10,17 @@
 <script setup>
 import { defineProps, computed } from 'vue'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from 'chart.js'
+import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { Pie } from 'vue-chartjs'
 
 const props = defineProps({
-    labels: Array, 
-    data: Array, 
+    labels: Array,
+    data: Array,
     label: String
 })
 
-ChartJS.register(ArcElement, Tooltip, Legend, Title)
+// Register the necessary Chart.js components
+ChartJS.register(ArcElement, Tooltip, Legend, Title, ChartDataLabels)
 
 const chartData = computed(() => ({
     labels: props.labels,
@@ -53,9 +55,32 @@ const chartOptions = {
             }
         },
         tooltip: {
+            callbacks: {
+                label: function(tooltipItem) {
+                    const dataset = tooltipItem.dataset.data;
+                    const currentValue = dataset[tooltipItem.dataIndex];
+                    const total = dataset.reduce((sum, value) => sum + value, 0);
+                    const percentage = ((currentValue / total) * 100).toFixed(2);
+                    return `${tooltipItem.label}: ${currentValue} (${percentage}%)`;
+                }
+            },
             bodyFont: {
                 size: 14
             }
+        },
+        datalabels: {
+            formatter: (value, context) => {
+                const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                const percentage = ((value / total) * 100).toFixed(2);
+                return `${percentage}%`;
+            },
+            color: '#fff',
+            font: {
+                size: 14,
+                weight: 'bold'
+            },
+            anchor: 'center',
+            align: 'center'
         }
     }
 }

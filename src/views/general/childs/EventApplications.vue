@@ -25,7 +25,15 @@
                 <td class="p-2 border dark:border-gray-100/10 text-center">10</td>
                 <td class="p-2 border dark:border-gray-100/10 text-center">
                     <div class="flex justify-center gap-x-2">
-                        <Icon icon="bxs:file-doc" class="cursor-pointer text-gray-500 text-2xl" @click="generateDoc(participant.schoolId)"/>
+                        <a
+                                :href="`https://docs.google.com/viewer?url=${encodeURIComponent(getParticipantsDOCX(index))}&embedded=true`"
+                                target="_blank"
+                            >
+                            <Icon icon="bxs:file-doc" class="text-2xl text-green-500 hover:scale-110" />
+                        </a>
+                        <a :href="getParticipantsPDF(index)" target="_blank">
+                            <Icon icon="bxs:file-pdf" class="cursor-pointer text-orange-500 text-2xl"/>
+                        </a>
                         <Icon icon="tabler:check" class="cursor-pointer text-green-500 text-2xl" @click="acceptApplicant(participant.participantsId, participant.schoolId, index)"/>
                     </div>
                 </td>
@@ -90,6 +98,7 @@ const participantsRef = collection(db, 'participants')
 // get all participants
 const pendingParticipants = ref([])
 const loadingParticipants = ref(false)
+const participants = ref([])
 
 const getParticipants = async (eventId) => {
     try {
@@ -106,6 +115,8 @@ const getParticipants = async (eventId) => {
                 ...doc.data()
             }
 
+            participants.value.push(participantsDetails)
+
             if(!participantsDetails.isAccepted){
                 getParticipantsPersonalDetails(participantsDetails.schoolId, participantsDetails.id)
             }
@@ -118,6 +129,16 @@ const getParticipants = async (eventId) => {
         $toast.error('Error getting applicants')
         console.log(error)
     }
+}
+
+const getParticipantsPDF = (index) => {
+    const participant = participants.value[index]
+    return participant.pdfURL
+}
+
+const getParticipantsDOCX = (index) => {
+    const participant = participants.value[index]
+    return participant.documentURL
 }
 
 //school reference 

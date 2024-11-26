@@ -20,7 +20,7 @@
                 <tr class="text-md" v-for="(school, index) in schools" :key="index">
                     <td class="p-2 border dark:border-gray-100/10">
                         <div class="flex gap-x-3">
-                            <img :src="school?.schoolLogo" alt="school logo" class="w-14 bg-gray-200 dark:bg-gray-100/10 p-3 rounded">
+                            <img :src="school?.schoolLogo" alt="school logo" class="w-14 rounded">
                             <div class="flex flex-col justify-center">
                                 <router-link :to="{ name: 'schoolDetails', params: { id: school.schoolId} }" class="text-md capitalize">{{ school.schoolName  }}</router-link>
                                 <p class="text-xs text-gray-500 font-semibold uppercase">{{ school.schoolAbbreviation }}</p>
@@ -37,6 +37,12 @@
                                 target="_blank"
                             >
                                 <Icon icon="bxs:file-doc" class="text-2xl text-green-500 hover:scale-110" />
+                            </a>
+                            <a
+                                :href="school.applicationFormPDF"
+                                target="_blank"
+                            >
+                                <Icon icon="bxs:file-pdf" class="text-2xl text-green-500 hover:scale-110" />
                             </a>
                             <a
                                 :href="school.applicationForm"

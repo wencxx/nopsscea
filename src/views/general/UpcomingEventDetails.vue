@@ -16,12 +16,10 @@
                         <button v-else-if="isParticipant" class="border border-blue-900 py-1 rounded text-blue-900 dark:border-red-900 dark:text-red-900">Joined</button>
                         <button v-else-if="!isParticipant && !isWaitingApproval" class="bg-blue-900 hover:bg-blue-950 py-1 rounded text-white dark:border border-gray-100/25" @click="showEntryForm = true" :class="{ '!bg-gray-200 animate-pulse text-gray-200': !eventDetails.id }">Join event</button>
                     </div>
-                    <div v-else-if="role == 'admin' && eventDetails.id" class="w-full flex flex-col">
-                        <button class="bg-red-800 text-white py-1 rounded" @click="showDeleteModal(eventDetails.id)">Delete event</button>
+                    <div v-if="role == 'admin' && eventDetails.id" class="w-full flex flex-col">
+                        <button v-if="!deleting" class="bg-red-800 text-white py-1 rounded" @click="showDeleteModal(eventDetails.id)">Delete event</button>
+                        <button v-else class="bg-red-800 text-white py-1 rounded animate-pulse" disabled>Deleting event</button>
                     </div>
-                    <!-- <div v-else class="w-full flex flex-col">
-                        <button class="bg-gray-200 animate-pulse text-gray-200 py-1 rounded">Join event</button>
-                    </div> -->
                 </div>
             </div>
         </div>
@@ -135,7 +133,7 @@
         </div>
 
         <!-- eventEntry Form -->
-        <eventEntryForm  v-if="showEntryForm" @joinedEvent="joinEvent()" @closeModal="showEntryForm = false" />
+        <eventEntryForm  v-if="showEntryForm" @joinedEvent="joinEvent" @closeModal="showEntryForm = false" />
         <deleteModal v-if="willDelete" user="event" type="delete" @closeModal="willDelete = false" @acceptDelete="deleteEvent()" />
     </div>
 </template>
@@ -323,10 +321,11 @@ const getSchoolCoaches = async (schoolId) => {
 const showEntryForm = ref(false)
 
 // join to event for school users only
-const joinEvent = async () => {
+const joinEvent = async (data) => {
     showEntryForm.value = false
     try {
         const snapshot = await addDoc(participantsRef, {
+            ...data,
             eventId: eventDetails.value?.id,
             schoolId: currentUser.value?.uid,
             isAccepted: false,
@@ -374,6 +373,7 @@ const acceptedApplicant = async (data) => {
 // delete event
 const willDelete = ref(false)
 const eventToDeleteId = ref('')
+const deleting = ref(false)
 
 const showDeleteModal = (eventId) => {
     eventToDeleteId.value = eventId
@@ -381,18 +381,35 @@ const showDeleteModal = (eventId) => {
 }
 
 const deleteEvent = async () => {
+    const participantRef = collection(db, 'participants')
     try {
+        deleting.value = true
+        willDelete.value = false
         const docRef = doc(db, 'events',  eventToDeleteId.value)
-
         await deleteDoc(docRef)
 
-        $toast.success('Deletec event successfully')
+        const q = query(
+            participantRef,
+            where('eventId', '==', eventToDeleteId.value)
+        )
+        const snapshots = await getDocs(q)
+
+        for(const participant of snapshots.docs){
+            const id = participant.id
+
+            const docRef = doc(db, 'participants', id)
+            await deleteDoc(docRef)
+        }
+
+
+        $toast.success('Delete event successfully')
         router.push('/upcoming-events')
     } catch (error) {
         console.log(error)
         $toast.error('Failed deleting event')
     } finally {
         willDelete.value = false
+        deleting.value = false
     }
 }
 

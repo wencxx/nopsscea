@@ -409,8 +409,8 @@
                 </div>
             </div>
             <div class="flex justify-end gap-x-5 !mt-10">
-                <button v-if="currentPage === 1" class="border border-blue-900 text-blue-900 w-1/5 py-1 rounded" type="button" @click="closeModal">Close</button>
-                <button v-if="currentPage === 2" class="border border-blue-900 text-blue-900 w-1/5 py-1 rounded" type="button" @click="currentPage--" :disabled="currentPage === 1">Back</button>
+                <button v-if="currentPage === 1 || currentPage === 14" class="border border-blue-900 text-blue-900 w-1/5 py-1 rounded" type="button" @click="closeModal">Close</button>
+                <button v-if="currentPage > 1 && currentPage < 14" class="border border-blue-900 text-blue-900 w-1/5 py-1 rounded" type="button" @click="currentPage--" :disabled="currentPage === 1">Back</button>
                 <button v-if="currentPage === 14 && joining" class="border border-transparent bg-blue-900 text-white w-1/5 py-1 rounded animate-pulse" disabled>Joining</button>
                 <button v-if="currentPage === 14 && !joining" class="border border-transparent bg-blue-900 text-white w-1/5 py-1 rounded">Join</button>
                 <button v-if="currentPage < 14 && !joining" class="border border-transparent bg-blue-900 text-white w-1/5 py-1 rounded" type="button" @click="currentPage++">Next</button>
@@ -420,12 +420,18 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue'
+import { ref, defineEmits, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { db, auth } from '@config/firebaseConfig'
+import { db, auth, storage } from '@config/firebaseConfig'
 import { collection, addDoc, Timestamp } from 'firebase/firestore'
+import { ref as storageRef, getDownloadURL, uploadBytes } from 'firebase/storage'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
+import PizZip from 'pizzip'
+import Docxtemplater from 'docxtemplater'
+import { saveAs } from 'file-saver'
+import { PDFDocument } from 'pdf-lib'
+
 
 const $toast = useToast()
 const route = useRoute()
@@ -453,7 +459,7 @@ const formData = ref({
     bvw: '',
     bvc: '',
     bvb: '',
-    bvm: '',
+    bvg: '',
     ybvc: '',
     fm: '',
     fw: '',
@@ -535,21 +541,196 @@ const user = auth.currentUser
 const formRef = collection(db, 'forms')
 const joining = ref(false)
 
+// const joinEvent = async () => {
+//     try {
+//         joining.value = true
+//         await addDoc(formRef, {
+//             ...formData.value,
+//             eventId: route.params.id,
+//             eventId: route.params.id,
+//             addedAt: Timestamp.now(),
+//             schoolId: user.uid
+//         })
+
+//         emit('joinedEvent')
+//         joining.value = false
+//     } catch (error) {
+//         $toast.error(error.message)
+//     }
+// }
+
 const joinEvent = async () => {
+    joining.value = true
     try {
-        joining.value = true
-        await addDoc(formRef, {
-            ...formData.value,
-            eventId: route.params.id,
-            eventId: route.params.id,
-            addedAt: Timestamp.now(),
-            schoolId: user.uid
+        const response = await fetch('/PRISAA-ENTRY-FORM-1.docx')
+        if (!response.ok) throw new Error('Failed to fetch DOCX template')
+        const docxArrayBuffer = await response.arrayBuffer()
+
+        const zip = new PizZip(docxArrayBuffer)
+        const doc = new Docxtemplater(zip)
+
+        doc.setData({
+            b5v5m: formData.value.b5x5m,
+            b5v5w: formData.value.b5x5w,
+            b5v5c: formData.value.b5x5c,
+            b5v5b: formData.value.b5x5b,
+            b5v5g: formData.value.b5x5g,
+            yb5v5c: formData.value.b5x5yc,
+            b3v3m: formData.value.b3x3m,
+            b3v3w: formData.value.b3x3w,
+            b3v3c: formData.value.b3x3c,
+            b3v3b: formData.value.b3x3b,
+            b3v3g: formData.value.b3x3g,
+            yb3v3c: formData.value.b3x3yc,
+            bvm: formData.value.bvm,
+            bvw: formData.value.bvw,
+            bvc: formData.value.bvc,
+            bvb: formData.value.bvb,
+            bvg: formData.value.bvg,
+            ybvc: formData.value.ybvc,
+            fm: formData.value.fm,
+            fw: formData.value.fw,
+            fc: formData.value.fc,
+            fb: formData.value.fb,
+            fg: formData.value.fg,
+            yfc: formData.value.yfc,
+            fm: formData.value.fm,
+            fw: formData.value.fw,
+            fc: formData.value.fc,
+            fb: formData.value.fb,
+            fg: formData.value.fg,
+            yfc: formData.value.yfc,
+            stm: formData.value.stm,
+            stw: formData.value.stw,
+            stc: formData.value.stc,
+            stb: formData.value.stb,
+            stg: formData.value.stg,
+            ystc: formData.value.ystc,
+            vm: formData.value.vm,
+            vw: formData.value.vw,
+            vc: formData.value.vc,
+            vb: formData.value.vb,
+            vg: formData.value.vg,
+            yvc: formData.value.yvc,
+            am: formData.value.am,
+            aw: formData.value.aw,
+            ac: formData.value.ac,
+            ab: formData.value.ab,
+            ag: formData.value.ag,
+            yac: formData.value.yac,
+            bm: formData.value.bm,
+            bw: formData.value.bw,
+            bc: formData.value.bc,
+            bb: formData.value.bb,
+            bg: formData.value.bg,
+            ybc: formData.value.ybc,
+            cm: formData.value.cm,
+            cw: formData.value.cw,
+            cc: formData.value.cc,
+            cb: formData.value.cb,
+            cg: formData.value.cg,
+            ycc: formData.value.ycc,
+            dm: formData.value.dm,
+            dw: formData.value.dw,
+            dc: formData.value.dc,
+            db: formData.value.db,
+            dg: formData.value.dg,
+            ydc: formData.value.ydc,
+            km: formData.value.km,
+            kw: formData.value.kw,
+            kc: formData.value.kc,
+            kb: formData.value.kb,
+            kg: formData.value.kg,
+            ykc: formData.value.ykc,
+            sm: formData.value.sm,
+            sw: formData.value.sw,
+            sc: formData.value.sc,
+            sb: formData.value.sb,
+            sg: formData.value.sg,
+            ysc: formData.value.ysc,
+            tnm: formData.value.tnm,
+            tnw: formData.value.tnw,
+            tnc: formData.value.tnc,
+            tnb: formData.value.tnb,
+            tng: formData.value.tng,
+            ytnc: formData.value.ytnc,
+            tm: formData.value.tm,
+            tw: formData.value.tw,
+            tc: formData.value.tc,
+            tb: formData.value.tb,
+            tg: formData.value.tg,
+            ytc: formData.value.ytc,
+            SCHOOL: user.displayName.toUpperCase()
+        })
+        doc.render()
+
+        const generatedDoc = doc.getZip().generate({ type: 'blob' })
+
+        const docStorageRef = storageRef(storage, `forms/${user.displayName}-PRISAA-ENTRY-FORM-1.docx`)
+        await uploadBytes(docStorageRef, generatedDoc)
+        const docDownloadUrl = await getDownloadURL(docStorageRef)
+
+        const fileResponse = await fetch(docDownloadUrl)  
+        if (!fileResponse.ok) throw new Error("Failed to fetch DOCX file")
+
+        const docBlob = await fileResponse.blob()
+
+        const formData2 = new FormData()
+        formData2.append("file", docBlob, "document.docx")
+
+        const uploadResponse = await fetch("https://api.pdf.co/v1/file/upload", {
+            method: "POST",
+            headers: {
+                "x-api-key": "wncbtrn@gmail.com_xTAaBkXRa6Bax84AsEmaF49ilnMoB5pIurbompilEmvjqWVVdmrFQw9GbqytWZ2E", 
+            },
+            body: formData2
         })
 
-        emit('joinedEvent')
-        joining.value = false
+        if (!uploadResponse.ok) {
+            const errorDetails = await uploadResponse.text()
+            console.error("Failed to upload file:", errorDetails)
+            throw new Error("Failed to upload DOCX file")
+        }
+
+        const uploadResult = await uploadResponse.json()
+        const uploadedFileUrl = uploadResult.url
+
+        const pdfResponse = await fetch("https://api.pdf.co/v1/pdf/convert/from/doc", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-api-key": "wncbtrn@gmail.com_xTAaBkXRa6Bax84AsEmaF49ilnMoB5pIurbompilEmvjqWVVdmrFQw9GbqytWZ2E", 
+            },
+            body: JSON.stringify({
+                url: uploadedFileUrl,
+            }),
+        })
+
+        if (!pdfResponse.ok) {
+            const errorDetails = await pdfResponse.text()
+            console.error("Failed to convert DOCX to PDF:", errorDetails)
+            throw new Error("Failed to convert DOCX to PDF")
+        }
+
+        const pdfResult = await pdfResponse.json()
+        const pdfUrl = pdfResult.url
+
+        const pdfBlob = await (await fetch(pdfUrl)).blob()
+        const pdfStorageRef = storageRef(storage, `forms/${user.displayName}-PRISAA-ENTRY-FORM-1.pdf`)
+        await uploadBytes(pdfStorageRef, pdfBlob)
+        const pdfDownloadUrl = await getDownloadURL(pdfStorageRef)
+
+        const data = {
+            documentURL: docDownloadUrl,
+            pdfURL: pdfDownloadUrl,
+        }
+
+        emit('joinedEvent', data)
     } catch (error) {
-        $toast.error(error.message)
+        console.error("Error submitting form:", error)
+        $toast.error("Failed to join event")
+    } finally {
+        joining.value = false
     }
 }
 

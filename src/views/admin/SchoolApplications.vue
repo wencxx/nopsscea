@@ -19,10 +19,10 @@
                 </tr>
             </thead>
             <tbody v-if="!loading && schools.length">
-                <tr class="text-md" v-for="(school, index) in schools" :key="index">
+                <tr class="text-md" v-for="(school, index) in schools" :key="index" :class="{ 'animate-pulse bg-gray-100': deleting && index === schoolIndexToDelete }">
                     <td class="p-2 border dark:border-gray-100/10">
                         <div class="flex gap-x-3">
-                            <img :src="school?.schoolLogo" alt="school logo" class="w-14 bg-gray-200 dark:bg-gray-100/10 p-2 rounded">
+                            <img :src="school?.schoolLogo" alt="school logo" class="w-14 rounded">
                             <div class="flex flex-col justify-center">
                                 <router-link :to="{ name: 'schoolDetails', params: { id: school.schoolId} }" class="text-md capitalize">{{ school.schoolName  }}</router-link>
                                 <p class="text-xs text-gray-500 font-semibold uppercase">{{ school.schoolAbbreviation }}</p>
@@ -38,7 +38,13 @@
                                 :href="`https://docs.google.com/viewer?url=${encodeURIComponent(school.applicationForm)}&embedded=true`"
                                 target="_blank"
                             >
-                                <Icon icon="bxs:file-doc" class="text-2xl text-green-500 hover:scale-110" />
+                                <Icon icon="bxs:file-doc" class="text-2xl text-gray-500 hover:scale-110" />
+                            </a>
+                            <a
+                                :href="school.applicationFormPDF"
+                                target="_blank"
+                            >
+                                <Icon icon="bxs:file-pdf" class="text-2xl text-green-500 hover:scale-110" />
                             </a>
                             <a
                                 :href="school.applicationForm"
@@ -46,10 +52,10 @@
                             >
                                 <Icon icon="mdi:download" class="text-2xl text-blue-900 hover:scale-110" />
                             </a>
-                            <button class="bg-custom-primary w-fit text-green-500 text-xl" @click="acceptSchool(school.schoolId, index)">
+                            <button class="bg-custom-primary w-fit text-green-500 text-xl" @click="acceptSchool(school.schoolId, index)" :disabled="deleting && index === schoolIndexToDelete">
                                 <Icon icon="mdi:check" class="text-2xl" />
                             </button>
-                            <button class="bg-custom-secondary text-red-500 w-fit text-xl">
+                            <button class="bg-custom-secondary text-red-500 w-fit text-xl" :disabled="deleting && index === schoolIndexToDelete">
                                 <Icon icon="mdi:trash" class="text-2xl" @click="showDeleteModal(school.schoolId, index)" />
                             </button>
                         </div>
@@ -237,6 +243,7 @@ const deleteSchool = async () => {
     const coachRef = collection(db, 'coaches')
     try {
         deleting.value = true
+        showModalDelete.value = false
         const res = await axios.delete(`${import.meta.env.VITE_SERVER_URL}delete-user/${schoolIdToDelete.value}`)
         console.log(res.data)
 
@@ -285,7 +292,6 @@ const deleteSchool = async () => {
                 const docRef = doc(db, 'coaches', snapshot.id)
                 await deleteDoc(docRef)
             }
-            showModalDelete.value = false
 
             schools.value.splice(schoolIndexToDelete.value, 1)
             

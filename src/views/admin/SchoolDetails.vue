@@ -11,6 +11,7 @@
             </div>
             <div class="w-4/5 h-full grid grid-cols-2 gap-y-3">
                 <h1 class="text-lg capitalize"><span class="font-bold">School Head:</span> {{ schoolData.schoolHead }}, {{ schoolData.headTitle }}</h1>
+                <h1 class="text-lg"><span class="font-bold">School ID:</span> {{ schoolData.schoolCode }}</h1>
                 <h1 class="text-lg"><span class="font-bold">School Classification:</span> {{ schoolData.schoolClassification }}</h1>
                 <h1 class="text-lg"><span class="font-bold capitalize">School Address:</span> {{ schoolData.schoolAddress }}</h1>
                 <h1 class="text-lg"><span class="font-bold">School Email:</span> {{ schoolData.schoolEmail }}</h1>

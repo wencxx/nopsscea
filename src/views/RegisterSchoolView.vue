@@ -184,6 +184,8 @@ const register = async () => {
 
     const imageRef = storageRef(storage, `profilePictures/${image.value.name}`)
     try {
+        registering.value = true
+
         const response = await fetch('/PRISAA-FORM-01-APPLICATION-FOR-MEMBERSHIP-FORM-1-1.docx'); 
         if (!response.ok) throw new Error('Failed to fetch DOCX template');
         
@@ -203,9 +205,9 @@ const register = async () => {
             terci: schoolData.value.noTertiary,
             total: schoolData.value.noTertiary + schoolData.value.noSecondary,
             amount: (schoolData.value.noTertiary + schoolData.value.noSecondary) * 80,
-            affiliation: 'NIRPRISAA',
-            sec: 'NIRPRISAA',
-            nsec: 'NIRPRISAA',
+            affiliation: 'NIPRISAA',
+            sec: schoolData.value.schoolClassification === 'Sectarian' ? '✔' : '',
+            nsec: schoolData.value.schoolClassification === 'Non-Sectarian' ? '✔' : '',
         });
 
         doc.render();
@@ -218,12 +220,59 @@ const register = async () => {
 
         const storagePath = `forms/${schoolData.value.schoolName}-PRISAA-FORM-01-APPLICATION-FOR-MEMBERSHIP-FORM-1-1.docx`;
         const storageReference = storageRef(storage, storagePath);
-        
         await uploadBytes(storageReference, output);
-
         const downloadURL = await getDownloadURL(storageReference);
 
-        registering.value = true
+        const fileResponse = await fetch(downloadURL);  
+        if (!fileResponse.ok) throw new Error("Failed to fetch DOCX file");
+
+        const docBlob = await fileResponse.blob();
+
+        const formData2 = new FormData();
+        formData2.append("file", docBlob, "document.docx");
+
+        const uploadResponse = await fetch("https://api.pdf.co/v1/file/upload", {
+            method: "POST",
+            headers: {
+                "x-api-key": "wncbtrn@gmail.com_xTAaBkXRa6Bax84AsEmaF49ilnMoB5pIurbompilEmvjqWVVdmrFQw9GbqytWZ2E", 
+            },
+            body: formData2
+        });
+
+        if (!uploadResponse.ok) {
+            const errorDetails = await uploadResponse.text();
+            console.error("Failed to upload file:", errorDetails);
+            throw new Error("Failed to upload DOCX file");
+        }
+
+        const uploadResult = await uploadResponse.json();
+        const uploadedFileUrl = uploadResult.url;
+
+        const pdfResponse = await fetch("https://api.pdf.co/v1/pdf/convert/from/doc", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-api-key": "wncbtrn@gmail.com_xTAaBkXRa6Bax84AsEmaF49ilnMoB5pIurbompilEmvjqWVVdmrFQw9GbqytWZ2E", 
+            },
+            body: JSON.stringify({
+                url: uploadedFileUrl,
+            }),
+        });
+
+        if (!pdfResponse.ok) {
+            const errorDetails = await pdfResponse.text();
+            console.error("Failed to convert DOCX to PDF:", errorDetails);
+            throw new Error("Failed to convert DOCX to PDF");
+        }
+
+        const pdfResult = await pdfResponse.json();
+        const pdfUrl = pdfResult.url;
+
+        const pdfBlob = await (await fetch(pdfUrl)).blob();
+        const pdfStorageRef = storageRef(storage, `forms/${schoolData.value.schoolName}-PRISAA-FORM-01-APPLICATION-FOR-MEMBERSHIP-FORM-1-1.pdf`);
+        await uploadBytes(pdfStorageRef, pdfBlob);
+        const pdfDownloadUrl = await getDownloadURL(pdfStorageRef);
+
         const newUser = await createUserWithEmailAndPassword(auth, schoolData.value.schoolEmail, schoolData.value.schoolPassword)
         const user = newUser.user
 
@@ -254,6 +303,7 @@ const register = async () => {
             noSecondary: schoolData.value.noSecondary,
             noTertiary: schoolData.value.noTertiary,
             applicationForm: downloadURL,
+            applicationFormPDF: pdfDownloadUrl,
             schoolLogo: photoUrl,
             schoolId: user.uid
         })

@@ -12,7 +12,8 @@
                     <h1 class="text-lg font-semibold">Start date: <span class="font-medium">{{ convertDate(eventDetails.startDate) }}</span></h1>
                     <h1 class="text-lg font-semibold">End date: <span class="font-medium">{{ convertDate(eventDetails.endDate) }}</span></h1>
                     <div v-if="role == 'admin' && eventDetails.id" class="w-full flex flex-col">
-                        <button class="bg-red-800 text-white py-1 rounded" @click="showDeleteModal(eventDetails.id)">Delete event</button>
+                        <button v-if="!deleting" class="bg-red-800 text-white py-1 rounded" @click="showDeleteModal(eventDetails.id)">Delete event</button>
+                        <button v-else class="bg-red-800 text-white py-1 rounded animate-pulse" disabled>Deleting event</button>
                     </div>
                 </div>
             </div>
@@ -379,6 +380,7 @@ const acceptedApplicant = async (data) => {
 // delete event
 const willDelete = ref(false)
 const eventToDeleteId = ref('')
+const deleting = ref(false)
 
 const showDeleteModal = (eventId) => {
     eventToDeleteId.value = eventId
@@ -386,18 +388,35 @@ const showDeleteModal = (eventId) => {
 }
 
 const deleteEvent = async () => {
+    const participantRef = collection(db, 'participants')
     try {
+        deleting.value = true
+        willDelete.value = false
         const docRef = doc(db, 'events',  eventToDeleteId.value)
-
         await deleteDoc(docRef)
 
-        $toast.success('Deletec event successfully')
-        router.push('/upcoming-events')
+        const q = query(
+            participantRef,
+            where('eventId', '==', eventToDeleteId.value)
+        )
+        const snapshots = await getDocs(q)
+
+        for(const participant of snapshots.docs){
+            const id = participant.id
+
+            const docRef = doc(db, 'participants', id)
+            await deleteDoc(docRef)
+        }
+
+
+        $toast.success('Delete event successfully')
+        router.push('/ongoing-events')
     } catch (error) {
         console.log(error)
         $toast.error('Failed deleting event')
     } finally {
         willDelete.value = false
+        deleting.value = false
     }
 }
 
