@@ -50,7 +50,23 @@
             <doughnutChart :labels="doughNutLabels" :data="doughNutDatasets" :label="doughNutLabel" />
         </div>
         <div class="bg-gray-100 dark:bg-gray-100/10 col-span-2 h-[35dvh] border dark:border-gray-100/10 rounded-md p-3 flex items-center">
-            <barChart :labels="chartLabels" :data="chartDatasets" :label="chartLabel" class="!w-full" />
+            <lineChart :labels="chartLabels" :data="chartDatasets" :label="chartLabel" class="!w-full" />
+        </div>
+        <div class="bg-gray-100 dark:bg-gray-100/10 col-span-3 h-[50dvh] border dark:border-gray-100/10 rounded-md p-3 flex flex-col items-center relative">
+          <select class="absolute top-2 right-5 rounded px-3 py-1" v-model="selectedYear" @change="updateChart">
+                <option>2020</option>
+                <option>2021</option>
+                <option>2022</option>
+                <option>2023</option>
+                <option>2024</option>
+                <option>2025</option>
+                <option>2026</option>
+                <option>2027</option>
+                <option>2028</option>
+                <option>2029</option>
+                <option>2030</option>
+            </select>
+            <barChart :labels="chartLabels2" :data="chartDatasets2" :label="chartLabel2" class="!w-full" />
         </div>
         <div class="bg-gray-100 dark:bg-gray-100/10 col-span-3 p-3 border dark:border-gray-100/10 rounded-md">
             <h1 class="mb-2 capitalize font-bold flex items-center gap-x-1"><Icon icon="noto:1st-place-medal" class="text-3xl" /> Top 5 most medals won all time</h1>
@@ -97,6 +113,7 @@
 <script setup>
 import doughnutChart from '../../components/charts/doughnutChart.vue'
 import barChart from '../../components/charts/barChart.vue'
+import lineChart from '../../components/charts/lineChart.vue'
 import { onMounted, ref, computed } from 'vue'
 import { db } from '@config/firebaseConfig.js'
 import { getDocs, collection, getCountFromServer, where, query, and } from 'firebase/firestore'
@@ -130,6 +147,8 @@ const getSchools = async () => {
                 ...doc.data()
             })
         })
+
+        groupMedalsByYear()
     } catch (error) {
         console.log(error)
     }
@@ -302,6 +321,61 @@ const groupParticipantsBySchool = async () => {
 const chartLabel = ref('Events participants every year')
 const chartLabels = ref([])
 const chartDatasets = ref([])
+
+// get grouped medals by year
+const participantsByYear = ref({});
+const selectedYear = ref("2024"); 
+const chartLabel2 = ref('Medal tally every year')
+const chartLabels2 = ref([]);
+const chartDatasets2 = ref([]);
+
+const groupMedalsByYear = async () => {
+    try {
+        const snapshot = await getDocs(participantsRef);
+        const tempParticipantsByYear = {};
+
+        snapshot.docs.forEach(doc => {
+            const data = doc.data();
+            const joinedAt = data.joinedAt?.toDate();
+            if (joinedAt) {
+                const year = joinedAt.getFullYear();
+
+                if (!tempParticipantsByYear[year]) {
+                    tempParticipantsByYear[year] = [];
+                }
+
+                tempParticipantsByYear[year].push({
+                    name: filterSchool(data.schoolId)?.schoolName,
+                    gold: data.gold || 0,
+                    silver: data.silver || 0,
+                    bronze: data.bronze || 0,
+                });
+            }
+        });
+
+        participantsByYear.value = tempParticipantsByYear;
+
+        updateChart()
+    } catch (error) {
+        console.error("Error grouping participants:", error);
+    }
+};
+
+const updateChart = () => {
+    if (!selectedYear.value || !participantsByYear.value[selectedYear.value]) {
+        chartLabels2.value = [];
+        chartDatasets2.value = [];
+        return;
+    }
+
+    const participants = participantsByYear.value[selectedYear.value];
+
+    chartLabels2.value = participants.map(p => p.name); 
+    chartDatasets2.value = participants.map(
+        p => p.gold + p.silver + p.bronze 
+    );
+};
+
 
 
 onMounted(() => {
