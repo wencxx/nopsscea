@@ -11,7 +11,7 @@
             <div class="space-y-2" v-if="filteredSchedule(sport).length">
                 <h1 class="text-lg uppercase">{{ sport }}</h1>
                 <div class="grid grid-cols-2 gap-x-4">
-                    <div v-for="schedule in filteredSchedule(sport)" :key="schedule.id" :class="{ '!bg-blue-900': index / 2 === 0 }" class="bg-red-600 h-16 py-9 px-5 rounded flex justify-between items-center">
+                    <div v-for="schedule in filteredSchedule(sport)" :key="schedule.id" :class="{ '!bg-blue-900': index / 2 === 0 }" class="bg-red-600 h-20 py-9 px-5 rounded flex justify-between items-center">
                         <div class="flex items-center h-full gap-x-5">
                             <div class="flex items-center gap-x-2">
                                 <img v-if="getSchoolDetails(schedule.participant1)?.schoolLogo" :src="getSchoolDetails(schedule.participant1)?.schoolLogo" alt="School logo" class="h-12 object-cover aspect-square bg-gray-100 rounded-full">
@@ -28,6 +28,11 @@
                         <div class="flex flex-col items-end !w-1/4 xl:w-full">
                             <p class="text-white text-end text-xs">{{ formatDate(schedule.dateTime) }}</p>
                             <p class="text-white text-[0.65rem] uppercase">{{ schedule.venue }}</p>
+                            <p class="uppercase text-xs px-2 rounded bg-green-500 text-white">
+                                Winner:
+                                <span v-if="schedule.part1Score > schedule.part2Score">{{ getSchoolDetails(schedule.participant1)?.schoolAbbreviation }}</span>
+                                <span v-else>{{ getSchoolDetails(schedule.participant2)?.schoolAbbreviation }}</span>
+                            </p>
                         </div>
                     </div>
                 </div>

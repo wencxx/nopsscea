@@ -145,8 +145,9 @@ import { computed, onMounted, ref } from 'vue'
 import { useAuthStore } from '../../store'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
-import { db } from '@config/firebaseConfig'
+import { db, storage } from '@config/firebaseConfig'
 import { getDocs, collection, where, query, queryEqual, and, doc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { deleteObject, ref as storageRef } from 'firebase/storage'
 import moment from 'moment'
 import axios from 'axios'
 import deleteModal from '@components/deleteModal.vue'
@@ -229,9 +230,11 @@ const getAthletePersonalDetails = async (athleteId) => {
 // accept athlete
 const acceptAthlete = async (index) => {
     const userRoleRef = doc(db, 'userRole', userRoleDocId.value[index])
+    const today = moment(new Date()).format('L')
     try {
          await updateDoc(userRoleRef, {
-            isAccepted: true
+            isAccepted: true,
+            dateAccepted: today
         })
 
         athletes.value.splice(index, 1)
@@ -297,14 +300,14 @@ const deleteAthlete = async () => {
 
             for(const snapshot of snapshots2.docs){
                 const docRef = doc(db, 'documents', snapshot.id)
-                const fileRef = ref(storage, `documents/${snapshot.docs().file}`)
+                const fileRef = storageRef(storage, `documents/${snapshot.docs().file}`)
 
                 await Promise.all([deleteObject(fileRef), deleteDoc(docRef)])
             }
 
             for(const snapshot of snapshots3.docs){
                 const docRef = doc(db, 'certificates', snapshot.id)
-                const fileRef = ref(storage, `certs/${snapshot.docs().file}`)
+                const fileRef = storageRef(storage, `certs/${snapshot.docs().file}`)
 
                 await Promise.all([deleteObject(fileRef), deleteDoc(docRef)])
             }

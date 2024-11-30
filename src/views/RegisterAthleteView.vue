@@ -30,7 +30,7 @@
                 <div class="flex flex-col gap-y-2">
                     <label>Gender</label>
                     <select v-model="athleteData.gender" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10"> 
-                        <!-- <option disabled :value="athleteData.gender">Select Gender</option> -->
+                        <option disabled value="">Select Gender</option>
                         <option>Male</option>
                         <option>Female</option>
                     </select>

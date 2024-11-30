@@ -82,7 +82,7 @@
                             </td>
                             <td class="p-2 border dark:border-gray-100/10 text-center">{{ participant.schoolAddress }}</td>
                             <td class="p-2 border dark:border-gray-100/10 text-center">{{ participant.schoolEmail }}</td>
-                            <td class="p-2 border dark:border-gray-100/10 text-center">{{ countSchoolAthletes(participant.schoolId) }}</td>
+                            <td class="p-2 border dark:border-gray-100/10 text-center cursor-pointer" @click="showSchoolAthletes(participant.schoolId, participant.schoolName)">{{ countSchoolAthletes(participant.schoolId) }}</td>
                         </tr>
                     </tbody>
                     <tbody v-if="loadingDetails || loadingParticipants">
@@ -117,14 +117,16 @@
             </div>
         </div>
 
+        <showSchoolAthletesf v-if="showAthletes" :schoolName="schoolNameToShow" :athletes="athletesToShow" @closeModal="showAthletes = false" />
         <deleteModal v-if="willDelete" user="event" type="delete" @closeModal="willDelete = false" @acceptDelete="deleteEvent()" />
     </div>
 </template>
 
 <script setup>
+import showSchoolAthletesf from '@components/showSchoolAthletes.vue'
 import deleteModal from '@components/deleteModal.vue'
 import { db } from '@config/firebaseConfig'
-import { getDoc, doc, addDoc, collection, Timestamp, getDocs, where, query, deleteDoc } from 'firebase/firestore'
+import { getDoc, doc, addDoc, collection, Timestamp, getDocs, where, query, deleteDoc, and } from 'firebase/firestore'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
 import { computed, onMounted, ref } from 'vue'
@@ -188,6 +190,9 @@ const loadingParticipants = ref(false)
 const getParticipants = async (eventId) => {
     try {
         loadingParticipants.value = true
+
+        getAcceptedAthletes()
+
         const q = query(
             participantsRef,
             where('eventId', '==', eventId)
@@ -269,6 +274,35 @@ const getParticipantsPersonalDetails = async (participantsId) => {
     }
 }
 
+//get accpeted athletes
+const athletesId = ref([])
+const roleRef = collection(db, 'userRole') 
+
+const getAcceptedAthletes = async () => {
+    try {
+        const q = query(
+            roleRef,
+            and(
+                where('isAccepted', '==', true),
+                where('role', '==', 'athlete'),
+            )
+        )
+
+        const snapshots = await getDocs(q)
+
+        snapshots.docs.forEach(doc => {
+            const eventStartDate = moment(eventDetails.value.startDate).startOf('day')
+            const acceptedDate = moment(doc.data().dateAccepted).startOf('day')
+
+            if(acceptedDate.isBefore(eventStartDate)){
+                athletesId.value.push(doc.data().userId)
+            }
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // athletes reference
 const athleteRef = collection(db, 'athletes')
 
@@ -277,19 +311,24 @@ const athletes = ref([])
 
 const getSchoolAthletes = async (schoolId) => {    
     try {
-        const q = query(
-            athleteRef,
-            where('school', '==', schoolId)
-        )
-        
-        const snapshots = await getDocs(q)
+        if(athletesId.value.length){
+            const q = query(
+                athleteRef,
+                and(
+                    where('school', '==', schoolId),
+                    where('athleteId', 'in', athletesId.value),
+                )
+            )
+            
+            const snapshots = await getDocs(q)
 
-        snapshots.docs.forEach(doc => {
-            athletes.value.push({
-                id: doc.id,
-                ...doc.data()
+            snapshots.docs.forEach(doc => {
+                athletes.value.push({
+                    id: doc.id,
+                    ...doc.data()
+                })
             })
-        })
+        }
     } catch (error) {
         $toast.error(error.message)
     }
@@ -300,6 +339,18 @@ const countSchoolAthletes = (schoolId) => {
     const count = athletes.value.filter(athlete => athlete.school === schoolId)
 
     return count.length
+}
+
+// show school athlete
+const showAthletes = ref(false)
+const schoolNameToShow = ref('')
+const athletesToShow = ref([])
+
+const showSchoolAthletes = (schoolId, schoolName) => {
+    const schoolAthletes = athletes.value.filter(athlete => athlete.school === schoolId)
+    athletesToShow.value = schoolAthletes
+    schoolNameToShow.value = schoolName
+    showAthletes.value = true
 }
 
 // athletes reference

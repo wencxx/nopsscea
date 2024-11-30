@@ -50,7 +50,7 @@
                 </tbody>
                 <tbody v-if="!loading && athletes.length === 0">
                     <tr>
-                        <td colspan="5" class="p-2 border dark:border-gray-100/10 text-center">No athletes to show</td>
+                        <td colspan="6" class="p-2 border dark:border-gray-100/10 text-center">No athletes to show</td>
                     </tr>
                 </tbody>
                 <tbody v-if="loading">
@@ -92,7 +92,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useAuthStore, useSchoolDataStore } from '../../store'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
-import { db } from '@config/firebaseConfig'
+import { db, storage } from '@config/firebaseConfig'
 import { getDocs, collection, where, query, queryEqual, and, doc, updateDoc } from 'firebase/firestore'
 import moment from 'moment'
 

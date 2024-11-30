@@ -9,8 +9,8 @@
             <div v-if="currentPage === 1" class="grid grid-cols-2 gap-4">
                 <div class="flex flex-col gap-y-2">
                     <label>School Name</label>
-                    <select  v-model="schoolData.schoolName" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
-                        <option disabled value="">Select School</option>
+                    <input type="text"  v-model="schoolData.schoolName" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10" list="schoolLists">
+                    <datalist id="schoolLists">
                         <option>University of Negros Occidental – Recoletos</option>
                         <option>La Consolacion College Bacolod</option>
                         <option>Riverside College</option>
@@ -19,11 +19,13 @@
                         <option>John B. Lacson Colleges Foundation</option>
                         <option>Colegio San Agustin</option>
                         <option>St. Scholastica’s Academy Bacolod</option>
+                        <option>St. John's Institute</option>
                         <option>Technological University of the Philippines</option>
                         <option>Binalbagan Catholic College</option>
                         <option>Southland College</option>
                         <option>Central Philippines State University</option>
-                    </select>
+                        <option>Kabankalan Catholic College</option>
+                    </datalist>
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>School Abrreviation</label>

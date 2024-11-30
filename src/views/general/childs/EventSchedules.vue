@@ -31,6 +31,9 @@
                         <div class="flex flex-col items-end !w-1/4 xl:w-full">
                             <p class="text-white text-end text-xs">{{ formatDate(schedule.dateTime) }}</p>
                             <p class="text-white text-[0.65rem] uppercase">{{ schedule.venue }}</p>
+                            <p class="uppercase text-xs px-2 rounded bg-orange-500 text-white" :class="{ '!bg-green-500': schedule.status === 'started', '!bg-red-500': schedule.status === 'ended' }">
+                                {{ schedule.status }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -51,7 +54,7 @@ import scoreBoard from '@components/scoreBoard.vue'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { db } from '@config/firebaseConfig'
-import { getDocs, where, query, collection, orderBy } from 'firebase/firestore'
+import { getDocs, where, query, collection, orderBy, onSnapshot } from 'firebase/firestore'
 import moment from 'moment'
 
 const formatDate = (date) => {
@@ -85,14 +88,26 @@ const getSchedules = async () => {
             orderBy('dateTime', 'asc')
         )
 
-        const snapshots = await getDocs(q)
+        onSnapshot(
+            q,
+            (snapshots) => {
+                schedules.value = []
+                snapshots.forEach(doc => {
+                    schedules.value.push({
+                        id: doc.id,
+                        ...doc.data()
+                    })
 
-        snapshots.docs.forEach(doc => {
-            schedules.value.push({
-                id: doc.id,
-                ...doc.data()
-            })
-        })
+                    if(schedId.value && schedId.value === doc.id){
+                        const data = {
+                            id: doc.id,
+                            ...doc.data()
+                        }
+                        openScoreboard(data)
+                    }
+                })
+            }
+        )
 
         getSchools()
     } catch (error) {
@@ -135,11 +150,12 @@ const filteredSchedule = (sport) => {
 }
 
 // add new schedule
-const addedNewSchedule = (data) => {
-    schedules.value.unshift(data)
-}
+// const addedNewSchedule = (data) => {
+//     schedules.value.unshift(data)
+// }
 
 // open score board
+const schedId= ref({})
 const schedDetsToShow = ref({})
 const showScoreboard = ref(false)
 
@@ -150,6 +166,7 @@ const openScoreboard  = (schedule) => {
         part2ABBR: getSchoolDetails(schedule.participant2)?.schoolAbbreviation
     }
 
+    schedId.value = schedule.id
     schedDetsToShow.value = scheduleData
     showScoreboard.value = true
 }

@@ -36,7 +36,7 @@
                                 :href="`https://docs.google.com/viewer?url=${encodeURIComponent(school.applicationForm)}&embedded=true`"
                                 target="_blank"
                             >
-                                <Icon icon="bxs:file-doc" class="text-2xl text-green-500 hover:scale-110" />
+                                <Icon icon="bxs:file-doc" class="text-2xl text-gray-500 hover:scale-110" />
                             </a>
                             <a
                                 :href="school.applicationFormPDF"

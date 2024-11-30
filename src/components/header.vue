@@ -6,8 +6,18 @@
               <p class="text-md dark:text-dark-primary-text cursor-pointer">Search</p>
             </div> -->
             <div class="overflow-x-hidden w-full">
-                <div class="animate-marquee whitespace-nowrap ">
-                    <span v-for="(i, index) in 10" :key="index" class="mx-10 text-xl">Marquee Item {{ i }}</span>
+                <div class="animate-marquee whitespace-nowrap">
+                    <div v-if="startedSchedules.length" class="flex">
+                      <h1 class="text-lg uppercase font-bold">Now Playing:</h1>
+                      <div v-for="(schedule, index) in startedSchedules" :key="index" class="mx-10 text-xl">
+                          <span class="font-bold text-red-500">{{ schedule.part1Score + ' ' }}</span>
+                          <span>{{ getSchoolDetails(schedule.participant1).schoolAbbreviation }}</span>
+                          <span> VS. </span>
+                          <span>{{ getSchoolDetails(schedule.participant2).schoolAbbreviation }}</span>
+                          <span class="font-bold text-blue-900">{{ ' ' + schedule.part2Score }}</span>
+                      </div>
+                    </div>
+                    <h1 v-else class="uppercase text-lg font-bold">Negros Occidental Private Schools Sports Cultural Educational Association</h1>
                 </div>
             </div>
             <div class="flex items-center gap-x-3">
@@ -27,7 +37,7 @@
                     <p class="text-xs text-center mt-auto cursor-pointer">View all</p>
                   </div>
               </div>
-              <div class="h-[4dvh] aspect-square rounded-full relative">
+              <div class="h-[4dvh] aspect-square rounded-full relative border">
                   <img @click="toggleDropdownMenu = !toggleDropdownMenu" v-if="currentUser?.photoURL" :src="currentUser?.photoURL" class="h-full aspect-square rounded-full object-cover" />
                   <div @click="toggleDropdownMenu = !toggleDropdownMenu" v-else class="h-full aspect-square rounded-full bg-gray-300/35 dark:bg-gray-100/10 flex items-center justify-center">
                       <p>{{ currentUser?.displayName.split('')[0] }}</p>
@@ -48,10 +58,10 @@
 <script setup>
 import { computed, onMounted, ref, watch } from "vue"
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@store'
+import { useAuthStore, } from '@store'
 import { auth, db } from '@config/firebaseConfig'
 import { signOut } from 'firebase/auth'
-import { collection, onSnapshot, query, where } from "firebase/firestore"
+import { collection, onSnapshot, query, where, getDocs } from "firebase/firestore"
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -88,7 +98,7 @@ const logOut = async () => {
       authStore.logout()
 
       if (!authStore.isAuthenticated) {
-          router.push('/');
+          router.push('/')
       } 
   } catch (error) {
     console.log(error)
@@ -110,54 +120,105 @@ const getNotifications = async () => {
                     where('to', '==', currentUser.value?.uid)
                 ),
                 (snapshot) => {
-                    notifications.value = []; 
+                    notifications.value = [] 
                     snapshot.forEach(doc => {
                         notifications.value.push({
                             id: doc.id,
                             ...doc.data()
-                        });
-                    });
+                        })
+                    })
                 }
-            );
+            )
         } catch (error) {
-            console.error('Error fetching notifications:', error);
+            console.error('Error fetching notifications:', error)
         }
     } else {
-        console.log('No user is logged in.');
+        console.log('No user is logged in.')
     }
-};
+}
+
+
+
+// get schedules
+const startedSchedules = ref([])
+
+const getStartedSchedules = () => {
+  try {
+      onSnapshot(
+        query(
+          collection(db, 'schedules'),
+          where('status', '==', 'started')
+        ),
+        (snapshots) => {
+          startedSchedules.value = []
+          snapshots.docs.forEach(doc => {
+            startedSchedules.value.push({
+              id: doc.id,
+              ...doc.data()
+            })
+          })
+        }
+      )
+
+      getSchools()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+// get schools
+const schools = ref([])
+
+const schoolRef = collection(db, 'schools')
+
+const getSchools = async () => {
+    try {
+        const snapshots = await getDocs(schoolRef)
+
+        snapshots.docs.forEach(doc => {
+            schools.value.push({
+                id: doc.id,
+                ...doc.data()
+            })
+        })
+    } catch (error) {
+        console.log(error)
+    }
+} 
+
+// get school/participants details
+const getSchoolDetails = (schoolId) => {
+    const details = schools.value.filter(school => school.schoolId === schoolId)
+
+    return details[0]
+}
 
 onMounted(() => {
-    applyThemePreference();
+    applyThemePreference()
 
     watch(() => currentUser.value, () => {
-        getNotifications();
-    });
-});
+        getNotifications()
+        getStartedSchedules()
+    })
+})
 
 </script>
 
 <style scoped>
  .marquee {
-    width: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    display: flex;
-  }
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+}
 
-  .marquee p {
-    display: inline-block;
-    padding-left: 100%;
-    margin-right: 50px;
-    animation: marquee 10s linear infinite;
-  }
 
-  @keyframes marquee {
-    0% {
-      transform: translateX(100%);
-    }
-    100% {
-      transform: translateX(-100%);
-    }
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
   }
+  100% {
+    transform: translateX(-100%);
+  }
+}
 </style>

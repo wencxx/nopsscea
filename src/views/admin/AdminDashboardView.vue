@@ -70,11 +70,11 @@
                         <td class="p-2 border dark:border-gray-100/10 text-center">{{ index + 1 }}</td>
                         <td class="p-2 border dark:border-gray-100/10">
                             <div class="flex gap-x-3">
-                                <img v-if="filterSchool(medal.school).schoolLogo" :src="filterSchool(medal.school).schoolLogo" alt="school logo" class="w-14 bg-gray-200 dark:bg-gray-100/10 p-2 rounded">
+                                <img v-if="filterSchool(medal.school)?.schoolLogo" :src="filterSchool(medal.school)?.schoolLogo" alt="school logo" class="w-14 rounded">
                                 <div v-else class="w-16 aspect-square bg-gray-200 dark:bg-gray-100/10 p-2 rounded"></div>
                                 <div class="flex flex-col justify-center">
-                                    <h1 class="text-sm capitalize">{{ filterSchool(medal.school).schoolName }}</h1>
-                                    <p class="text-xs text-gray-500 font-semibold uppercase">{{ filterSchool(medal.school).schoolAbbreviation }}</p>
+                                    <h1 class="text-sm capitalize">{{ filterSchool(medal.school)?.schoolName }}</h1>
+                                    <p class="text-xs text-gray-500 font-semibold uppercase">{{ filterSchool(medal.school)?.schoolAbbreviation }}</p>
                                 </div>
                             </div>
                         </td>
@@ -97,13 +97,9 @@
 <script setup>
 import doughnutChart from '../../components/charts/doughnutChart.vue'
 import barChart from '../../components/charts/barChart.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { db } from '@config/firebaseConfig.js'
 import { getDocs, collection, getCountFromServer, where, query, and } from 'firebase/firestore'
-
-const doughNutLabel = ref('Total No. of athletes by gender')
-const doughNutLabels = ref([ 'Male', 'Female' ])
-const doughNutDatasets = ref([ 20, 50 ])
 
 // count events
 const eventsRef = collection(db, 'events')
@@ -167,6 +163,7 @@ const countSchools = async () => {
 }
 
 // count athletes
+const athletesId = ref([])
 const athletesCount = ref(0)
 const countAthletes = async () => {
     try {
@@ -177,13 +174,49 @@ const countAthletes = async () => {
                 where('isAccepted', '==', true)
             )
         )
-        const snapshot = await getCountFromServer(q)
+        const snapshots = await getDocs(q)
 
-        athletesCount.value = snapshot.data().count
+        snapshots.docs.forEach(doc => {
+            athletesId.value.push(doc.data().userId)
+        })
+
+        athletesCount.value = snapshots.docs.length
+        countAthletesByGender()
     } catch (error) {
         console.log(error)
     }
 }
+
+// count athletes by gender
+const athletesRef = collection(db, 'athletes');
+const athleteMaleCount = ref(0);
+const athleteFemaleCount = ref(0);
+
+const countAthletesByGender = async () => {
+    try {
+        const q = query(
+            athletesRef,
+            where('athleteId', 'in', athletesId.value)
+        );
+        const snapshots = await getDocs(q);
+
+        snapshots.docs.forEach(doc => {
+            const data = doc.data();
+            if (data.gender === 'Male') {
+                athleteMaleCount.value++;
+            } else if (data.gender === 'Female') {
+                athleteFemaleCount.value++;
+            }
+        });
+    } catch (error) {
+        console.error('Error counting athletes by gender:', error);
+    }
+};
+
+const doughNutLabel = ref('Total No. of athletes by gender');
+const doughNutLabels = ref(['Male', 'Female']);
+const doughNutDatasets = computed(() => [athleteMaleCount.value, athleteFemaleCount.value]);
+
 
 // count coaches
 const coachesCount = ref(0)

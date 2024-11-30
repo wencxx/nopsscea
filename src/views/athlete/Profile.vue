@@ -163,7 +163,7 @@
                 <button class="border border-blue-900 rounded px-3 text-blue-900" @click="addCertificateModal = true">Add Certificates</button>
             </div>
             <div v-if="certificates.length" class="w-full grid grid-cols-4 gap-2">
-                <img v-for="(certificate, index) in certificates" :key="certificate.id" @click="viewImages(certificates, index)" :src="certificate.downloadUrl" alt="certificate" class="w-full aspect-square shadow rounded-md">
+                <img v-for="(certificate, index) in certificates" :key="certificate.id" @click="viewImages(certificates, index)" :src="certificate.downloadUrl" alt="certificate" class="w-full aspect-square shadow rounded-md cursor-pointer">
             </div>
             <p v-else class="text-center">No certificates to show</p>
         </div>
