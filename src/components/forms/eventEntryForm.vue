@@ -2,6 +2,23 @@
     <div class="fixed top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
         <form @submit.prevent="joinEvent" class="p-5 bg-white w-fit h-fit rounded shadow space-y-5 dark:text-black">
             <h1 class="text-center text-lg font-bold">Event Entry Form</h1>
+            {{ page1HasEmpty() }}
+            <div class="flex gap-x-2">
+                <Icon icon="solar:basketball-bold" class="text-xl" :class="{ 'text-orange-500': currentPage === 1, 'text-red-500': page1HasEmpty() && currentPage > 1, 'text-green-500': !page1HasEmpty() && currentPage >= 1 }" />
+                <Icon icon="solar:basketball-bold" class="text-xl" :class="{ 'text-orange-500': currentPage === 2, 'text-red-500': page2HasEmpty() && currentPage > 2, 'text-green-500': !page2HasEmpty() && currentPage >= 2 }" />
+                <Icon icon="mdi:volleyball" class="text-xl" :class="{ 'text-orange-500': currentPage === 3, 'text-red-500': page3HasEmpty() && currentPage > 3, 'text-green-500': !page3HasEmpty() && currentPage >= 3 }" />
+                <Icon icon="solar:football-bold-duotone" class="text-xl" :class="{ 'text-orange-500': currentPage === 4, 'text-red-500': page4HasEmpty() && currentPage > 4, 'text-green-500': !page4HasEmpty() && currentPage >= 4 }" />
+                <Icon icon="icons8:football2" class="text-xl" :class="{ 'text-orange-500': currentPage === 5, 'text-red-500': page5HasEmpty() && currentPage > 5, 'text-green-500': !page5HasEmpty() && currentPage >= 5  }" />
+                <Icon icon="mdi:volleyball" class="text-xl" :class="{ 'text-orange-500': currentPage === 6, 'text-red-500': page6HasEmpty() && currentPage > 6, 'text-green-500': !page6HasEmpty() && currentPage >= 6 }" />
+                <Icon icon="game-icons:throwing-ball" class="text-xl" :class="{ 'text-orange-500': currentPage === 7, 'text-red-500': page7HasEmpty() && currentPage > 7, 'text-green-500': !page7HasEmpty() && currentPage >= 7 }" />
+                <Icon icon="mingcute:badminton-fill" class="text-xl" :class="{ 'text-orange-500': currentPage === 8, 'text-red-500': page8HasEmpty() && currentPage > 8, 'text-green-500': !page8HasEmpty() && currentPage >= 8 }" />
+                <Icon icon="tabler:chess-filled" class="text-xl" :class="{ 'text-orange-500': currentPage === 9, 'text-red-500': page9HasEmpty() && currentPage > 9, 'text-green-500': !page9HasEmpty() && currentPage >= 9 }" />
+                <Icon icon="mdi:dance-ballroom" class="text-xl" :class="{ 'text-orange-500': currentPage === 10, 'text-red-500': page10HasEmpty() && currentPage > 10, 'text-green-500': !page10HasEmpty() && currentPage >= 10 }" />
+                <Icon icon="mdi:karate" class="text-xl" :class="{ 'text-orange-500': currentPage === 11, 'text-red-500': page11HasEmpty() && currentPage > 11, 'text-green-500': !page11HasEmpty() && currentPage >= 11 }" />
+                <Icon icon="mdi:swim" class="text-xl" :class="{ 'text-orange-500': currentPage === 12, 'text-red-500': page12HasEmpty() && currentPage > 12, 'text-green-500': !page12HasEmpty() && currentPage >= 12 }" />
+                <Icon icon="mdi:table-tennis" class="text-xl" :class="{ 'text-orange-500': currentPage === 13, 'text-red-500': page13HasEmpty() && currentPage > 13, 'text-green-500': !page13HasEmpty() && currentPage >= 13 }" />
+                <Icon icon="mdi:karate" class="text-xl" :class="{ 'text-orange-500': currentPage === 14, 'text-red-500': page14HasEmpty() && currentPage > 14, 'text-green-500': !page14HasEmpty() && currentPage >= 14 }" />
+            </div>
             <div v-if="currentPage === 1" class="grid grid-cols-3 gap-3"> 
                 <h2 class="col-span-3 font-bold">Basketball 5X5</h2>
                 <h3 class="col-span-3">Senior</h3>
@@ -442,6 +459,7 @@ const closeModal = () => {
     emit('closeModal')
 }
 
+
 const formData = ref({
     b5x5m: '',
     b5x5w: '',
@@ -534,6 +552,275 @@ const formData = ref({
     tg: '',
     ytc: '',
 })
+
+
+const page1HasEmpty = () => {
+    const page1 = ref({
+        b5x5m: formData.value.b5x5m,
+        b5x5w: formData.value.b5x5w,
+        b5x5c: formData.value.b5x5c,
+        b5x5b: formData.value.b5x5b,
+        b5x5g: formData.value.b5x5g,
+        b5x5yc: formData.value.b5x5yc,
+    });
+
+    for (const key of Object.keys(page1.value)) {
+        if (page1.value[key] === '') {
+            return true;
+        }else{
+            return false;
+        }
+    }
+};
+
+const page2HasEmpty = () => {
+    const page2 = ref({
+        b3x3m: formData.value.b3x3m,
+        b3x3w: formData.value.b3x3w,
+        b3x3c: formData.value.b3x3c,
+        b3x3b: formData.value.b3x3b,
+        b3x3g: formData.value.b3x3g,
+        b3x3yc: formData.value.b3x3yc,
+    });
+
+    for (const key of Object.keys(page2.value)) {
+        if (page2.value[key] === '') {
+            return true;
+        }else{
+            return false;
+        }
+    }
+};
+
+const page3HasEmpty = () => {
+    const page3 = ref({
+        bvm: formData.value.bvm,
+        bvw: formData.value.bvw,
+        bvc: formData.value.bvc,
+        bvb: formData.value.bvb,
+        bvg: formData.value.bvg,
+        ybvc: formData.value.ybvc,
+    });
+
+    for (const key of Object.keys(page3.value)) {
+        if (page3.value[key] === '') {
+            return true;
+        }else{
+            return false;
+        }
+    }
+};
+
+const page4HasEmpty = () => {
+    const page4 = ref({
+        fm: formData.value.fm,
+        fw: formData.value.fw,
+        fc: formData.value.fc,
+        fb: formData.value.fb,
+        fg: formData.value.fg,
+        yfc: formData.value.yfc,
+    });
+
+    for (const key of Object.keys(page4.value)) {
+        if (page4.value[key] === '') {
+            return true;
+        }else{
+            return false;
+        }
+    }
+};
+
+const page5HasEmpty = () => {
+    const page5 = ref({
+        stm: formData.value.stm,
+        stw: formData.value.stw,
+        stc: formData.value.stc,
+        stb: formData.value.stb,
+        stg: formData.value.stg,
+        ystc: formData.value.ystc,
+    });
+
+    for (const key of Object.keys(page5.value)) {
+        if (page5.value[key] === '') {
+            return true;
+        }else{
+            return false;
+        }
+    }
+};
+
+const page6HasEmpty = () => {
+    const page6 = ref({
+        vm: formData.value.vm,
+        vw: formData.value.vw,
+        vc: formData.value.vc,
+        vb: formData.value.vb,
+        vg: formData.value.vg,
+        yvc: formData.value.yvc,
+    });
+
+    for (const key of Object.keys(page6.value)) {
+        if (page6.value[key] === '') {
+            return true;
+        }else{
+            return false;
+        }
+    }
+};
+
+const page7HasEmpty = () => {
+    const page7 = ref({
+        am: formData.value.am,
+        aw: formData.value.aw,
+        ac: formData.value.ac,
+        ab: formData.value.ab,
+        ag: formData.value.ag,
+        yac: formData.value.yac,
+    });
+
+    for (const key of Object.keys(page7.value)) {
+        if (page7.value[key] === '') {
+            return true;
+        }else{
+            return false;
+        }
+    }
+};
+
+const page8HasEmpty = () => {
+    const page8 = ref({
+        bm: formData.value.bm,
+        bw: formData.value.bw,
+        bc: formData.value.bc,
+        bb: formData.value.bb,
+        bg: formData.value.bg,
+        ybc: formData.value.ybc,
+    });
+
+    for (const key of Object.keys(page8.value)) {
+        if (page8.value[key] === '') {
+            return true;
+        }else{
+            return false;
+        }
+    }
+};
+
+const page9HasEmpty = () => {
+    const page9 = ref({
+        cm: formData.value.cm,
+        cw: formData.value.cw,
+        cc: formData.value.cc,
+        cb: formData.value.cb,
+        cg: formData.value.cg,
+        ycc: formData.value.ycc,
+    });
+
+    for (const key of Object.keys(page9.value)) {
+        if (page9.value[key] === '') {
+            return true;
+        }else{
+            return false;
+        }
+    }
+};
+
+const page10HasEmpty = () => {
+    const page10 = ref({
+        dm: formData.value.dm,
+        dw: formData.value.dw,
+        dc: formData.value.dc,
+        db: formData.value.db,
+        dg: formData.value.dg,
+        ydc: formData.value.ydc,
+    });
+
+    for (const key of Object.keys(page10.value)) {
+        if (page10.value[key] === '') {
+            return true;
+        }else{
+            return false;
+        }
+    }
+};
+
+const page11HasEmpty = () => {
+    const page11 = ref({
+        km: formData.value.km,
+        kw: formData.value.kw,
+        kc: formData.value.kc,
+        kb: formData.value.kb,
+        kg: formData.value.kg,
+        ykc: formData.value.ykc,
+    });
+
+    for (const key of Object.keys(page11.value)) {
+        if (page11.value[key] === '') {
+            return true;
+        }else{
+            return false;
+        }
+    }
+};
+
+const page12HasEmpty = () => {
+    const page12 = ref({
+        sm: formData.value.sm,
+        sw: formData.value.sw,
+        sc: formData.value.sc,
+        sb: formData.value.sb,
+        sg: formData.value.sg,
+        ysc: formData.value.ysc,
+    });
+
+    for (const key of Object.keys(page12.value)) {
+        if (page12.value[key] === '') {
+            return true;
+        }else{
+            return false;
+        }
+    }
+};
+
+const page13HasEmpty = () => {
+    const page13 = ref({
+        tnm: formData.value.tnm,
+        tnw: formData.value.tnw,
+        tnc: formData.value.tnc,
+        tnb: formData.value.tnb,
+        tng: formData.value.tng,
+        ytnc: formData.value.ytnc,
+    });
+
+    for (const key of Object.keys(page13.value)) {
+        if (page13.value[key] === '') {
+            return true;
+        }else{
+            return false;
+        }
+    }
+};
+
+const page14HasEmpty = () => {
+    const page14 = ref({
+        tm: formData.value.tm,
+        tw: formData.value.tw,
+        tc: formData.value.tc,
+        tb: formData.value.tb,
+        tg: formData.value.tg,
+        ytc: formData.value.ytc,
+    });
+
+    for (const key of Object.keys(page14.value)) {
+        if (page14.value[key] === '') {
+            return true;
+        }else{
+            return false;
+        }
+    }
+};
+
+
 
 const user = auth.currentUser
 

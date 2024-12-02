@@ -345,7 +345,7 @@ const groupMedalsByYear = async () => {
                 }
 
                 tempParticipantsByYear[year].push({
-                    name: filterSchool(data.schoolId)?.schoolName,
+                    name: filterSchool(data.schoolId)?.schoolAbbreviation,
                     gold: data.gold || 0,
                     silver: data.silver || 0,
                     bronze: data.bronze || 0,

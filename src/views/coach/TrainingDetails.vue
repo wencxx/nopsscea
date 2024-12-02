@@ -158,14 +158,6 @@ const getAthletePersonalDetails = async (athleteId) => {
                 })
             }
         )
-        // const snapshots = await getDocs(q)
-
-        // snapshots.docs.forEach(doc => {
-        //     athletes.value.push({
-        //         id: doc.id,
-        //         ...doc.data()
-        //     })
-        // })
     } catch (error) {
         $toast.error(error.message)
     }finally{
@@ -186,18 +178,15 @@ const getDetails = async () => {
     }
 }
 
-// Mark athlete's attendance
 const attendedSession = async (athleteId, index) => {
     const athlete = trainingDets.value.attendance?.find(item => item.athlete === athleteId)
     try {
         if (athlete) {
-            // Remove athlete from attendance
             await updateDoc(trainingRef, {
                 attendance: arrayRemove(athlete)
             })
             trainingDets.value.attendance.splice(index, 1)
         } else {
-            // Add athlete to attendance
             await updateDoc(trainingRef, {
                 attendance: arrayUnion({ athlete: athleteId })
             })
@@ -209,50 +198,41 @@ const attendedSession = async (athleteId, index) => {
 }
 
 const ratings = computed(() => {
-  const ratingMap = {};
-  trainingDets.value.attendance?.forEach(item => {
-    ratingMap[item.athlete] = item.rating;
-  });
-  return ratingMap;
+    const ratingMap = {};
+    trainingDets.value.attendance?.forEach(item => {
+        ratingMap[item.athlete] = item.rating || 0; 
+    });
+    return ratingMap;
 });
+
     
 // Rate athlete
 const rateAthlete = async (rating, athleteId, index) => {
-    const athleteAttendance = trainingDets.value.attendance?.find(item => item.athlete === athleteId)
-
     try {
-       if(!athleteAttendance){
-            trainingDets.value.attendance = []
-
-            trainingDets.value.attendance?.push({ athlete: athleteId, rating: rating });
-
+        const athleteAttendance = trainingDets.value.attendance?.find(item => item.athlete === athleteId);
+        if (!athleteAttendance) {
             await updateDoc(trainingRef, {
                 attendance: arrayUnion({ athlete: athleteId, rating })
-            })
-        }else{
-            
+            });
+            trainingDets.value.attendance = [
+                ...(trainingDets.value.attendance || []),
+                { athlete: athleteId, rating }
+            ];
+        } else {
+            const oldRating = athleteAttendance.rating;
             await updateDoc(trainingRef, {
-                attendance: arrayRemove({ athlete: athleteId, rating: athleteAttendance.rating })
-            })
-
-            if (athleteAttendance.rating === rating) {
-                athleteAttendance.rating = rating - 1
-                trainingDets.value.attendance?.splice(index, 1)
-                trainingDets.value.attendance?.push({ athlete: athleteId, rating: rating - 1 })
-            } else {
-                athleteAttendance.rating = rating
-                trainingDets.value.attendance?.splice(index, 1)
-                trainingDets.value.attendance?.push({ athlete: athleteId, rating })
-            }
-            
+                attendance: arrayRemove({ athlete: athleteId, rating: oldRating })
+            });
             await updateDoc(trainingRef, {
-                attendance: arrayUnion({ athlete: athleteId, rating: athleteAttendance.rating })
-            })
+                attendance: arrayUnion({ athlete: athleteId, rating })
+            });
+            athleteAttendance.rating = rating;
         }
     } catch (error) {
-        console.log(error)
+        console.error('Error rating athlete:', error);
     }
-}
+};
+
 
 onMounted(() => {
     getDetails()
