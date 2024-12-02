@@ -41,8 +41,8 @@
                                 <router-link :to="{ name: 'athleteDetails', params: { id: athlete.id } }" class="bg-custom-primary w-fit text-green-500 hover:scale-110">
                                     <Icon icon="mdi:eye" class="text-2xl" />
                                 </router-link>
-                                <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" @click="undoAthlete(index)">
-                                    <Icon icon="mdi:trash" class="text-xl" />
+                                <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" @click="undoAthlete(athlete.athleteId, index)">
+                                    <Icon icon="mdi:restore" class="text-xl" />
                                 </button>
                             </div>
                         </td>
@@ -173,16 +173,27 @@ const getAthletePersonalDetails = async (athleteId) => {
     }
 }
 
-const undoAthlete = async (index) => {
-    const docRef = doc(db, 'userRole', userRoleDocId.value[index])
+const undoAthlete = async (athleteId, index) => {
+    const userRoleRef = collection(db, 'userRole')
     try {
-        await updateDoc(docRef, {
-            isAccepted: false
-        })
+        const q = query(
+            userRoleRef,
+            where('userId','==', athleteId)
+        )
+        const snapshots = await getDocs(q)
+
+        for(const snapshot of snapshots.docs){
+            const docRef = doc(db, 'userRole', snapshot.id)
+             await updateDoc(docRef, {
+                isAccepted: false,
+            })
+        }
         athletes.value.splice(index, 1)
-        $toast.success('Athlete undo  successfully')
+
+        $toast.success('Athlete accepted successfully')
     } catch (error) {
-        $toast.error('Failed to undo athlete')
+        $toast.error(error.message)
+        console.log(error)
     }
 }
 

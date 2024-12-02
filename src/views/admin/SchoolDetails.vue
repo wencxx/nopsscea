@@ -32,7 +32,6 @@
                                 <th class="w-1/6 py-1 border border-gray-300 dark:border-gray-100/10">Email</th>
                                 <th class="w-1/6 py-1 border border-gray-300 dark:border-gray-100/10">Birthday</th>
                                 <th class="w-1/6 py-1 border border-gray-300 dark:border-gray-100/10">Status</th>
-                                <th class="w-1/6 py-1 border border-gray-300 dark:border-gray-100/10">Action</th>
                             </tr>
                         </thead>
                         <tbody v-if="athletes.length">
@@ -40,10 +39,10 @@
                                 <td class="p-2 border border-gray-300 dark:border-gray-100/10">
                                     <div class="flex gap-x-3">
                                         <img :src="athlete?.photoUrl" alt="school logo" class="w-20 aspect-square bg-gray-200 dark:bg-gray-100/10 p-2 rounded">
-                                        <div class="flex flex-col justify-center">
+                                        <router-link :to="{ name: 'athleteDetails', params: { id: athlete.id } }" class="flex flex-col justify-center">
                                             <h1 class="text-md capitalize">{{ athlete.firstName  }} {{ athlete.middleName  }} {{ athlete.lastName }}</h1>
                                             <p class="text-xs text-gray-500 font-semibold uppercase">{{ athlete.sport }}</p>
-                                        </div>
+                                        </router-link>
                                     </div>
                                 </td>
                                 <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">{{ athlete.address }}</td>
@@ -52,16 +51,6 @@
                                 <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">
                                     <div class="w-full bg-orange-500 py-1 text-sm rounded text-white" :class="{ '!bg-green-500': athlete.status === 'Qualified', '!bg-red-500': athlete.status === 'Not Qualified' }">
                                         {{ athlete.status || 'Under Review' }}
-                                    </div>
-                                </td>
-                                <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">
-                                    <div class="flex justify-center gap-x-3">
-                                        <router-link :to="{ name: 'athleteDetails', params: { id: athlete.id } }" class="bg-custom-primary w-fit text-green-500 hover:scale-110">
-                                            <Icon icon="mdi:eye" class="text-2xl" />
-                                        </router-link>
-                                        <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" @click="removeSchool(school.id)">
-                                            <Icon icon="mdi:trash" class="text-xl" />
-                                        </button>
                                     </div>
                                 </td>
                             </tr>

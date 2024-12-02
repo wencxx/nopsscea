@@ -23,7 +23,7 @@
             <div class="flex items-center gap-x-3">
               <Icon icon="line-md:moon-alt-loop" class="text-2xl cursor-pointer hidden dark:block dark:text-dark-primary-text" @click="toggleDarkmode" />
               <Icon icon="line-md:sun-rising-loop" class="text-2xl cursor-pointer text-yellow-500 block dark:hidden" @click="toggleDarkmode"/>
-              <div class="relative">
+              <!-- <div class="relative">
                   <Icon @click="toggleNotifications = !toggleNotifications" icon="ion:notifications-outline" class="text-2xl dark:text-dark-primary-text cursor-pointer" />
                   <div v-if="hasNotSeenNotifications" class="h-2 aspect-square bg-red-500 rounded-full absolute right-[2px] top-0"></div>
                   <div v-if="toggleNotifications" class="border absolute right-0 top-[120%] h-40 w-44 bg-gray-100 dark:bg-neutral-800 dark:border-gray-100/10 rounded p-2">
@@ -36,7 +36,7 @@
                     </div>
                     <p class="text-xs text-center mt-auto cursor-pointer">View all</p>
                   </div>
-              </div>
+              </div> -->
               <div class="h-[4dvh] aspect-square rounded-full relative border">
                   <img @click="toggleDropdownMenu = !toggleDropdownMenu" v-if="currentUser?.photoURL" :src="currentUser?.photoURL" class="h-full aspect-square rounded-full object-cover" />
                   <div @click="toggleDropdownMenu = !toggleDropdownMenu" v-else class="h-full aspect-square rounded-full bg-gray-300/35 dark:bg-gray-100/10 flex items-center justify-center">

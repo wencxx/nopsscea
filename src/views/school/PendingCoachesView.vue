@@ -32,10 +32,10 @@
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">{{ convertBirthday(coach.birthday) }}</td>
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">
                             <div class="flex justify-center gap-x-3">
-                                <button class="bg-custom-primary w-fit text-green-500 hover:scale-110" @click="acceptCoach(index)">
+                                <button class="bg-custom-primary w-fit text-green-500 hover:scale-110" @click="acceptCoach(coach.coachId, index)">
                                     <Icon icon="iconamoon:check-fill" class="text-2xl" />
                                 </button>
-                                <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" @click="removeCoach(coach.id)">
+                                <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" :disabled="deleting && athleteIndexToDelete === index" @click="showDeleteModal(coach.coachId, index)">
                                     <Icon icon="mdi:trash" class="text-xl" />
                                 </button>
                             </div>
@@ -132,6 +132,8 @@
                 </tbody>
             </table>
         </div>
+
+        <deleteModal v-if="showModalDelete" @closeModal="showModalDelete = false" @acceptDelete="deleteCoach()" :user="'athlete'" :type="'decline'" />
     </div>
 </template>
 
@@ -141,8 +143,10 @@ import { useAuthStore } from '../../store'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
 import { db } from '@config/firebaseConfig'
-import { getDocs, collection, where, query, queryEqual, and, doc, updateDoc } from 'firebase/firestore'
+import { getDocs, collection, where, query, queryEqual, and, doc, updateDoc, deleteDoc } from 'firebase/firestore'
 import moment from 'moment'
+import deleteModal from '@components/deleteModal.vue'
+import axios from 'axios'
 
 const convertBirthday = (bday) => {
     return moment(bday).format('ll')
@@ -219,19 +223,86 @@ const getCoachPersonalDetails = async (coachId) => {
     }
 }
 
-const acceptCoach = async (index) => {
-    const userRoleRef = doc(db, 'userRole', userRoleDocId.value[index])
+const acceptCoach = async (userId, index) => {
+    const docRef = collection(db, 'userRole')
     try {
-         await updateDoc(userRoleRef, {
-            isAccepted: true
-        })
+        const q = query(
+            docRef,
+            where('userId', '==', userId)
+        )
+
+        const snapshots = await getDocs(q)
+
+
+        for(const snapshot of snapshots.docs){
+            const docRef = doc(db, 'userRole', snapshot.id)
+
+            await updateDoc(docRef, {
+                isAccepted: true
+            })
+        }
 
         coaches.value.splice(index, 1)
-
         $toast.success('Coach accepted successfully')
     } catch (error) {
-        $toast.error(error.message)
+        $toast.error('Failed to accept coach')
         console.log(error)
+    }
+}
+
+// delete athlete
+const deleting = ref(false)
+const athleteIdToDelete = ref('')
+const athleteIndexToDelete = ref('')
+const showModalDelete = ref(false)
+
+const showDeleteModal = (uid, index) => {
+    showModalDelete.value = true
+    athleteIdToDelete.value = uid
+    athleteIndexToDelete.value = index
+}
+
+const deleteCoach = async () => {
+    const userRoleRef = collection(db, 'userRole')
+    const docRef = collection(db, 'coaches')
+    try {
+        showModalDelete.value = false
+        deleting.value = true
+        const res = await axios.delete(`https://nopsscea-server.vercel.app/delete-user/${athleteIdToDelete.value}`)
+        console.log(res.data)
+
+        if(res.data === 'successfully deleted'){
+            const q = query(
+                docRef,
+                where('coachId', '==', athleteIdToDelete.value)
+            )
+
+            const q4 = query(
+                userRoleRef,
+                where('userId', '==', athleteIdToDelete.value)
+            )
+
+            const snapshots = await getDocs(q)
+            const snapshots4 = await getDocs(q4)
+
+            for(const snapshot of snapshots.docs){
+                const docRef = doc(db, 'coaches', snapshot.id)
+                await deleteDoc(docRef)
+            }
+
+            for(const snapshot of snapshots4.docs){
+                const docRef = doc(db, 'userRole', snapshot.id)
+                await deleteDoc(docRef)
+            }
+
+            coaches.value.splice(athleteIndexToDelete.value, 1)
+            $toast.success('Coach successfully declined')
+        }
+    } catch (error) {
+        console.log(error)
+        $toast.error('Failed to delete athlete')
+    } finally {
+        deleting.value = false
     }
 }
 

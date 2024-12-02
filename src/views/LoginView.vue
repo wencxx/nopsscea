@@ -28,11 +28,14 @@
             <div class="space-y-3">
                 <div class="flex flex-col">
                     <label class="text-lg">Email</label>
-                    <input type="email" v-model="email" class="border h-10 pl-2 rounded dark:bg-transparent dark:border-gray-100/25">
+                    <input type="email" v-model="email" class="border h-10 pl-2 rounded dark:bg-transparent dark:border-gray-100/25 focus:outline-none">
                 </div>
                 <div class="flex flex-col">
                     <label class="text-lg">Password</label>
-                    <input type="password" v-model="password" class="border h-10 pl-2 rounded dark:bg-transparent dark:border-gray-100/25">
+                    <div class="border h-10 rounded dark:bg-transparent dark:border-gray-100/25 flex items-center pr-2">
+                        <input :type="passwordType" v-model="password" class="h-full w-full pl-2 focus:outline-none">
+                        <Icon :icon="iconType" class="text-2xl" @click="showPassword" />
+                    </div>
                 </div>
             </div>
             <div class="flex justify-between items-center !m-0 !mt-2">
@@ -69,6 +72,21 @@ import { getDocs, collection, query, where, limit } from 'firebase/firestore'
 import { onMounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@store'
+
+
+const passwordType = ref('password')
+const iconType = ref('mdi:eye')
+
+
+const showPassword = () => {
+    if(passwordType.value === 'password'){
+        passwordType.value = 'text'
+        iconType.value = 'mdi:eye-closed'
+    }else{
+        passwordType.value = 'password'
+        iconType.value = 'mdi:eye'
+    }
+}
 
 const router = useRouter()
 const route = useRoute()
@@ -130,9 +148,13 @@ const login = async () => {
 
         // show message base on user role if user is not accepted
         if (!userRole.isAccepted) {
-            userNotAccepted.value = userRole.role === 'school'
-                ? 'Wait for the admin to accept your registration.'
-                : 'Wait for your school or coach to accept your registration.'
+            if (userRole.role === 'school') {
+                userNotAccepted.value = 'Wait for the admin to accept your registration.';
+            } else if (userRole.role === 'coach') {
+                userNotAccepted.value = 'Wait for your school to accept your registration.';
+            } else {
+                userNotAccepted.value = 'Wait for your school or coach to accept your registration.';
+            }
             return
         }
 
@@ -145,7 +167,7 @@ const login = async () => {
         }else if(userRole.role === 'athlete'){
             router.push('/athlete')
         }else if(userRole.role === 'coach'){
-            router.push('/coach')
+            router.push('/coach/newsfeed')
         }else{
             router.push('/admin')
         }

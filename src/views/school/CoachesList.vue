@@ -32,11 +32,8 @@
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">{{ convertBirthday(coach.birthday) }}</td>
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">
                             <div class="flex justify-center gap-x-3">
-                                <router-link :to="{ name: 'athleteDetails', params: { id: coach.id } }" class="bg-custom-primary w-fit text-green-500 hover:scale-110">
-                                    <Icon icon="mdi-light:eye" class="text-2xl" />
-                                </router-link>
-                                <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" @click="removeSchool(coach.id)">
-                                    <Icon icon="mdi:trash" class="text-xl" />
+                                <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" @click="undoCoach(coach.coachId, index)">
+                                    <Icon icon="mdi:restore" class="text-xl" />
                                 </button>
                             </div>
                         </td>
@@ -178,7 +175,7 @@ const getCoaches = async () => {
 
         const promises = snapshots.docs.map(doc => {
             const userDetails = doc.data()
-            userRoleDocId.value.push(doc.id)
+            userRoleDocId.value.push(userDetails.userId)
 
             getCoachPersonalDetails(userDetails.userId)
         })
@@ -215,6 +212,33 @@ const getCoachPersonalDetails = async (athleteId) => {
 
     } catch (error) {
         $toast.error(error.message)
+        console.log(error)
+    }
+}
+
+const undoCoach = async (userId, index) => {
+    const docRef = collection(db, 'userRole')
+    try {
+        const q = query(
+            docRef,
+            where('userId', '==', userId)
+        )
+
+        const snapshots = await getDocs(q)
+
+
+        for(const snapshot of snapshots.docs){
+            const docRef = doc(db, 'userRole', snapshot.id)
+
+            await updateDoc(docRef, {
+                isAccepted: false
+            })
+        }
+
+        coaches.value.splice(index, 1)
+        $toast.success('Coach undo  successfully')
+    } catch (error) {
+        $toast.error('Failed to undo coach')
         console.log(error)
     }
 }

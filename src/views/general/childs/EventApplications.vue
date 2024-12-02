@@ -22,17 +22,16 @@
                 </td>
                 <td class="p-2 border dark:border-gray-100/10 text-center">{{ participant.schoolAddress }}</td>
                 <td class="p-2 border dark:border-gray-100/10 text-center">{{ participant.schoolEmail }}</td>
-                <td class="p-2 border dark:border-gray-100/10 text-center">10</td>
+                <td class="p-2 border dark:border-gray-100/10 text-center">{{ countSchoolAthletes(participant.schoolId) }}</td>
                 <td class="p-2 border dark:border-gray-100/10 text-center">
                     <div class="flex justify-center gap-x-2">
-                        <a
-                                :href="`https://docs.google.com/viewer?url=${encodeURIComponent(getParticipantsDOCX(index))}&embedded=true`"
-                                target="_blank"
-                            >
-                            <Icon icon="bxs:file-doc" class="text-2xl text-green-500 hover:scale-110" />
-                        </a>
                         <a :href="getParticipantsPDF(index)" target="_blank">
-                            <Icon icon="bxs:file-pdf" class="cursor-pointer text-orange-500 text-2xl"/>
+                            <Icon icon="bxs:file-pdf" class="cursor-pointer text-gray-500 text-2xl"/>
+                        </a>
+                        <a
+                                :href="getParticipantsDOCX(index)"
+                            >
+                            <Icon icon="mdi:download" class="text-2xl text-orange-500 hover:scale-110" />
                         </a>
                         <Icon icon="tabler:check" class="cursor-pointer text-green-500 text-2xl" @click="acceptApplicant(participant.participantsId, participant.schoolId, index)"/>
                     </div>
@@ -84,6 +83,7 @@ import PizZip from 'pizzip'
 import Docxtemplater from 'docxtemplater'
 import { saveAs } from 'file-saver'
 import ImageModule from 'docxtemplater-image-module-free'
+import moment from 'moment'
 
 const route = useRoute()
 const emit = defineEmits(['acceptedApplicant'])
@@ -91,6 +91,30 @@ const emit = defineEmits(['acceptedApplicant'])
 const eventId = route.params.id
 
 const $toast = useToast()
+
+// get event details
+const eventDetails = ref({})
+const loadingDetails = ref(false)
+
+const getEventDetails = async () => {
+    try {
+        loadingDetails.value = true
+        const docRef = doc(db, 'events', route.params.id)
+
+        const snapshot = await getDoc(docRef)
+        
+        if(!snapshot.exists()) return console.log('No data availalble')
+        
+        eventDetails.value = {
+            id: snapshot.id,
+            ...snapshot.data()
+        }
+    } catch (error) {
+        $toast.error(error.message)
+    }finally{
+        loadingDetails.value = false
+    }
+}
 
 // participants ref
 const participantsRef = collection(db, 'participants')
@@ -119,6 +143,7 @@ const getParticipants = async (eventId) => {
 
             if(!participantsDetails.isAccepted){
                 getParticipantsPersonalDetails(participantsDetails.schoolId, participantsDetails.id)
+                getSchoolAthletes(participantsDetails.schoolId)
             }
 
         })
@@ -186,148 +211,79 @@ const acceptApplicant = async (participantsId, schoolId, index) => {
         $toast.error(error.message)
     }
 }
-// generate docx
-const formRef = collection(db, 'forms')
 
-const generateDoc = async (schoolId) => {
+//get accpeted athletes
+const athletesId = ref([])
+const roleRef = collection(db, 'userRole') 
+
+const getAcceptedAthletes = async () => {
     try {
         const q = query(
-            formRef,
+            roleRef,
             and(
-                where('eventId', '==', eventId),
-                where('schoolId', '==', schoolId)
-            ),
-            limit(1)
-        )
+                where('isAccepted', '==', true),
+                where('role', '==', 'athlete'),
+            )
+        );
 
-        const snapshot = await getDocs(q)
+        const snapshots = await getDocs(q);
 
-        downloadForm(snapshot.docs[0].data())
+        snapshots.docs.forEach(doc => {
+            const eventStartDate = moment(eventDetails.value.startDate).startOf('day');
+            const acceptedDate = moment(doc.data().dateAccepted).startOf('day');
+
+            if (acceptedDate.isBefore(eventStartDate)) {
+                athletesId.value.push(doc.data().userId);
+            }
+        });
+
+        await getParticipants(eventId);
     } catch (error) {
-        
+        console.log(error);
     }
-}
+};
 
-const downloadForm = async (data) => {
+
+// athletes reference
+const athleteRef = collection(db, 'athletes')
+
+// get school athletes
+const athletes = ref([])
+
+const getSchoolAthletes = async (schoolId) => {    
     try {
-        const response = await fetch('/PRISAA-ENTRY-FORM-1.docx')
+        if(athletesId.value.length){
+            console.log(athletesId.value)
+            const q = query(
+                athleteRef,
+                and(
+                    where('school', '==', schoolId)
+                )
+            )
+            
+            const snapshots = await getDocs(q)
 
-        if (!response.ok) throw new Error('Failed to fetch DOCX template')
-
-        const docxArrayBuffer = await response.arrayBuffer()
-
-
-        const zip = new PizZip(docxArrayBuffer)
-
-        const doc = new Docxtemplater(zip)
-
-        doc.setData({
-            b5v5m: data.b5x5m,
-            b5v5w: data.b5x5w,
-            b5v5c: data.b5x5c,
-            b5v5b: data.b5x5b,
-            b5v5g: data.b5x5g,
-            yb5v5c: data.b5x5yc,
-            b3v3m: data.b3x3m,
-            b3v3w: data.b3x3w,
-            b3v3c: data.b3x3c,
-            b3v3b: data.b3x3b,
-            b3v3g: data.b3x3g,
-            yb3v3c: data.b3x3yc,
-            bvm: data.bvm,
-            bvw: data.bvw,
-            bvc: data.bvc,
-            bvb: data.bvb,
-            bvg: data.bvg,
-            ybvc: data.ybvc,
-            fm: data.fm,
-            fw: data.fw,
-            fc: data.fc,
-            fb: data.fb,
-            fg: data.fg,
-            yfc: data.yfc,
-            fm: data.fm,
-            fw: data.fw,
-            fc: data.fc,
-            fb: data.fb,
-            fg: data.fg,
-            yfc: data.yfc,
-            stm: data.stm,
-            stw: data.stw,
-            stc: data.stc,
-            stb: data.stb,
-            stg: data.stg,
-            ystc: data.ystc,
-            vm: data.vm,
-            vw: data.vw,
-            vc: data.vc,
-            vb: data.vb,
-            vg: data.vg,
-            yvc: data.yvc,
-            am: data.am,
-            aw: data.aw,
-            ac: data.ac,
-            ab: data.ab,
-            ag: data.ag,
-            yac: data.yac,
-            bm: data.bm,
-            bw: data.bw,
-            bc: data.bc,
-            bb: data.bb,
-            bg: data.bg,
-            ybc: data.ybc,
-            cm: data.cm,
-            cw: data.cw,
-            cc: data.cc,
-            cb: data.cb,
-            cg: data.cg,
-            ycc: data.ycc,
-            dm: data.dm,
-            dw: data.dw,
-            dc: data.dc,
-            db: data.db,
-            dg: data.dg,
-            ydc: data.ydc,
-            km: data.km,
-            kw: data.kw,
-            kc: data.kc,
-            kb: data.kb,
-            kg: data.kg,
-            ykc: data.ykc,
-            sm: data.sm,
-            sw: data.sw,
-            sc: data.sc,
-            sb: data.sb,
-            sg: data.sg,
-            ysc: data.ysc,
-            tnm: data.tnm,
-            tnw: data.tnw,
-            tnc: data.tnc,
-            tnb: data.tnb,
-            tng: data.tng,
-            ytnc: data.ytnc,
-            tm: data.tm,
-            tw: data.tw,
-            tc: data.tc,
-            tb: data.tb,
-            tg: data.tg,
-            ytc: data.ytc,
-        })
-
-        doc.render()
-
-        const output = doc.getZip().generate({
-            type: 'blob',
-            mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        })
-
-        saveAs(output, 'entry-form.docx')
+            snapshots.docs.forEach(doc => {
+                athletes.value.push({
+                    id: doc.id,
+                    ...doc.data()
+                })
+            })
+        }
     } catch (error) {
-        console.error('Error generating document:', error)
+        $toast.error(error.message)
     }
 }
+
+
+// count school athletes
+const countSchoolAthletes = (schoolId) => {
+    return athletes.value.filter(athlete => athlete.school === schoolId).length;
+};
+
 
 onMounted(() => {
-    getParticipants(eventId)
+    getAcceptedAthletes()
+    getEventDetails()
 })
 </script>

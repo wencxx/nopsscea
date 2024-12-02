@@ -91,7 +91,7 @@ import { useAuthStore, useDataStore } from '../../store'
 import { useToast } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
 import { db } from '@config/firebaseConfig'
-import { getDocs, getDoc, collection, where, query, doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore'
+import { getDocs, getDoc, collection, where, query, doc, updateDoc, arrayUnion, arrayRemove, onSnapshot } from 'firebase/firestore'
 import moment from 'moment'
 
 const $toast = useToast()
@@ -146,14 +146,26 @@ const getAthletePersonalDetails = async (athleteId) => {
             where('sport', '==', coachDetails.value?.sport)
         )
 
-        const snapshots = await getDocs(q)
 
-        snapshots.docs.forEach(doc => {
-            athletes.value.push({
-                id: doc.id,
-                ...doc.data()
-            })
-        })
+        onSnapshot(
+            q,
+            (snapshots) => {
+                snapshots.docs.forEach(doc => {
+                    athletes.value.push({
+                        id: doc.id,
+                        ...doc.data()
+                    })
+                })
+            }
+        )
+        // const snapshots = await getDocs(q)
+
+        // snapshots.docs.forEach(doc => {
+        //     athletes.value.push({
+        //         id: doc.id,
+        //         ...doc.data()
+        //     })
+        // })
     } catch (error) {
         $toast.error(error.message)
     }finally{

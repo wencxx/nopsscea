@@ -177,13 +177,13 @@ const acceptAthlete = async (index, userId) => {
 }
 
 onMounted(() => {
-    if(currentUser.value?.uid){
-        dataStore.getCoachData(currentUser.value?.uid)
-    }
-    watch(() => currentUser.value, async () => {
-        loading.value = true
-        await dataStore.getCoachData(currentUser.value?.uid)
-        loading.value = false
-    })
-})
+    watch(
+        () => currentUser.value?.uid,
+        async (newUid, oldUid) => {
+            if (newUid !== oldUid) { 
+                await dataStore.getCoachData(newUid);
+            }
+        }
+    );
+});
 </script>

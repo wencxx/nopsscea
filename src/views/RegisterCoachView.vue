@@ -70,7 +70,6 @@
                         <option value="baseball">Baseball</option>
                         <option value="table-tennis">Table Tennis</option>
                         <option value="futsal">Futsal</option>
-                        <option value="dance-sports">Dance Sports</option>
                     </select>
                 </div>
                 <div class="flex flex-col gap-y-2">

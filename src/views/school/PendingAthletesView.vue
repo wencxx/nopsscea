@@ -32,10 +32,10 @@
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">{{ convertBirthday(athlete.birthday) }}</td>
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">
                             <div class="flex justify-center gap-x-3">
-                                <router-link v-if="athleteIndexToDelete !== index" :to="{ name: 'athleteDetails', params: { id: athlete.id }, query: { status: 'pending' } }" class="bg-custom-primary w-fit text-green-500 hover:scale-110">
+                                <router-link :to="{ name: 'athleteDetails', params: { id: athlete.id }, query: { status: 'pending' } }" class="bg-custom-primary w-fit text-green-500 hover:scale-110">
                                     <Icon icon="mdi:eye" class="text-2xl" />
                                 </router-link>
-                                <button class="bg-custom-primary w-fit text-green-500 hover:scale-110" :disabled="deleting && athleteIndexToDelete === index" @click="acceptAthlete(index)">
+                                <button class="bg-custom-primary w-fit text-green-500 hover:scale-110" :disabled="deleting && athleteIndexToDelete === index" @click="acceptAthlete(athlete.athleteId, index)">
                                     <Icon icon="iconamoon:check-fill" class="text-2xl" />
                                 </button>
                                 <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" :disabled="deleting && athleteIndexToDelete === index" @click="showDeleteModal(athlete.athleteId, index)">
@@ -228,15 +228,23 @@ const getAthletePersonalDetails = async (athleteId) => {
 }
 
 // accept athlete
-const acceptAthlete = async (index) => {
-    const userRoleRef = doc(db, 'userRole', userRoleDocId.value[index])
+const acceptAthlete = async (athleteId, index) => {
+    const userRoleRef = collection(db, 'userRole')
     const today = moment(new Date()).format('L')
     try {
-         await updateDoc(userRoleRef, {
-            isAccepted: true,
-            dateAccepted: today
-        })
+        const q = query(
+            userRoleRef,
+            where('userId','==', athleteId)
+        )
+        const snapshots = await getDocs(q)
 
+        for(const snapshot of snapshots.docs){
+            const docRef = doc(db, 'userRole', snapshot.id)
+             await updateDoc(docRef, {
+                isAccepted: true,
+                dateAccepted: today
+            })
+        }
         athletes.value.splice(index, 1)
 
         $toast.success('Athlete accepted successfully')

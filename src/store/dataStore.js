@@ -58,7 +58,6 @@ export const useDataStore = defineStore('dataStore', {
                     const athleteSnapshots = await getDocs(athleteQuery)
 
                     if (athleteSnapshots.empty) {
-                        console.log('No documents')
                         continue
                     }
 
@@ -74,6 +73,7 @@ export const useDataStore = defineStore('dataStore', {
             }
         },
         async getPendingAthletes(sport, school) {
+            this.pendingAthletesData = []
             const userRef = collection(db, 'userRole')
             const docRef = collection(db, 'athletes')
             try {
@@ -95,7 +95,6 @@ export const useDataStore = defineStore('dataStore', {
                     const athleteSnapshots = await getDocs(athleteQuery)
 
                     if (athleteSnapshots.empty) {
-                        console.log('No documents')
                         continue
                     }
 
@@ -123,7 +122,7 @@ export const useDataStore = defineStore('dataStore', {
                 )
                 const snapshots = await getDocs(q)
                 
-                if (snapshots.empty) return console.log('No documents')
+                if (snapshots.empty) return
 
                 snapshots.docs.forEach(doc => {
                     this.trainingData.push({

@@ -65,45 +65,38 @@
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Course</label>
-                    <select v-model="athleteData.course" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
-                        <option value="BS-accountancy">BS Accountancy</option>
-                        <option value="BS-architecture">BS Architecture</option>
-                        <option value="BS-business-administration">BS Business Administration</option>
-                        <option value="BS-education">BS Education</option>
-                        <option value="BS-computer-science">BS Computer Science</option>
-                        <option value="BS-information-technology">BS Information Technology</option>
-                        <option value="BS-hospitality-management">BS Hospitality Management</option>
-                        <option value="BS-tourism-management">BS Tourism Management</option>
-                        <option value="BS-psychology">BS Psychology</option>
-                        <option value="BS-nursing">BS Nursing</option>
-                        <option value="BS-pharmacy">BS Pharmacy</option>
-                        <option value="BS-medical-technology">BS Medical Technology</option>
-                        <option value="BS-physical-therapy">BS Physical Therapy</option>
-                        <option value="BS-criminology">BS Criminology</option>
-                        <option value="BS-engineering">BS Engineering (Various fields)</option>
-                        <option value="BS-agriculture">BS Agriculture</option>
-                        <option value="BS-communication">BS Communication</option>
-                        <option value="BS-social-work">BS Social Work</option>
-                        <option value="BA-political-science">BA Political Science</option>
-                        <option value="BA-english">BA English</option>
-                        <option value="BA-mass-communication">BA Mass Communication</option>
-                        <option value="BS-accounting-information-system">BS Accounting Information System</option>
-                        <option value="others">others</option>
-
-                        <!-- Courses of VMA Global College -->
-                        <option value="BS-marine-transportation">BS Marine Transportation (VMA)</option>
-                        <option value="BS-marine-engineering">BS Marine Engineering (VMA)</option>
-                        <option value="BS-customs-administration">BS Customs Administration (VMA)</option>
-                        <option value="BS-hotel-and-restaurant-management">BS Hotel and Restaurant Management (VMA)</option>
-                        <option value="BS-business-administration">BS Business Administration (VMA)</option>
-
-                        <!-- Courses of John B. Lacson Colleges Foundation (JBLF) -->
-                        <option value="BS-marine-transportation-jblf">BS Marine Transportation (JBLF)</option>
-                        <option value="BS-marine-engineering-jblf">BS Marine Engineering (JBLF)</option>
-                        <option value="BS-cruise-ship-management">BS Cruise Ship Management (JBLF)</option>
-                        <option value="BS-customs-administration-jblf">BS Customs Administration (JBLF)</option>
-                        <option value="BS-hotel-and-restaurant-management-jblf">BS Hotel and Restaurant Management (JBLF)</option>
-                    </select>
+                    <input type="text" list="courseLists" v-model="athleteData.course" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                    <datalist id="courseLists">
+                        <option>BS Accountancy</option>
+                        <option>BS Architecture</option>
+                        <option>BS Business Administration</option>
+                        <option>BS Education</option>
+                        <option>BS Computer Science</option>
+                        <option>BS Information Technology</option>
+                        <option>BS Hospitality Management</option>
+                        <option>BS Tourism Management</option>
+                        <option>BS Psychology</option>
+                        <option>BS Nursing</option>
+                        <option>BS Pharmacy</option>
+                        <option>BS Medical Technology</option>
+                        <option>BS Physical Therapy</option>
+                        <option>BS Criminology</option>
+                        <option>BS Engineering (Various fields)</option>
+                        <option>BS Agriculture</option>
+                        <option>BS Communication</option>
+                        <option>BS Social Work</option>
+                        <option>BA Political Science</option>
+                        <option>BA English</option>
+                        <option>BA Mass Communication</option>
+                        <option>BS Accounting Information System</option>
+                        <option>BS Marine Transportation</option>
+                        <option>BS Marine Engineering</option>
+                        <option>BS Customs Administration</option>
+                        <option>BS Hotel and Restaurant Management</option>
+                        <option>BS Business Administration</option>
+                        <option>BS Cruise Ship Management</option>
+                        <option>others</option>
+                    </datalist>
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Sport</label>
@@ -124,7 +117,6 @@
                         <option value="baseball">Baseball</option>
                         <option value="table-tennis">Table Tennis</option>
                         <option value="futsal">Futsal</option>
-                        <option value="dance-sports">Dance Sports</option>
                     </select>
                 </div>
                 <div class="flex flex-col gap-y-2">
