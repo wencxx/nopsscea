@@ -457,6 +457,7 @@ const register = async () => {
             mothersName: athleteData.value.mothersName,
             fathersName: athleteData.value.fathersName,
             athleteId: user.uid,
+            status: 'Under Review'
         });
 
         if (imageCert.value) {

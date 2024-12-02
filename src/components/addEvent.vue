@@ -23,7 +23,7 @@
                     </div>
                     <div class="flex flex-col gap-y-2 w-1/2">
                         <label class="text-lg capitalize">End Date</label>
-                        <input type="date" class="border h-9 rounded pl-2" v-model="eventDetails.endDate">
+                        <input type="date" class="border h-9 rounded pl-2" :min="today()" v-model="eventDetails.endDate">
                     </div>
                 </div>
                 <div class="flex flex-col gap-y-2">

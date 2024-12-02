@@ -2,10 +2,10 @@
     <div class="flex flex-col gap-y-5">
         <!-- header -->
         <div class="flex gap-x-20">
-            <div class="w-full flex gap-x-5">
-                <img v-if="eventDetails.coverPhoto" :src="eventDetails.coverPhoto" alt="event cover photo" class="w-3/4 h-96 rounded-xl">
-                <div v-else class="w-3/4 h-96 rounded bg-gray-100 dark:bg-gray-100/10 animate-pulse"></div>
-                <div class="flex flex-col justify-between w-1/4">
+            <div class="w-full flex flex-col lg:flex-row gap-x-5">
+                <img v-if="eventDetails.coverPhoto" :src="eventDetails.coverPhoto" alt="event cover photo" class="lg:w-3/4 h-96 rounded-xl">
+                <div v-else class="lg:w-3/4 h-96 rounded bg-gray-100 dark:bg-gray-100/10 animate-pulse"></div>
+                <div class="flex flex-col justify-between lg:w-1/4">
                     <h1 class="text-lg font-semibold">Event: <span class="font-medium">{{ eventDetails.title }}</span></h1>
                     <h1 class="text-lg font-semibold line-clamp-4">Description: <span class="font-medium">{{ eventDetails.description }}</span></h1>
                     <h1 class="text-lg font-semibold">Status: <span class="font-medium">Upcoming</span></h1>
@@ -25,7 +25,7 @@
         </div>
         <!-- charts -->
         <div class="grid grid-cols-3 gap-4">
-            <div class="col-span-3 grid grid-cols-4 gap-4 bg-gray-100 dark:bg-neutral-800 border dark:border-gray-100/10 rounded-xl p-3">
+            <div class="col-span-3 grid lg:grid-cols-4 gap-4 bg-gray-100 dark:bg-neutral-800 border dark:border-gray-100/10 rounded-xl p-3">
                 <div class="border rounded-xl bg-gray-200 dark:bg-neutral-800 dark:border-gray-100/10 p-5 flex items-center justify-between h-36">
                     <div>
                         <h1 class="text-4xl font-bold">{{ participants.length }}</h1>
@@ -73,9 +73,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-span-3 bg-gray-100 dark:bg-neutral-800 border dark:border-gray-100/10 rounded-xl p-3">
+            <div class="col-span-3 bg-gray-100 dark:bg-neutral-800 border dark:border-gray-100/10 rounded-xl p-3 overflow-x-auto">
                 <router-view @acceptedApplicant="acceptedApplicant" />
-                <table v-if="$route.name !== 'eventApplicants'" class="!w-full tracking-wide rounded overflow-hidden">
+                <table v-if="$route.name !== 'eventApplicants'" class="w-[200%] lg:!w-full tracking-wide rounded overflow-hidden">
                     <thead>
                         <tr>
                             <th class="w-2/6 py-1 border dark:border-gray-100/10 font-medium">School</th>
