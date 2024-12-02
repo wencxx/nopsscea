@@ -12,7 +12,7 @@
                     <input type="text" v-model="athleteData.firstName" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
                 <div class="flex flex-col gap-y-2">
-                    <label>Middle Name</label>
+                    <label>Middle Name <span class="text-xs">(optional)</span></label>
                     <input type="text" v-model="athleteData.middleName" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
                 <div class="flex flex-col gap-y-2">
@@ -357,7 +357,7 @@ const validatePassword = () => {
 // check if theres a empty fied
 const checkFields = () => {
     for(const key in athleteData.value){
-        if(athleteData.value[key] === ''){
+        if(key !== middleName && athleteData.value[key] === ''){
             return 'fill out all fields'
         }
     }
