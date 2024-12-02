@@ -1,35 +1,35 @@
 <template>
     <div class="flex items-center justify-center gap-x-5 dark:text-white">
-        <form @submit.prevent="register" class="w-1/3 h-fit space-y-5 p-5 border dark:border-gray-100/10 shadow rounded-md">
+        <form @submit.prevent="register" class="w-11/12 lg:w-1/3 h-fit space-y-5 p-5 border dark:border-gray-100/10 shadow rounded-md mt-40 mb-10 lg:mt-0">
             <h1 class="text-center uppercase font-medium text-xl">Athlete Registration</h1>
             <p v-if="errorMessage" class="bg-red-500 text-white pl-2 py-1 rounded capitalize flex items-center gap-x-1">
                 <Icon icon="bxs:error" class="text-lg" />
                 <span>{{ errorMessage }}</span>
             </p>
-            <div v-if="currentPage == 1" class="grid grid-cols-2 gap-4">
+            <div v-if="currentPage == 1" class="grid lg:grid-cols-2 gap-4">
                 <div class="flex flex-col gap-y-2">
                     <label>First Name</label>
-                    <input type="text" v-model="athleteData.firstName" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                    <input type="text" v-model="athleteData.firstName" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Middle Name</label>
-                    <input type="text" v-model="athleteData.middleName" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                    <input type="text" v-model="athleteData.middleName" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Last Name</label>
-                    <input type="text" v-model="athleteData.lastName" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                    <input type="text" v-model="athleteData.lastName" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Email</label>
-                    <input type="email" v-model="athleteData.email" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                    <input type="email" v-model="athleteData.email" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Password</label>
-                    <input type="password" v-model="athleteData.password" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                    <input type="password" v-model="athleteData.password" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Gender</label>
-                    <select v-model="athleteData.gender" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10"> 
+                    <select v-model="athleteData.gender" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10"> 
                         <option disabled value="">Select Gender</option>
                         <option>Male</option>
                         <option>Female</option>
@@ -37,23 +37,23 @@
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Birth date</label>
-                    <input type="date" v-model="athleteData.birthday" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                    <input type="date" v-model="athleteData.birthday" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Address</label>
-                    <input type="text" v-model="athleteData.address" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                    <input type="text" v-model="athleteData.address" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
             </div>
-            <div v-if="currentPage == 2" class="grid grid-cols-2 gap-4">
+            <div v-if="currentPage == 2" class="grid lg:grid-cols-2 gap-4">
                 <div class="flex flex-col gap-y-2">
                     <label>School</label>
-                    <select v-model="athleteData.school" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                    <select v-model="athleteData.school" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                         <option v-for="school in schoolList" :key="school.schoolId" :value="school.schoolId">{{ school.schoolName }}</option>
                     </select>
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Year</label>
-                    <select class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10" v-model="athleteData.year">
+                    <select class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10" v-model="athleteData.year">
                         <option value="" disabled>Select Year</option>
                         <option>1st year</option>
                         <option>2nd year</option>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Course</label>
-                    <select v-model="athleteData.course" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                    <select v-model="athleteData.course" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                         <option value="BS-accountancy">BS Accountancy</option>
                         <option value="BS-architecture">BS Architecture</option>
                         <option value="BS-business-administration">BS Business Administration</option>
@@ -107,7 +107,7 @@
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Sport</label>
-                    <select v-model="athleteData.sport" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                    <select v-model="athleteData.sport" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                         <option value="basketball">Basketball</option>
                         <option value="volleyball">Volleyball</option>
                         <option value="football">Football</option>
@@ -129,15 +129,15 @@
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Mother's Fullname</label>
-                    <input type="text" v-model="athleteData.mothersName" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                    <input type="text" v-model="athleteData.mothersName" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Father's Fullname</label>
-                    <input type="text" v-model="athleteData.fathersName" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                    <input type="text" v-model="athleteData.fathersName" class="border h-10 lg:h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Athletes Photo</label>
-                    <div :class="{ '!border-red-500': noImage}" class="h-8 border rounded cursor-pointer pl-2 focus:outline-custom-primary flex items-center justify-center gap-x-2 dark:bg-transparent dark:border-gray-100/10" @click="toggleFileInput">
+                    <div :class="{ '!border-red-500': noImage}" class="h-10 lg:h-8 border rounded cursor-pointer pl-2 focus:outline-custom-primary flex items-center justify-center gap-x-2 dark:bg-transparent dark:border-gray-100/10" @click="toggleFileInput">
                         <Icon icon="mage:image-upload" class="text-xl"/>
                         <p class="line-clamp-1 text-sm">{{ imageName }}</p>
                     </div>
@@ -145,7 +145,7 @@
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Certificate</label>
-                    <div :class="{ '!border-red-500': noImageCert}" class="h-8 border rounded cursor-pointer pl-2 focus:outline-custom-primary flex items-center justify-center gap-x-2 dark:bg-transparent dark:border-gray-100/10" @click="toggleFileInputCert">
+                    <div :class="{ '!border-red-500': noImageCert}" class="h-10 lg:h-8 border rounded cursor-pointer pl-2 focus:outline-custom-primary flex items-center justify-center gap-x-2 dark:bg-transparent dark:border-gray-100/10" @click="toggleFileInputCert">
                         <Icon icon="mage:image-upload" class="text-xl"/>
                         <p class="line-clamp-1 text-sm">{{ imageNameCert }}</p>
                     </div>
@@ -153,7 +153,7 @@
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Birth Certificate</label>
-                    <div :class="{ '!border-red-500': noImageBirthCert}" class="h-8 border rounded cursor-pointer pl-2 focus:outline-custom-primary flex items-center justify-center gap-x-2 dark:bg-transparent dark:border-gray-100/10" @click="toggleFileInputBirthCert">
+                    <div :class="{ '!border-red-500': noImageBirthCert}" class="h-10 lg:h-8 border rounded cursor-pointer pl-2 focus:outline-custom-primary flex items-center justify-center gap-x-2 dark:bg-transparent dark:border-gray-100/10" @click="toggleFileInputBirthCert">
                         <Icon icon="mage:image-upload" class="text-xl"/>
                         <p class="line-clamp-1 text-sm">{{ imageNameBirthCert }}</p>
                     </div>
@@ -161,7 +161,7 @@
                 </div>
                 <div class="flex flex-col gap-y-2">
                     <label>Transcript of Records</label>
-                    <div :class="{ '!border-red-500': noTORFile}" class="h-8 border rounded cursor-pointer pl-2 focus:outline-custom-primary flex items-center justify-center gap-x-2 dark:bg-transparent dark:border-gray-100/10" @click="toggleFileInputTOR">
+                    <div :class="{ '!border-red-500': noTORFile}" class="h-10 lg:h-8 border rounded cursor-pointer pl-2 focus:outline-custom-primary flex items-center justify-center gap-x-2 dark:bg-transparent dark:border-gray-100/10" @click="toggleFileInputTOR">
                         <Icon icon="mage:image-upload" class="text-xl"/>
                         <p class="line-clamp-1 text-sm">{{ imageNameTOR }}</p>
                     </div>
@@ -169,11 +169,12 @@
                 </div>
             </div>
             <div class="flex items-center justify-end gap-x-5">
-                <router-link v-if="currentPage === 1" :to="{ name: 'selectRole' }" class="border text-center border-blue-900 h-8 text-custom-primary py-1 w-1/5 rounded hover:shadow-md hover:dark:shadow dark:shadow-white">Back</router-link>
-                <button v-else class="border text-center border-blue-900 h-8 text-custom-primary py-1 w-1/5 rounded hover:shadow-md hover:dark:shadow dark:shadow-white" type="button" @click="back()">Back</button>
+                <router-link v-if="currentPage === 1" :to="{ name: 'selectRole' }" class="border text-center border-blue-900 h-10 lg:h-8 text-custom-primary py-1 w-1/5 rounded hover:shadow-md hover:dark:shadow dark:shadow-white hidden lg:block">Back</router-link>
+                <router-link v-if="currentPage === 1" :to="{ name: 'login' }" class="border text-center border-blue-900 h-10 lg:h-8 text-custom-primary py-1 w-1/5 rounded hover:shadow-md hover:dark:shadow dark:shadow-white block lg:hidden">Back</router-link>
+                <button v-else class="border text-center border-blue-900 h-10 lg:h-8 text-custom-primary py-1 w-1/5 rounded hover:shadow-md hover:dark:shadow dark:shadow-white" type="button" @click="back()">Back</button>
                 <div v-if="currentPage == 2 || $route.query.page === 2" class="w-fit" :class="{'w-1/5': !registering}">
-                    <button v-if="!registering" class="bg-blue-900 h-8 px-5 w-full text-white py-1 rounded hover:shadow-md hover:dark:shadow dark:shadow-white">Register</button>
-                    <button v-else class="bg-blue-900 h-8 w-fit px-3 text-white py-1 rounded hover:shadow-md hover:dark:shadow dark:shadow-white flex items-center justify-center gap-x-2 animate-pulse" disabled>
+                    <button v-if="!registering" class="bg-blue-900 h-10 lg:h-8 px-5 w-full text-white py-1 rounded hover:shadow-md hover:dark:shadow dark:shadow-white">Register</button>
+                    <button v-else class="bg-blue-900 h-10 lg:h-8 w-fit px-3 text-white py-1 rounded hover:shadow-md hover:dark:shadow dark:shadow-white flex items-center justify-center gap-x-2 animate-pulse" disabled>
                         <svg class="text-gray-300 animate-spin" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"
                             width="15" height="15">
                             <path
@@ -187,7 +188,7 @@
                         <span class="text-sm">Registering</span>
                     </button>
                 </div>
-                <button v-else class="bg-blue-900 h-8 w-1/5 text-white py-1 rounded hover:shadow-md hover:dark:shadow dark:shadow-white" type="button" @click="next()">Next</button>
+                <button v-else class="bg-blue-900 h-10 lg:h-8 w-1/5 text-white py-1 rounded hover:shadow-md hover:dark:shadow dark:shadow-white" type="button" @click="next()">Next</button>
             </div>
         </form>
     </div>
@@ -332,10 +333,24 @@ const checkAge = () => {
         age--;
     }
 
-    if (age >= 14) {
+    if (age >= 18 && age < 25) {
         return "Old enough.";
     } else {
         return "age restriction";
+    }
+}
+
+// valdate pass
+const validatePassword = () => {
+    const hasCapitalLetter = /[A-Z]/.test(athleteData.value.password);
+    const hasNumber = /[0-9]/.test(athleteData.value.password);       
+    const hasLetter = /[a-zA-Z]/.test(athleteData.value.password);    
+    const isLongEnough = athleteData.value.password.length >= 8;    
+
+    if (hasCapitalLetter && hasNumber && hasLetter && isLongEnough) {
+        return "Password is valid.";
+    } else {
+        return "invalid pass";
     }
 }
 
@@ -366,6 +381,11 @@ const register = async () => {
 
     if (checkAge() === 'age restriction') {
         errorMessage.value = 'Age Restriction';
+        return;
+    }
+
+    if (validatePassword() === 'invalid pass') {
+        errorMessage.value = 'Password must have at least 8 characters, including a capital letter and number.';
         return;
     }
 

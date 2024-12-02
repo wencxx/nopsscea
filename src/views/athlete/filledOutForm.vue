@@ -4,8 +4,8 @@
             <Icon icon="clarity:form-line" class="text-2xl" />
             <h1>Filled Out Forms</h1>
         </div>
-        <div class="bg-gray-100 dark:bg-gray-100/10 p-5 rounded-md">
-            <table class="min-w-[500px] md:w-full font-inter tracking-wide">
+        <div class="bg-gray-100 dark:bg-gray-100/10 p-5 rounded-md overflow-x-auto">
+            <table class="w-[250%] lg:w-full font-inter tracking-wide">
                 <thead>
                     <tr>
                         <th class="w-1/4 py-1 border border-gray-300 dark:border-gray-100/10">Form</th>

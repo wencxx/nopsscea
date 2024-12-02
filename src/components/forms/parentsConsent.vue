@@ -1,87 +1,87 @@
 <template>
     <div class="flex items-center justify-center h-screen w-screen fixed -top-10 left-0 bg-black/10 z-10">
-        <form @submit.prevent="submitForm" class="bg-white w-[40dvw] !h-[90dvh] overflow-auto rounded-md grid grid-cols-2 gap-3 p-5 relative">
+        <form @submit.prevent="submitForm" class="bg-white w-11/12 lg:w-[40dvw] !h-[90dvh] overflow-auto rounded-md lg:grid grid-cols-2 gap-3 p-5 relative">
             <div class="top-1 right-1 sticky col-span-2" @click="closeModal">
                 <Icon icon="mdi:close" class="text-xl cursor-pointer ml-auto" />
             </div>
             <h1 class="text-center col-span-2 mb-2 text-lg">Parents Consent</h1>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Name</label>
-                <input type="text" class="border rounded h-8 pl-2" v-model="formData.name">
+                <input type="text" class="border rounded h-10 lg:h-8 pl-2" v-model="formData.name">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>School Name</label>
-                <input type="text" class="border rounded h-8 pl-2" v-model="formData.schoolName">
+                <input type="text" class="border rounded h-10 lg:h-8 pl-2" v-model="formData.schoolName">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>2x2 Picture</label>
-                <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload($event, '2x2Picture')">
+                <input type="file" accept=".jpg, .png, .jpeg" class="h-10 lg:h-8" @change="handleImageUpload($event, '2x2Picture')">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Sports Event</label>
-                <input type="text" class="border rounded h-8 pl-2" v-model="formData.sport">
+                <input type="text" class="border rounded h-10 lg:h-8 pl-2" v-model="formData.sport">
             </div>
             <h1 class="col-span-2">Provincial/Cluster Meet</h1>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Date</label>
-                <input type="date" class="border rounded h-8 pl-2" v-model="formData.provDate">
+                <input type="date" class="border rounded h-10 lg:h-8 pl-2" v-model="formData.provDate">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Venue</label>
-                <input type="text" class="border rounded h-8 pl-2" v-model="formData.provVenue">
+                <input type="text" class="border rounded h-10 lg:h-8 pl-2" v-model="formData.provVenue">
             </div>
             <h1 class="col-span-2">Regional Meet</h1>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Date</label>
-                <input type="date" class="border rounded h-8 pl-2" v-model="formData.regDate">
+                <input type="date" class="border rounded h-10 lg:h-8 pl-2" v-model="formData.regDate">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Venue</label>
-                <input type="text" class="border rounded h-8 pl-2" v-model="formData.regVenue">
+                <input type="text" class="border rounded h-10 lg:h-8 pl-2" v-model="formData.regVenue">
             </div>
             <h1 class="col-span-2">National Games</h1>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Date</label>
-                <input type="date" class="border rounded h-8 pl-2" v-model="formData.natDate">
+                <input type="date" class="border rounded h-10 lg:h-8 pl-2" v-model="formData.natDate">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Venue</label>
-                <input type="text" class="border rounded h-8 pl-2" v-model="formData.natVenue">
+                <input type="text" class="border rounded h-10 lg:h-8 pl-2" v-model="formData.natVenue">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Fathers Name</label>
-                <input type="text" class="border rounded h-8 pl-2" v-model="formData.fathersName">
+                <input type="text" class="border rounded h-10 lg:h-8 pl-2" v-model="formData.fathersName">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>E-Signature</label>
-                <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload($event, 'fEsign')">
+                <input type="file" accept=".jpg, .png, .jpeg" class="h-10 lg:h-8" @change="handleImageUpload($event, 'fEsign')">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Mothers Name</label>
-                <input type="text" class="border rounded h-8 pl-2" v-model="formData.mothersName">
+                <input type="text" class="border rounded h-10 lg:h-8 pl-2" v-model="formData.mothersName">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>E-Signature</label>
-                <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload($event, 'mEsign')">
+                <input type="file" accept=".jpg, .png, .jpeg" class="h-10 lg:h-8" @change="handleImageUpload($event, 'mEsign')">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Guardians Name</label>
-                <input type="text" class="border rounded h-8 pl-2" v-model="formData.guardianName">
+                <input type="text" class="border rounded h-10 lg:h-8 pl-2" v-model="formData.guardianName">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>E-Signature</label>
-                <input type="file" accept=".jpg, .png, .jpeg" class="h-8" @change="handleImageUpload($event, 'gEsign')">
+                <input type="file" accept=".jpg, .png, .jpeg" class="h-10 lg:h-8" @change="handleImageUpload($event, 'gEsign')">
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>Semester</label>
-                <select v-model="formData.semester" class="border rounded h-8 pl-2">
+                <select v-model="formData.semester" class="border rounded h-10 lg:h-8 pl-2">
                     <option>1st Semester</option>
                     <option>2nd Semester</option>
                 </select>
             </div>
             <div class="flex flex-col h-fit gap-y-1">
                 <label>School Year</label>
-                <select v-model="formData.sy" class="border rounded h-8 pl-2">
+                <select v-model="formData.sy" class="border rounded h-10 lg:h-8 pl-2">
                     <option>2024-2025</option>
                     <option>2025-2026</option>
                     <option>2026-2027</option>

@@ -19,7 +19,7 @@
                 <div class="flex gap-x-2">
                     <div class="flex flex-col gap-y-2 w-1/2">
                         <label class="text-lg capitalize">Start date</label>
-                        <input type="date" class="border h-9 rounded pl-2" v-model="eventDetails.startDate">
+                        <input type="date" class="border h-9 rounded pl-2" :min="today()" v-model="eventDetails.startDate">
                     </div>
                     <div class="flex flex-col gap-y-2 w-1/2">
                         <label class="text-lg capitalize">End Date</label>
@@ -48,6 +48,10 @@ import { collection, addDoc }  from 'firebase/firestore'
 import { getDownloadURL, ref as storageRef, uploadBytes } from 'firebase/storage'
 
 const emits = defineEmits(['closeModal'])
+
+const today = () => {
+    return new Date().toISOString().split('T')[0];
+}
 
 const closeModal = () => {
     emits('closeModal', 'addedEventDetails')

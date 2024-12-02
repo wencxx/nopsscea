@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="flex flex-col items-center gap-y-5" v-if="!loading">
-            <div v-for="(announcement, index) in announcements" :key="index" class="bg-white dark:bg-neutral-700 rounded-lg border dark:border-gray-100/10 w-2/3 p-5">
+            <div v-for="(announcement, index) in announcements" :key="index" class="bg-white dark:bg-neutral-700 rounded-lg border dark:border-gray-100/10 lg:w-2/3 p-5">
                 <!-- header -->
                  <div class="flex items-center gap-x-3 border-b dark:border-gray-100/10 pb-4">
                     <div class="w-12 border rounded-full bg-gray-100 aspect-square p-2">
@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="flex flex-col items-center gap-y-5" v-else>
-            <div v-for="i in 5" :key="i" class="bg-white dark:bg-neutral-700 rounded-lg border dark:border-gray-100/10 w-2/3 p-5">
+            <div v-for="i in 5" :key="i" class="bg-white dark:bg-neutral-700 rounded-lg border dark:border-gray-100/10 lg:w-2/3 p-5">
                 <!-- header -->
                  <div class="flex items-center gap-x-3 border-b dark:border-gray-100/10 pb-4">
                     <div class="w-12 rounded-full bg-gray-200 aspect-square p-2 animate-pulse"></div>

@@ -178,8 +178,27 @@ const schoolRef = collection(db, 'schools')
 const errorMessage = ref('')
 const registering = ref(false)
 
+// valdate pass
+const validatePassword = () => {
+    const hasCapitalLetter = /[A-Z]/.test(schoolData.value.schoolPassword);
+    const hasNumber = /[0-9]/.test(schoolData.value.schoolPassword);       
+    const hasLetter = /[a-zA-Z]/.test(schoolData.value.schoolPassword);    
+    const isLongEnough = schoolData.value.schoolPassword.length >= 8;    
+
+    if (hasCapitalLetter && hasNumber && hasLetter && isLongEnough) {
+        return "Password is valid.";
+    } else {
+        return "invalid pass";
+    }
+}
+
 // register school
 const register = async () => {
+    if (validatePassword() === 'invalid pass') {
+        errorMessage.value = 'Password must have at least 8 characters, including a capital letter and number.';
+        return;
+    }
+
     if(image.value === null) {
         return noImage.value = true
     }

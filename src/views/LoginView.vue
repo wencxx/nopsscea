@@ -1,7 +1,7 @@
 <template>
     <div class="flex items-center justify-center dark:text-white">
         <form @submit.prevent="login" class="w-4/5  md:w-2/5 xl:w-1/5 h-fit rounded p-5 space-y-5">
-            <h1 class="text-center text-xl font-semibold font uppercase">Welcome</h1>
+            <h1 class="text-center text-xl font-semibold font uppercase">Welcome <span class="inline-block lg:hidden">Atlhete</span></h1>
             <!-- message indicator -->
             <div v-if="errorMessage" class="bg-red-500 pl-3 py-1 rounded space-x-2 text-white !-mb-3">
                 <Icon icon="bxs:error" class="inline text-xl" />
@@ -56,7 +56,8 @@
                 </svg>
                 <span class="text-sm">Signing in</span>
             </button>
-            <p class="!mt-10 text-center text-md">Not registered? <router-link :to="{ name: 'selectRole' }" class="hover:text-custom-primary hover:dark:text-blue-500 hover:underline cursor-pointer">Sign up</router-link></p>
+            <p class="!mt-10 text-center text-md hidden lg:block">Not registered? <router-link :to="{ name: 'selectRole' }" class="hover:text-custom-primary hover:dark:text-blue-500 hover:underline cursor-pointer">Sign up</router-link></p>
+            <p class="!mt-10 text-center text-md block lg:hidden">Not registered? <router-link :to="{ name: 'registerAthlete' }" class="hover:text-custom-primary hover:dark:text-blue-500 hover:underline cursor-pointer">Sign up</router-link></p>
         </form>
     </div>
 </template>

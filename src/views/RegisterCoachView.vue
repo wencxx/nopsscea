@@ -191,10 +191,23 @@ const checkAge = () => {
         age--;
     }
 
-    if (age >= 14) {
+    if (age >= 25) {
         return "Old enough.";
     } else {
         return "age restriction";
+    }
+}
+
+const validatePassword = () => {
+    const hasCapitalLetter = /[A-Z]/.test(coachData.value.password);
+    const hasNumber = /[0-9]/.test(coachData.value.password);       
+    const hasLetter = /[a-zA-Z]/.test(coachData.value.password);    
+    const isLongEnough = coachData.value.password.length >= 8;    
+
+    if (hasCapitalLetter && hasNumber && hasLetter && isLongEnough) {
+        return "Password is valid.";
+    } else {
+        return "invalid pass";
     }
 }
 
@@ -225,6 +238,11 @@ const register = async () => {
     if(checkAge() === 'age restriction'){
         errorMessage.value = 'Age Restriction'
         return
+    }
+
+    if (validatePassword() === 'invalid pass') {
+        errorMessage.value = 'Password must have at least 8 characters, including a capital letter and number.';
+        return;
     }
 
     if(image.value === null) {

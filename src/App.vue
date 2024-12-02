@@ -1,6 +1,6 @@
 <template>
   <div class="flex font-inter text-white-primary-text  dark:text-dark-primary-text">
-      <sideBar v-if="isAuth" />
+      <sideBar v-if="isAuth" class="hidden lg:block" />
       <div class="w-full h-screen relative dark:bg-dark-bg">
         <headerComponent v-if="isAuth" />
         <!-- router views -->

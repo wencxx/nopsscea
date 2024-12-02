@@ -1,7 +1,7 @@
 <template>
     <div class="space-y-10">
-        <div class="border dark:border-gray-100/10 h-[35dvh] rounded-md p-5 flex gap-x-5">
-            <div class="flex flex-col w-1/5 items-center justify-center h-full gap-y-5 border-r dark:border-gray-100/10">
+        <div class="border dark:border-gray-100/10 lg:h-[35dvh] rounded-md p-5 flex flex-col lg:flex-row items-center lg:items-start gap-x-5">
+            <div class="flex flex-col lg:w-1/5 items-center justify-center h-full gap-y-5 lg:border-r dark:border-gray-100/10">
                 <img v-if="athleteData.photoUrl" :src="athleteData.photoUrl" alt="profile picture" class="w-32 aspect-square rounded-full border">
                 <div v-else class="w-32 aspect-square rounded-full bg-gray-300 animate-pulse border"></div>
                 <div v-if="Object.keys(athleteData).length" class="flex flex-col items-center">
@@ -15,7 +15,7 @@
                     <div class="w-1/2 h-5 bg-gray-300 animate-pulse rounded"></div>
                 </div>
             </div>
-            <div class="w-4/5 h-full grid grid-cols-2">
+            <div class="lg:w-4/5 h-full grid lg:grid-cols-2 mt-5 lg:mt-0">
                 <h1 class="text-lg"><span class="font-bold">School:</span> {{ school.schoolName }}</h1>
                 <h1 class="text-lg"><span class="font-bold">School Abbreviation:</span> {{ school.schoolAbbreviation }}</h1>
                 <h1 class="text-lg capitalize"><span class="font-bold">Course:</span> {{ athleteData.course }}</h1>
@@ -60,8 +60,8 @@
                 <h1 class="text-lg font-bold">Documents</h1>
                 <button class="border border-blue-900 rounded px-3 text-blue-900" @click="addDocumentModal = true">Add Document</button>
             </div>
-            <div class="bg-gray-100 dark:bg-gray-100/10 p-5 rounded-md">
-                <table class="w-full">
+            <div class="bg-gray-100 dark:bg-gray-100/10 p-5 rounded-md overflow-x-auto">
+                <table class="w-[300%] lg:w-full">
                     <thead>
                         <tr>
                             <th class="w-2/5 py-1 border border-gray-300 dark:border-gray-100/10">Document</th>
@@ -115,8 +115,8 @@
                 <h1 class="text-lg font-bold">Forms</h1>
                 <router-link :to="{ name: 'forms' }" class="border border-blue-900 rounded px-3 text-blue-900">Fill Out Form</router-link>
             </div>
-            <div class="bg-gray-100 dark:bg-gray-100/10 p-5 rounded-md">
-                <table class="min-w-[500px] md:w-full font-inter tracking-wide">
+            <div class="bg-gray-100 dark:bg-gray-100/10 p-5 rounded-md overflow-x-auto">
+                <table class="w-[300%] lg:w-full font-inter tracking-wide">
                     <thead>
                         <tr>
                             <th class="w-1/4 py-1 border border-gray-300 dark:border-gray-100/10">Form</th>
@@ -162,7 +162,7 @@
                 <h1 class="text-lg font-bold">Certificates</h1>
                 <button class="border border-blue-900 rounded px-3 text-blue-900" @click="addCertificateModal = true">Add Certificates</button>
             </div>
-            <div v-if="certificates.length" class="w-full grid grid-cols-4 gap-2">
+            <div v-if="certificates.length" class="w-full grid grid-cols-2 lg:grid-cols-4 gap-2">
                 <img v-for="(certificate, index) in certificates" :key="certificate.id" @click="viewImages(certificates, index)" :src="certificate.downloadUrl" alt="certificate" class="w-full aspect-square shadow rounded-md cursor-pointer">
             </div>
             <p v-else class="text-center">No certificates to show</p>
