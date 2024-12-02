@@ -35,7 +35,7 @@
                                 :class="{ 'text-yellow-500': average >= star }"
                             />
                         </div>
-                        <p class="mt-1">{{ average }}</p>
+                        <p class="mt-1">{{ average || 0 }}</p>
                     </div>
                     <div v-if="$route.query.status === 'pending'" class="flex justify-end gap-x-3 h-fit w-fit">
                         <button v-if="!deleting" class="w-36 h-fit py-1 rounded border bg-red-700 text-white" @click="showDeleteModal(athleteData.athleteId)">Decline</button>
@@ -59,11 +59,11 @@
                                 :class="{ 'text-yellow-500': average >= star }"
                             />
                         </div>
-                        <p class="mt-1">{{ average }}</p>
+                        <p class="mt-1">{{ average || 0 }}</p>
                     </div>
                     <div class="flex justify-end gap-x-3 h-fit border w-fit">
-                        <button v-if="athleteData.status === 'Qualified' || !athleteData.status" class="w-36 h-fit py-1 rounded border bg-red-700 text-white" @click="updateStatus(athleteData.athleteId, 'NQ')">Not Qualified</button>
-                        <button v-if="athleteData.status === 'Not Qualified' || !athleteData.status" class="w-36 h-fit py-1 rounded border bg-blue-900 text-white" @click="updateStatus(athleteData.athleteId, 'Q')">Qualified</button>
+                        <button v-if="athleteData.status === 'Qualified' || athleteData.status === 'Under Review'" class="w-36 h-fit py-1 rounded border bg-red-700 text-white" @click="updateStatus(athleteData.athleteId, 'NQ')">Not Qualified</button>
+                        <button v-if="athleteData.status === 'Not Qualified' || athleteData.status === 'Under Review'" class="w-36 h-fit py-1 rounded border bg-blue-900 text-white" @click="updateStatus(athleteData.athleteId, 'Q')">Qualified</button>
                     </div>
                 </div>
             </div>  
