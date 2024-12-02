@@ -357,7 +357,7 @@ const validatePassword = () => {
 // check if theres a empty fied
 const checkFields = () => {
     for(const key in athleteData.value){
-        if(key !== middleName && athleteData.value[key] === ''){
+        if(key !== 'middleName' && athleteData.value[key] === ''){
             return 'fill out all fields'
         }
     }
