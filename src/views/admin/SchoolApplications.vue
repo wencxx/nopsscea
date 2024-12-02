@@ -244,7 +244,7 @@ const deleteSchool = async () => {
     try {
         deleting.value = true
         showModalDelete.value = false
-        const res = await axios.delete(`${import.meta.env.VITE_SERVER_URL}delete-user/${schoolIdToDelete.value}`)
+        const res = await axios.delete(`https://nopsscea-server.vercel.app/delete-user/${schoolIdToDelete.value}`)
         console.log(res.data)
 
         if(res.data === 'successfully deleted'){
