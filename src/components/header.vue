@@ -11,9 +11,9 @@
                       <h1 class="text-lg uppercase font-bold">Now Playing:</h1>
                       <div v-for="(schedule, index) in startedSchedules" :key="index" class="mx-10 text-xl">
                           <span class="font-bold text-blue-900">{{ schedule.part1Score + ' ' }}</span>
-                          <span>{{ getSchoolDetails(schedule.participant1).schoolAbbreviation }}</span>
+                          <span>{{ getSchoolDetails(schedule.participant1)?.schoolAbbreviation }}</span>
                           <span> VS. </span>
-                          <span>{{ getSchoolDetails(schedule.participant2).schoolAbbreviation }}</span>
+                          <span>{{ getSchoolDetails(schedule.participant2)?.schoolAbbreviation }}</span>
                           <span class="font-bold text-red-500">{{ ' ' + schedule.part2Score }}</span>
                       </div>
                     </div>

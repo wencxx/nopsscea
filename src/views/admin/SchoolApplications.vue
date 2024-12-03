@@ -14,7 +14,7 @@
                     <th class="w-2/6 py-1 border dark:border-gray-100/10 font-medium">School</th>
                     <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Address</th>
                     <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Email</th>
-                    <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Sports Director</th>
+                    <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">School Head</th>
                     <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Action</th>
                 </tr>
             </thead>
@@ -31,7 +31,7 @@
                     </td>
                     <td class="p-2 border dark:border-gray-100/10 text-center">{{ school.schoolAddress }}</td>
                     <td class="p-2 border dark:border-gray-100/10 text-center">{{ school.schoolEmail }}</td>
-                    <td class="p-2 border dark:border-gray-100/10 text-center">Wency Baterna</td>
+                    <td class="p-2 border dark:border-gray-100/10 text-center">{{ school.schoolHead }}</td>
                     <td class="p-2 border dark:border-gray-100/10">
                         <div class="flex justify-center gap-x-3">
                             <a

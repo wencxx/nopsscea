@@ -12,7 +12,7 @@
                     <th class="w-2/6 py-1 border dark:border-gray-100/10 font-medium">School</th>
                     <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Address</th>
                     <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Email</th>
-                    <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">School H</th>
+                    <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">School Head</th>
                     <th class="w-1/6 py-1 border dark:border-gray-100/10 font-medium">Action</th>
                 </tr>
             </thead>

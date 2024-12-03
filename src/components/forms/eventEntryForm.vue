@@ -2,7 +2,6 @@
     <div class="fixed top-0 left-0 bg-black/10 w-screen h-screen flex items-center justify-center">
         <form @submit.prevent="joinEvent" class="p-5 bg-white w-fit h-fit rounded shadow space-y-5 dark:text-black">
             <h1 class="text-center text-lg font-bold">Event Entry Form</h1>
-            {{ page1HasEmpty() }}
             <div class="flex gap-x-2">
                 <Icon icon="solar:basketball-bold" class="text-xl" :class="{ 'text-orange-500': currentPage === 1, 'text-red-500': page1HasEmpty() && currentPage > 1, 'text-green-500': !page1HasEmpty() && currentPage >= 1 }" />
                 <Icon icon="solar:basketball-bold" class="text-xl" :class="{ 'text-orange-500': currentPage === 2, 'text-red-500': page2HasEmpty() && currentPage > 2, 'text-green-500': !page2HasEmpty() && currentPage >= 2 }" />

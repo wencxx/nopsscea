@@ -127,13 +127,13 @@
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">{{ convertBirthday(athlete.birthday) }}</td>
                         <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">
                             <div class="flex justify-center gap-x-3">
-                                <button class="bg-custom-primary w-fit text-green-500 hover:scale-110" @click="viewAthleteDetails(athlete)">
+                                <router-link :to="{ name: 'athleteDetails', params: { id: athlete.id }, query: { status: 'pending' } }" class="bg-custom-primary w-fit text-green-500 hover:scale-110">
                                     <Icon icon="mdi:eye" class="text-2xl" />
-                                </button>
-                                <button class="bg-custom-primary w-fit text-green-500 hover:scale-110" @click="acceptAthlete(index)">
+                                </router-link>
+                                <button class="bg-custom-primary w-fit text-green-500 hover:scale-110" @click="acceptAthlete(athlete.athleteId, index)">
                                     <Icon icon="iconamoon:check-fill" class="text-2xl" />
                                 </button>
-                                <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" @click="deleteAthlete(athlete.athleteId, index)">
+                                <button class="bg-custom-secondary text-red-500 w-fit hover:scale-110" @click="showDeleteModal(athlete.athleteId, index)">
                                     <Icon icon="mdi:trash" class="text-xl" />
                                 </button>
                             </div>
@@ -230,6 +230,8 @@
                 </tbody> -->
             </table>
         </div>
+
+        <deleteModal v-if="showModalDelete" @closeModal="showModalDelete = false" @acceptDelete="deleteAthlete()" :user="'athlete'" :type="'decline'" />
     </div>
 </template>
 
@@ -239,9 +241,14 @@ import barChart from '../../components/charts/barChart.vue'
 import { ref, computed, onMounted, watch } from 'vue'
 import { useAuthStore, useSchoolDataStore } from '@store'
 import { db } from '@config/firebaseConfig' 
-import { collection, query, where, getDocs, getDoc, and, onSnapshot, getCountFromServer, doc } from 'firebase/firestore'
+import { collection, query, where, getDocs, getDoc, and, onSnapshot, getCountFromServer, doc, updateDoc, deleteDoc } from 'firebase/firestore'
 import moment from 'moment'
+import { useToast } from 'vue-toast-notification'
+import 'vue-toast-notification/dist/theme-sugar.css'
+import deleteModal from '@components/deleteModal.vue'
+import axios from 'axios'
 
+const $toast = useToast()
 const authStore = useAuthStore()
 const schoolDataStore = useSchoolDataStore()
 
@@ -451,6 +458,115 @@ const doughNutDatasets = ref([0, 0])
 const chartLabel = ref('Events participants every year')
 const chartLabels = ref([ '2023', '2024', '2025', '2026', '2027' ])
 const chartDatasets = ref([ 20, 50, 30, 20, 25 ])
+
+// delete athlete
+const deleting = ref(false)
+const athleteIdToDelete = ref('')
+const athleteIndexToDelete = ref('')
+const showModalDelete = ref(false)
+
+const showDeleteModal = (uid, index) => {
+    showModalDelete.value = true
+    athleteIdToDelete.value = uid
+    athleteIndexToDelete.value = index
+}
+
+const deleteAthlete = async () => {
+    const userRoleRef = collection(db, 'userRole')
+    const docRef = collection(db, 'athletes')
+    const docsRef = collection(db, 'documents')
+    const certsRef = collection(db, 'certificates')
+    try {
+        showModalDelete.value = false
+        deleting.value = true
+        const res = await axios.delete(`https://nopsscea-server.vercel.app/delete-user/${athleteIdToDelete.value}`)
+        console.log(res.data)
+
+        if(res.data === 'successfully deleted'){
+            const q = query(
+                docRef,
+                where('athleteId', '==', athleteIdToDelete.value)
+            )
+            const q2 = query(
+                docsRef,
+                where('userId', '==', athleteIdToDelete.value)
+            )
+            const q3 = query(
+                certsRef,
+                where('userId', '==', athleteIdToDelete.value)
+            )
+
+            const q4 = query(
+                userRoleRef,
+                where('userId', '==', athleteIdToDelete.value)
+            )
+
+            const snapshots = await getDocs(q)
+            const snapshots2 = await getDocs(q2)
+            const snapshots3 = await getDocs(q3)
+            const snapshots4 = await getDocs(q4)
+
+            for(const snapshot of snapshots.docs){
+                const docRef = doc(db, 'athletes', snapshot.id)
+                await deleteDoc(docRef)
+            }
+
+            for(const snapshot of snapshots2.docs){
+                const docRef = doc(db, 'documents', snapshot.id)
+                const fileRef = storageRef(storage, `documents/${snapshot.docs().file}`)
+
+                await Promise.all([deleteObject(fileRef), deleteDoc(docRef)])
+            }
+
+            for(const snapshot of snapshots3.docs){
+                const docRef = doc(db, 'certificates', snapshot.id)
+                const fileRef = storageRef(storage, `certs/${snapshot.docs().file}`)
+
+                await Promise.all([deleteObject(fileRef), deleteDoc(docRef)])
+            }
+
+            for(const snapshot of snapshots4.docs){
+                const docRef = doc(db, 'userRole', snapshot.id)
+                await deleteDoc(docRef)
+            }
+
+            athletes.value.splice(athleteIndexToDelete.value, 1)
+            $toast.success('Athlete successfully declined')
+        }
+    } catch (error) {
+        console.log(error)
+        $toast.error('Failed to delete athlete')
+    } finally {
+        deleting.value = false
+    }
+}
+
+// accept athlete
+const acceptAthlete = async (athleteId, index) => {
+    const userRoleRef = collection(db, 'userRole')
+    const today = moment(new Date()).format('L')
+    try {
+        const q = query(
+            userRoleRef,
+            where('userId','==', athleteId)
+        )
+        const snapshots = await getDocs(q)
+
+        for(const snapshot of snapshots.docs){
+            const docRef = doc(db, 'userRole', snapshot.id)
+             await updateDoc(docRef, {
+                isAccepted: true,
+                dateAccepted: today
+            })
+        }
+        athletes.value.splice(index, 1)
+
+        $toast.success('Athlete accepted successfully')
+    } catch (error) {
+        $toast.error(error.message)
+        console.log(error)
+    }
+}
 
 onMounted(() => {
     getAthleteApplicants()
