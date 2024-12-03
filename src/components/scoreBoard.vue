@@ -1,6 +1,6 @@
 <template>
     <div class="fixed top-0 left-0 h-screen w-screen bg-black/10 flex items-center justify-center">
-        <div class="bg-white rounded-xl w-full max-w-3xl h-fit p-5 pb-10 flex flex-col items-center gap-y-14 border relative">
+        <div class="bg-white rounded-xl w-11/12 lg:w-full lg:max-w-3xl h-fit p-5 pb-10 flex flex-col items-center gap-y-14 border relative">
             <Icon icon="mdi:close" class="absolute top-2 right-2 text-xl cursor-pointer" @click="emit('closeScoreboard')" />
             <div class="text-center">
                 <h1 class="text-xl font-semibold tracking-wide uppercase">{{ scheduleDetails.sport }} SCOREBOARD</h1>

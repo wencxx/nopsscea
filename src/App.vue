@@ -5,6 +5,23 @@
         <headerComponent v-if="isAuth" />
         <!-- router views -->
         <router-view :class="{ 'py-[15dvh] !w-10/12 mx-auto': isAuth }" class="w-full duration-300 font-inter h-full dark:bg-custom-darker overflow-y-auto"  id="content" />
+        <div class="absolute bottom-0 left-0 bg-white dark:bg-neutral-900 border-t h-[10dvh] w-full flex items-center justify-center gap-x-5 lg:hidden">
+          <router-link :to="{ name: 'ongoingEvents' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'athleteNewsfeed' }">  
+            <Icon icon="mdi:event" class="text-5xl" />
+          </router-link>
+          <router-link :to="{ name: 'athleteNewsfeed' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'athleteNewsfeed' }">  
+            <Icon icon="mdi:home" class="text-5xl" />
+          </router-link>
+          <router-link :to="{ name: 'athleteProfile' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'athleteNewsfeed' }">  
+            <Icon icon="mdi:user" class="text-5xl" />
+          </router-link>
+          <router-link :to="{ name: 'forms' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'forms' }">  
+            <Icon icon="clarity:form-line" class="text-5xl" />
+          </router-link>
+          <router-link :to="{ name: 'filledOut' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'forms' }">  
+            <Icon icon="clarity:form-line" class="text-5xl" />
+          </router-link>
+        </div>
       </div>
   </div>
 </template>

@@ -11,8 +11,8 @@
         </div>
 
         <!-- table -->
-            <div class="col-span-3 bg-gray-100 dark:bg-neutral-800 border dark:border-gray-100/10 rounded-xl p-3">
-                <table class="!w-full tracking-wide rounded overflow-hidden">
+            <div class="col-span-3 bg-gray-100 dark:bg-neutral-800 border dark:border-gray-100/10 rounded-xl p-3 overflow-x-auto">
+                <table class="w-[200%] lg:!w-full tracking-wide rounded overflow-hidden">
                     <thead>
                         <tr>
                             <th class="w-4/12 py-1 border dark:border-gray-100/10 font-medium">School</th>
