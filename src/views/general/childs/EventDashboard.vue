@@ -311,28 +311,35 @@ const athletes = ref([])
 
 const getSchoolAthletes = async (schoolId) => {    
     try {
-        if(athletesId.value.length){
+        if (athletesId.value.length) {
             const q = query(
                 athleteRef,
                 and(
                     where('school', '==', schoolId),
                     where('athleteId', 'in', athletesId.value),
+                    where('status', '==', 'Qualified')
                 )
-            )
-            
-            const snapshots = await getDocs(q)
+            );
+            console.log('Query:', q);
+
+            const snapshots = await getDocs(q);
+            console.log('Snapshots:', snapshots.docs);
 
             snapshots.docs.forEach(doc => {
                 athletes.value.push({
                     id: doc.id,
                     ...doc.data()
-                })
-            })
+                });
+            });
+
+            console.log('Athletes:', athletes.value);
         }
     } catch (error) {
-        $toast.error(error.message)
+        console.error('Error fetching school athletes:', error);
+        $toast.error(error.message);
     }
-}
+};
+
 
 // count school athletes
 const countSchoolAthletes = (schoolId) => {
