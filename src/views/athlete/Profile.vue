@@ -24,6 +24,7 @@
                 <h1 class="text-lg"><span class="font-bold">Address:</span> {{ athleteData.address }}</h1>
                 <h1 class="text-lg"><span class="font-bold">Gender:</span> {{ athleteData.gender }}</h1>
                 <h1 class="text-lg"><span class="font-bold">Birthdate:</span> {{ formatData(athleteData.birthday) }}</h1>
+                <h1 class="text-lg"><span class="font-bold">Age:</span> {{ dobToAge(athleteData.birthday)?.count }} ( {{ dobToAge(athleteData.birthday)?.count > 25 ? 'Overage' : 'Eligible' }} )</h1>
             </div>
         </div>
         <div>
@@ -190,6 +191,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import moment from 'moment'
 import lineChart from '@components/charts/lineChart.vue'
 import { useAuthStore } from '@store'
+import dobToAge from 'dob-to-age'
 
 const authStore = useAuthStore()
 

@@ -24,6 +24,7 @@
                 <h1 class="text-lg"><span class="font-bold">Address:</span> {{ athleteData.address }}</h1>
                 <h1 class="text-lg"><span class="font-bold">Gender:</span> {{ athleteData.gender }}</h1>
                 <h1 class="text-lg"><span class="font-bold">Birthdate:</span> {{ formatData(athleteData.birthday) }}</h1>
+                <h1 class="text-lg"><span class="font-bold">Age:</span> {{ dobToAge(athleteData.birthday)?.count }} ( {{ dobToAge(athleteData.birthday)?.count > 25 ? 'Overage' : 'Eligible' }} )</h1>
                 <div v-if="role === 'school'" class="col-span-2 flex justify-between">
                     <div class="flex items-center gap-x-2">
                         <div class="flex justify-center">
@@ -171,9 +172,9 @@
                                     <a :href="form.storagePath">
                                         <Icon icon="mdi:download" class="text-2xl text-green-500 hover:scale-110" />
                                     </a>
-                                    <button @click="deleteForm(form.id, index)">
+                                    <!-- <button @click="deleteForm(form.id, index)">
                                         <Icon icon="mdi:trash" class="text-2xl text-red-500 hover:scale-110" />
-                                    </button>
+                                    </button> -->
                                 </div>
                             </td>
                         </tr>
@@ -213,6 +214,7 @@ import lineChart from '@components/charts/lineChart.vue'
 import axios from 'axios'
 import deleteModal from '@components/deleteModal.vue'
 import viewImagesModal from '@components/viewImages.vue'
+import dobToAge from 'dob-to-age'
 
 
 const role = localStorage.getItem('role')
