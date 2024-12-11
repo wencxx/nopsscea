@@ -19,13 +19,19 @@
                             <div class="flex items-center gap-x-2">
                                 <img v-if="getSchoolDetails(schedule.participant1)?.schoolLogo" :src="getSchoolDetails(schedule.participant1)?.schoolLogo" alt="School logo" class="h-12 object-cover aspect-square bg-gray-100 rounded-full">
                                 <div v-else class="h-12 object-cover aspect-square bg-gray-100 rounded-full animate-pulse"></div>
-                                <p class="font-bold text-white">{{ getSchoolDetails(schedule.participant1)?.schoolAbbreviation }}</p>
+                                <div>
+                                    <p class="font-bold text-white">{{ getSchoolDetails(schedule.participant1)?.schoolAbbreviation }}</p>
+                                    <p v-if="schedule.status === 'ended'" class="text-white bg-green-500 text-center w-fit px-1 rounded -mt-1 text-sm" :class="{ '!bg-red-500': schedule.part2Score > schedule.part1Score }">{{ schedule.part1Score > schedule.part2Score ? 'Winner' : 'Loser' }}</p>
+                                </div>
                             </div>
                             <p class="font-bold text-xl text-white">VS.</p>
                             <div class="flex items-center gap-x-2">
                                 <img v-if="getSchoolDetails(schedule.participant1)?.schoolLogo" :src="getSchoolDetails(schedule.participant2)?.schoolLogo" alt="School logo" class="h-12 object-cover aspect-square bg-gray-100 rounded-full">
                                 <div v-else class="h-12 object-cover aspect-square bg-gray-100 rounded-full animate-pulse"></div>
-                                <p class="font-bold text-white">{{ getSchoolDetails(schedule.participant2)?.schoolAbbreviation }}</p>
+                                <div>
+                                    <p class="font-bold text-white">{{ getSchoolDetails(schedule.participant2)?.schoolAbbreviation }}</p>
+                                    <p v-if="schedule.status === 'ended'" class="text-white bg-green-500 text-center w-fit px-1 rounded -mt-1 text-sm" :class="{ '!bg-red-500': schedule.part1Score > schedule.part2Score }">{{ schedule.part2Score > schedule.part1Score ? 'Winner' : 'Loser' }}</p>
+                                </div>
                             </div>
                         </div>
                         <div class="flex flex-col items-end !w-1/4 xl:w-full">

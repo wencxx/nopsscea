@@ -25,6 +25,7 @@
                 <h1 class="text-lg"><span class="font-bold">Gender:</span> {{ athleteData.gender }}</h1>
                 <h1 class="text-lg"><span class="font-bold">Birthdate:</span> {{ formatData(athleteData.birthday) }}</h1>
                 <h1 class="text-lg"><span class="font-bold">Age:</span> {{ dobToAge(athleteData.birthday)?.count }} ( {{ dobToAge(athleteData.birthday)?.count > 25 ? 'Overage' : 'Eligible' }} )</h1>
+                <h1 v-if="athleteData.reason" class="text-lg"><span class="font-bold">Reason for not qualifying:</span> {{ athleteData.reason }}</h1>
                 <div v-if="role === 'school'" class="col-span-2 flex justify-between">
                     <div class="flex items-center gap-x-2">
                         <div class="flex justify-center">
@@ -63,7 +64,7 @@
                         <p class="mt-1">{{ average || 0 }}</p>
                     </div>
                     <div class="flex justify-end gap-x-3 h-fit border w-fit">
-                        <button v-if="athleteData.status === 'Qualified' || athleteData.status === 'Under Review'" class="w-36 h-fit py-1 rounded border bg-red-700 text-white" @click="updateStatus(athleteData.athleteId, 'NQ')">Not Qualified</button>
+                        <button v-if="athleteData.status === 'Qualified' || athleteData.status === 'Under Review'" class="w-36 h-fit py-1 rounded border bg-red-700 text-white" @click="showNotQualifiedModal(athleteData.athleteId)">Not Qualified</button>
                         <button v-if="athleteData.status === 'Not Qualified' || athleteData.status === 'Under Review'" class="w-36 h-fit py-1 rounded border bg-blue-900 text-white" @click="updateStatus(athleteData.athleteId, 'Q')">Qualified</button>
                     </div>
                 </div>
@@ -71,7 +72,21 @@
         </div>
         <div class="border rounded-md p-5">
             <div class="flex justify-end gap-x-5">
-                <select class="border rounded px-2" v-model="monthQuery">
+                <select class="border rounded px-2" v-model="startMonthQuery">
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+                <select class="border rounded px-2" v-model="endMonthQuery">
                     <option value="1">January</option>
                     <option value="2">February</option>
                     <option value="3">March</option>
@@ -169,8 +184,20 @@
                             <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">{{ form.sy }}</td>
                             <td class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">
                                 <div class="flex justify-center gap-x-2">
-                                    <a :href="form.storagePath">
-                                        <Icon icon="mdi:download" class="text-2xl text-green-500 hover:scale-110" />
+                                    <a :href="form.documentUrl">
+                                        <Icon icon="mdi:download" class="text-2xl text-blue-900 hover:scale-110" />
+                                    </a>
+                                    <a
+                                        :href="`https://docs.google.com/viewer?url=${encodeURIComponent(form.documentUrl)}&embedded=true`"
+                                        target="_blank"
+                                    >
+                                        <Icon icon="bxs:file-doc" class="text-2xl text-green-500 hover:scale-110" />
+                                    </a>
+                                    <a
+                                        :href="form.pdfUrl"
+                                        target="_blank"
+                                        >
+                                        <Icon icon="bxs:file-pdf" class="text-2xl text-orange-500 hover:scale-110" />
                                     </a>
                                     <!-- <button @click="deleteForm(form.id, index)">
                                         <Icon icon="mdi:trash" class="text-2xl text-red-500 hover:scale-110" />
@@ -197,7 +224,8 @@
         </div>
 
         <deleteModal v-if="showModalDelete" @closeModal="showModalDelete = false" @acceptDelete="deleteAthlete()" :user="'athlete'" :type="'remove'" />
-            <viewImagesModal v-if="showViewImagesModal" :images="imagesToView" :currentImage="currentImageViewing" @closeModal="showViewImagesModal = false" @deleteImage="deleteCert" />
+        <viewImagesModal v-if="showViewImagesModal" :images="imagesToView" :currentImage="currentImageViewing" @closeModal="showViewImagesModal = false" @deleteImage="deleteCert" />
+        <reasonForDecliningModal v-if="showModal" :athleteID="athleteIdToUpdate" @closeModal="showModal = false" @confirmed="confirmedNotQualify" />
     </div>
 </template>
 
@@ -214,6 +242,7 @@ import lineChart from '@components/charts/lineChart.vue'
 import axios from 'axios'
 import deleteModal from '@components/deleteModal.vue'
 import viewImagesModal from '@components/viewImages.vue'
+import reasonForDecliningModal from '@components/reasonForDeclining.vue'
 import dobToAge from 'dob-to-age'
 
 
@@ -384,7 +413,7 @@ const filterAttendance = () => {
     const entryYear = entryDate.getFullYear().toString()
 
     return (
-      (!monthQuery.value || entryMonth === monthQuery.value) &&
+      (!endMonthQuery.value || entryMonth === startMonthQuery.value || entryMonth === endMonthQuery.value) &&
       (!yearQuery.value || entryYear === yearQuery.value)
     )
   })
@@ -396,10 +425,11 @@ const filterAttendance = () => {
 }
 
 const todaysDate = new Date().toISOString().split('-')
-const monthQuery = ref(todaysDate[1]) 
+const startMonthQuery = ref('1') 
+const endMonthQuery = ref(todaysDate[1]) 
 const yearQuery = ref(todaysDate[0]) 
 
-watch([monthQuery, yearQuery], filterAttendance)
+watch([endMonthQuery, yearQuery], filterAttendance)
 
 // get average training data 
 
@@ -534,10 +564,12 @@ const updateStatus = async (athleteId, status) => {
             const snapshot = await getDocs(q)
 
             await updateDoc(doc(db, 'athletes', snapshot.docs[0].id), {
-                status: 'Qualified'
+                status: 'Qualified',
+                reason: '',
             })
 
             athleteData.value.status = 'Qualified'
+            athleteData.value.reason = ''
 
             $toast.success('Updated athlete status successfully')
         }else{
@@ -550,7 +582,7 @@ const updateStatus = async (athleteId, status) => {
             const snapshot = await getDocs(q)
 
             await updateDoc(doc(db, 'athletes', snapshot.docs[0].id), {
-                status: 'Not Qualified'
+                status: 'Not Qualified',
             })
 
             athleteData.value.status = 'Not Qualified'
@@ -561,6 +593,21 @@ const updateStatus = async (athleteId, status) => {
         console.log(error)
         $toast.success('Failed to update athlete status')
      }
+}
+
+// not qualified
+const showModal = ref(false)
+const athleteIdToUpdate = ref('')
+
+const showNotQualifiedModal = (athleteId) => {
+    showModal.value = true
+    athleteIdToUpdate.value = athleteId
+}
+
+const confirmedNotQualify = (data) => {
+    athleteData.value.status = 'Not Qualified'
+    athleteData.value.reason = data
+    showModal.value = false
 }
 
 // view images

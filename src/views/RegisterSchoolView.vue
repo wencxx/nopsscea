@@ -77,8 +77,12 @@
                     <input type="number" v-model="schoolData.noTertiary" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
                 <div class="flex flex-col gap-y-2">
-                    <label>School Password</label>
+                    <label>Password</label>
                     <input type="password" v-model="schoolData.schoolPassword" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
+                </div>
+                <div class="flex flex-col gap-y-2">
+                    <label>Confirm Password</label>
+                    <input type="password" v-model="schoolData.confirmPassword" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10">
                 </div>
             </div>
             <div class="flex items-center justify-end gap-x-5">
@@ -151,6 +155,7 @@ const schoolData = ref({
     noSecondary: '',
     noTertiary: '',
     schoolPassword: '',
+    confirmPassword: ''
 })
 
 const toggleFileInput = () => {
@@ -194,6 +199,8 @@ const validatePassword = () => {
 
 // register school
 const register = async () => {
+    if(schoolData.value.schoolPassword !== schoolData.value.confirmPassword) return errorMessage.value = "Password doesn't match."
+
     if (validatePassword() === 'invalid pass') {
         errorMessage.value = 'Password must have at least 8 characters, including a capital letter and number.';
         return;
