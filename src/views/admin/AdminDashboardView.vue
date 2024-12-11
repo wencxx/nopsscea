@@ -325,7 +325,7 @@ const chartDatasets = ref([])
 // get grouped medals by year
 const participantsByYear = ref({});
 const selectedYear = ref("2024"); 
-const chartLabel2 = ref('Medal tally every year')
+const chartLabel2 = ref('Annual medal tally')
 const chartLabels2 = ref([]);
 const chartDatasets2 = ref([]);
 

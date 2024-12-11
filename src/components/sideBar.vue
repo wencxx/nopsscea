@@ -17,6 +17,12 @@
                 </router-link>
               </li>
               <li>
+                <router-link v-if="user && user.uid" :to="{ name: 'schoolProfile', params: { id: user.uid } }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'schoolProfile' }">
+                  <Icon icon="mdi:user" class="text-xl"/>
+                  <p>Profile</p>
+                </router-link>
+              </li>
+              <li>
                 <router-link :to="{ name: 'athleteNewsfeed' }" class="flex items-center gap-x-2 text-md !text-white-secondary-text p-1 rounded hover:bg-gray-100 hover:dark:bg-gray-50/10" :class="{ 'bg-gray-100 dark:bg-gray-50/10 !text-white-primary-text dark:!text-dark-primary-text': $route.name == 'athleteNewsfeed' }">
                   <Icon icon="gridicons:posts" class="text-xl"/>
                   <p>Newsfeed</p>
@@ -227,8 +233,13 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue"
+import { computed, onMounted, ref } from "vue"
 const role = ref('')
+import { useAuthStore } from '@store'
+
+const authStore = useAuthStore()
+
+const user = computed(() => authStore.user)
 
 // dropdown logic
 const openDropdown = ref([])

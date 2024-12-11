@@ -174,6 +174,15 @@ const routes =  [
         }
     },
     {
+        path: '/school/profile/:id',
+        name: 'schoolProfile',
+        component: () => import('../views/school/SchoolProfile.vue'),
+        meta: {
+            requiresAuth: true,
+            requiresRole: 'school'
+        }
+    },
+    {
         path: `/school/pending-athletes`,
         name: 'pendingAthletes',
         component: () => import('../views/school/PendingAthletesView.vue'),
@@ -193,6 +202,14 @@ const routes =  [
         path: '/athletes-details/:id',
         name: 'athleteDetails',
         component: () => import('../views/school/AthleteDetails.vue'),
+        meta: {
+            requiresAuth: true,
+        }
+    },
+    {
+        path: '/coach-details/:id',
+        name: 'coachDetails',
+        component: () => import('../views/CoachDetails.vue'),
         meta: {
             requiresAuth: true,
         }

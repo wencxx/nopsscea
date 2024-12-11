@@ -9,7 +9,7 @@
                     <p class="uppercase text-sm text-gray-500 dark:text-gray-100">{{ schoolData.schoolAbbreviation }}</p>
                 </div>
             </div>
-            <div class="w-4/5 h-full grid grid-cols-2 gap-y-3">
+            <div class="w-4/5 h-full grid grid-cols-2 gap-y-3 relative">
                 <h1 class="text-lg capitalize"><span class="font-bold">School Head:</span> {{ schoolData.schoolHead }}, {{ schoolData.headTitle }}</h1>
                 <h1 class="text-lg"><span class="font-bold">School ID:</span> {{ schoolData.schoolCode }}</h1>
                 <h1 class="text-lg"><span class="font-bold">School Classification:</span> {{ schoolData.schoolClassification }}</h1>
@@ -17,6 +17,9 @@
                 <h1 class="text-lg"><span class="font-bold">School Email:</span> {{ schoolData.schoolEmail }}</h1>
                 <h1 class="text-lg"><span class="font-bold">No. of Secondary Students:</span> {{ schoolData.noSecondary }}</h1>
                 <h1 class="text-lg"><span class="font-bold">No. of Tertiary Students:</span> {{ schoolData.noTertiary }}</h1>
+                <button class="absolute top-0 right-0 bg-gray-200 p-1 rounded" @click="updateDetails(schoolData)">
+                    <Icon icon="mdi:pencil" />
+                </button>
              </div>
         </div>
         <!-- athletes list -->
@@ -161,6 +164,8 @@
                 </div>
             </div>
         </div>
+        <!-- edit school details -->
+        <editSchoolDetails v-if="showUpdateModal" :schoolDetails="schoolDetailsToEdit" @closeModal="showUpdateModal = false" @updated="updated" />
     </div>
 </template>
 
@@ -173,6 +178,7 @@ import 'vue-toast-notification/dist/theme-sugar.css'
 import { onMounted, ref } from 'vue'
 import moment from 'moment'
 import lineChart from '@components/charts/lineChart.vue'
+import editSchoolDetails from '@components/editSchoolDetails.vue'
 
 const route = useRoute()
 const $toast = useToast()
@@ -260,6 +266,21 @@ const getCoachData = async () => {
 
 const convertBirthday = (bday) => {
     return moment(bday).format('ll')
+}
+
+// const update school details
+const showUpdateModal = ref(false)
+const schoolDetailsToEdit = ref({})
+
+const updateDetails = (schoolData) => {
+    schoolDetailsToEdit.value = schoolData
+    showUpdateModal.value = true
+}   
+
+const updated = (data) => {
+    showUpdateModal.value = false
+    schoolData.value = data
+    $toast.success('Details updated successfully.')
 }
 
 onMounted(() => {
