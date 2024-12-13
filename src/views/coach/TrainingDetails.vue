@@ -12,6 +12,7 @@
                         <th class="w-2/6 py-1 border border-gray-300 dark:border-gray-100/10">Name</th>
                         <th class="w-2/6 py-1 border border-gray-300 dark:border-gray-100/10">Rating</th>
                         <th class="w-1/6 py-1 border border-gray-300 dark:border-gray-100/10">Attendance</th>
+                        <th class="w-1/6 py-1 border border-gray-300 dark:border-gray-100/10">Comment</th>
                     </tr>
                 </thead>
                 <tbody v-if="athletes.length > 0">
@@ -47,11 +48,16 @@
                             />
                             </div>
                         </td>
+                        <td class="p-2 border border-gray-300 dark:border-gray-100/10 text-center">
+                            <div class="flex justify-center gap-x-3">
+                                <Icon icon="mdi:message" class="text-2xl cursor-pointer" @click="comment(athlete.athleteId, trainingDets.attendance[index].comment, trainingDets)" />
+                            </div> 
+                        </td>
                     </tr>
                 </tbody>
                 <tbody v-if="!loading && athletes.length === 0">
                     <tr>
-                        <td colspan="3" class="p-2 border dark:border-gray-100/10 text-center">No athletes to show</td>
+                        <td colspan="4" class="p-2 border dark:border-gray-100/10 text-center">No athletes to show</td>
                     </tr>
                 </tbody>
                 <tbody v-if="loading">
@@ -77,10 +83,15 @@
                         <td class="p-2 border dark:border-gray-100/10">
                             <div class="w-8 aspect-square mx-auto bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
                         </td>
+                        <td class="p-2 border dark:border-gray-100/10">
+                            <div class="w-8 aspect-square mx-auto bg-gray-200 dark:bg-gray-100/10 rounded animate-pulse"></div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
+        <addCommentTraining v-if="showComment" :trainingDetails="trainingDetails" :commentDetails="commentDetails" @closeModal="showComment = false" />
     </div>
 </template>
 
@@ -93,6 +104,7 @@ import 'vue-toast-notification/dist/theme-sugar.css'
 import { db } from '@config/firebaseConfig'
 import { getDocs, getDoc, collection, where, query, doc, updateDoc, arrayUnion, arrayRemove, onSnapshot } from 'firebase/firestore'
 import moment from 'moment'
+import addCommentTraining from '../../components/addCommentTraining.vue'
 
 const $toast = useToast()
 const route = useRoute()
@@ -233,6 +245,18 @@ const rateAthlete = async (rating, athleteId, index) => {
     }
 };
 
+// add/display comment
+const showComment = ref(false)
+const commentDetails = ref({})
+const trainingDetails = ref({})
+const comment = (athleteId, comment, trainingDets) => {
+    commentDetails.value = {
+        athleteId,
+        comment
+    }
+    trainingDetails.value = trainingDets
+    showComment.value = true
+}
 
 onMounted(() => {
     getDetails()
