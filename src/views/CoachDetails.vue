@@ -24,6 +24,31 @@
                 <h1 class="text-lg"><span class="font-bold">Age:</span> {{ dobToAge(coachData.birthday)?.count }}</h1>
             </div>  
         </div>
+        <div class="border dark:border-gray-100/10 h-fit rounded-md p-5 flex flex-col gap-y-5">
+            <h1 class="text-lg font-bold">Experience</h1>
+            <div class="bg-gray-100 dark:bg-gray-100/10 p-5 rounded-md">
+                <table class="min-w-[500px] md:w-full font-inter tracking-wide">
+                    <thead>
+                        <tr>
+                            <th class="w-1/4 py-1 border border-gray-300 dark:border-gray-100/10">Title</th>
+                            <th class="w-1/4 py-1 border border-gray-300 dark:border-gray-100/10">Year</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="2" class="py-2 border-gray-300 dark:border-gray-100/10 border text-center">No achievements available</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="border dark:border-gray-100/10 h-fit rounded-md p-5 flex flex-col gap-y-5">
+            <h1 class="text-lg font-bold">Certificates</h1>
+            <!-- <div v-if="certificates.length" class="w-full grid grid-cols-4 gap-2">
+                <img v-for="certificate in certificates" :key="certificate.id" :src="certificate.downloadUrl" alt="certificate" class="w-full aspect-square shadow rounded-md" @click="viewImages(certificates, index)">
+            </div> -->
+            <p class="text-center">No certificates to show</p>
+        </div>
     </div>
 </template>
 
