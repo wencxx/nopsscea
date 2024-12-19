@@ -9,7 +9,7 @@
             <div v-if="currentPage === 1" class="grid grid-cols-2 gap-4">
                 <div class="flex flex-col gap-y-2">
                     <label>School Name</label>
-                    <input type="text"  v-model="schoolData.schoolName" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10" list="schoolLists">
+                    <input type="text"  v-model="schoolData.schoolName" @change="schoolChange" class="border h-8 rounded pl-2 focus:outline-custom-primary dark:bg-transparent dark:border-gray-100/10" list="schoolLists">
                     <datalist id="schoolLists">
                         <option>University of Negros Occidental – Recoletos</option>
                         <option>La Consolacion College Bacolod</option>
@@ -349,4 +349,26 @@ const register = async () => {
         registering.value = false
     }
 };
+
+const schoolChange = () => {
+    if(schoolData.value.schoolName === 'STI West Negros University'){
+        schoolData.value.schoolAddress = 'L N Agustin Drive, Bacolod, 6100 Negros Occidental'
+        schoolData.value.schoolID = 1204892
+        schoolData.value.schoolAbbreviation = 'STI'
+        schoolData.value.schoolEmail = 'sti.registrat@sti.wnu.edu.ph'
+        schoolData.value.schoolClassification = 'Non-Sectarian'
+    }else if(schoolData.value.schoolName === 'University of Negros Occidental – Recoletos'){
+        schoolData.value.schoolAddress = '#51 Lizares St, Bacolod, 6100 Negros Occidental'
+        schoolData.value.schoolID = 1031241
+        schoolData.value.schoolAbbreviation = 'UNO-R'
+        schoolData.value.schoolEmail = 'uno.registar@uno.edu.ph'
+        schoolData.value.schoolClassification = 'Sectarian'
+    }else if(schoolData.value.schoolName === 'Riverside College'){
+        schoolData.value.schoolAddress = 'MXM5+5QV, Dr. Pablo O. Torre Sr. St, 23rd St, Bacolod, Negros Occidental'
+        schoolData.value.schoolID = 1092418
+        schoolData.value.schoolAbbreviation = 'RC'
+        schoolData.value.schoolEmail = 'riversidecollege.registar@revirsidecollege.edu.ph'
+        schoolData.value.schoolClassification = 'Sectarian'
+    }
+}
 </script>
