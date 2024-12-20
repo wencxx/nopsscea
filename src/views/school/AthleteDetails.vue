@@ -408,30 +408,32 @@ const getTrainingDetails = async () => {
 
 const filterAttendance = () => {
   const filteredAttendance = allAttendance.value.filter((entry) => {
-    const entryDate = new Date(entry.date)
-    const entryMonth = String(entryDate.getMonth() + 1).padStart(2, '0')
-    const entryYear = entryDate.getFullYear().toString()
+    const entryDate = new Date(entry.date);
+    const entryMonth = entryDate.getMonth() + 1; 
+    const entryYear = entryDate.getFullYear();
+
+    const startMonth = parseInt(startMonthQuery.value, 10);
+    const endMonth = parseInt(endMonthQuery.value, 10);
+    const filterYear = parseInt(yearQuery.value, 10);
 
     return (
-      (!endMonthQuery.value || entryMonth === startMonthQuery.value || entryMonth === endMonthQuery.value) &&
-      (!yearQuery.value || entryYear === yearQuery.value)
-    )
-  })
+      (!yearQuery.value || entryYear === filterYear) &&
+      (!startMonthQuery.value || !endMonthQuery.value || (entryMonth >= startMonth && entryMonth <= endMonth))
+    );
+  });
 
-  trainingData.value = filteredAttendance.map((attendance) => attendance.rating)
+  trainingData.value = filteredAttendance.map((attendance) => attendance.rating);
   trainingLabels.value = filteredAttendance
     .sort((a, b) => new Date(a.date) - new Date(b.date))
-    .map((attendance) => moment(new Date(attendance.date)).format('ll').split(',')[0])
-}
+    .map((attendance) => moment(new Date(attendance.date)).format('ll').split(',')[0]);
+};
 
-const todaysDate = new Date().toISOString().split('-')
-const startMonthQuery = ref('1') 
-const endMonthQuery = ref(todaysDate[1]) 
-const yearQuery = ref(todaysDate[0]) 
+const todaysDate = new Date();
+const startMonthQuery = ref('1'); 
+const endMonthQuery = ref((todaysDate.getMonth() + 1).toString()); 
+const yearQuery = ref(todaysDate.getFullYear().toString()); 
 
-watch([endMonthQuery, yearQuery], filterAttendance)
-
-// get average training data 
+watch([endMonthQuery, yearQuery], filterAttendance);
 
 const average = ref(0)
 
